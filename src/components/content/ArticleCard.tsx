@@ -20,7 +20,7 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
       <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300">
         <div className="relative">
           <Image
-            src={article.image || getImagePlaceholder(article.category)}
+            src={'/images/logo.jpg'}
             alt={article.title}
             width={800}
             height={400}
@@ -79,7 +79,7 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
         <div className="flex space-x-4 p-4">
           <div className="relative flex-shrink-0">
             <Image
-              src={article.image || getImagePlaceholder(article.category)}
+              src={'/images/logo.jpg'}
               alt={article.title}
               width={120}
               height={80}
@@ -132,7 +132,7 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
     <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300">
       <div className="relative">
         <Image
-          src={article.image || getImagePlaceholder(article.category)}
+          src={'/images/logo.jpg'}
           alt={article.title}
           width={600}
           height={300}

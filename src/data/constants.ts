@@ -48,6 +48,7 @@ export const SOCIAL_LINKS = {
 
 export const NAVIGATION = [
   { name: 'Inicio', href: '/', current: true },
+  { name: 'Sugerencias', href: '/sugerencias', current: false },
   { name: 'Artículos', href: '/articulos', current: false },
   { name: 'Comercios', href: '/comercios', current: false },
   { name: 'Suscripciones', href: '/suscripciones', current: false },

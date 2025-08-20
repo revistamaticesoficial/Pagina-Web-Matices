@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
+// import { Badge } from '@/components/ui/Badge';
 import { ArrowRight, Play, Calendar, MapPin } from 'lucide-react';
 import { APP_CONFIG } from '@/data/constants';
 
@@ -16,10 +16,10 @@ export function Hero() {
           {/* Content */}
           <div className="space-y-8">
             <div className="space-y-4">
-              <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+              <span className="bg-blue-100 text-blue-800 border-blue-200">
                 <Calendar className="h-3 w-3 mr-1" />
                 34 años informando al norte de Córdoba
-              </Badge>
+              </span>
               
               <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
                 Revista{' '}

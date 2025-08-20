@@ -20,7 +20,7 @@ export function BusinessCard({ business, variant = 'default' }: BusinessCardProp
       <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300">
         <div className="relative">
           <Image
-            src={business.logo || getBusinessImagePlaceholder(business.category)}
+            src={'/images/logo.jpg'}
             alt={business.name}
             width={600}
             height={300}
@@ -101,7 +101,7 @@ export function BusinessCard({ business, variant = 'default' }: BusinessCardProp
         <div className="flex space-x-4 p-4">
           <div className="relative flex-shrink-0">
             <Image
-              src={business.logo || getBusinessImagePlaceholder(business.category)}
+              src={'/images/logo.jpg'}
               alt={business.name}
               width={80}
               height={80}
@@ -155,7 +155,7 @@ export function BusinessCard({ business, variant = 'default' }: BusinessCardProp
     <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300">
       <div className="relative">
         <Image
-          src={business.logo || getBusinessImagePlaceholder(business.category)}
+          src={'/images/logo.jpg'}
           alt={business.name}
           width={400}
           height={250}
