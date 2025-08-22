@@ -4,7 +4,7 @@ import { MapPin, Phone, Star, Crown } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/Card';
 import { Business } from '@/types';
-import { getPlanColor, getBusinessImagePlaceholder, truncateText } from '@/lib/utils';
+import { getPlanColor, truncateText } from '@/lib/utils';
 
 interface BusinessCardProps {
   business: Business;

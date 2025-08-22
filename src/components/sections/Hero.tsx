@@ -1,9 +1,4 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { Button } from '@/components/ui/Button';
-// import { Badge } from '@/components/ui/Badge';
-import { ArrowRight, Play, Calendar, MapPin } from 'lucide-react';
-import { APP_CONFIG } from '@/data/constants';
+// import Image from 'next/image';
 
 export function Hero() {
   return (
@@ -12,12 +7,12 @@ export function Hero() {
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
       
       <div className="container mx-auto px-4 py-16 lg:py-24">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="flex flex-col justify-center text-center gap-12 items-center">
           {/* Content */}
           <div className="space-y-8">
             <div className="space-y-4">
               <span className="bg-blue-100 text-blue-800 border-blue-200">
-                <Calendar className="h-3 w-3 mr-1" />
+                {/* <Calendar className="h-3 w-3 mr-1" /> */}
                 34 años informando al norte de Córdoba
               </span>
               
@@ -36,7 +31,7 @@ export function Hero() {
             </div>
 
             {/* Features */}
-            <div className="grid sm:grid-cols-2 gap-4">
+            {/* <div className="grid sm:grid-cols-2 gap-4">
               <div className="flex items-center space-x-3">
                 <div className="w-2 h-2 bg-blue-600 rounded-full" />
                 <span className="text-gray-700">Noticias locales actualizadas</span>
@@ -53,10 +48,10 @@ export function Hero() {
                 <div className="w-2 h-2 bg-orange-600 rounded-full" />
                 <span className="text-gray-700">Contenido premium</span>
               </div>
-            </div>
+            </div> */}
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            {/* <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" className="group">
                 Explorar Artículos
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -65,7 +60,7 @@ export function Hero() {
                 <Play className="mr-2 h-4 w-4" />
                 Ver Video
               </Button>
-            </div>
+            </div> */}
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-200">
@@ -85,7 +80,7 @@ export function Hero() {
           </div>
 
           {/* Image/Visual */}
-          <div className="relative">
+          {/* <div className="relative">
             <div className="relative z-10">
               <Image
                 src="/images/hero-cerro-rosas.jpg"
@@ -98,7 +93,6 @@ export function Hero() {
               />
             </div>
             
-            {/* Floating Elements */}
             <div className="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-lg border">
               <div className="flex items-center space-x-2">
                 <MapPin className="h-5 w-5 text-blue-600" />
@@ -115,12 +109,12 @@ export function Hero() {
                 <div className="text-sm opacity-90">Años de trayectoria</div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
-      </div>
+      </div> 
 
       {/* Bottom Wave */}
-      <div className="absolute bottom-0 left-0 right-0">
+      {/* <div className="absolute bottom-0 left-0 right-0">
         <svg
           viewBox="0 0 1200 120"
           preserveAspectRatio="none"
@@ -141,7 +135,7 @@ export function Hero() {
             className="fill-current text-white"
           />
         </svg>
-      </div>
+      </div> */}
     </section>
   );
 }

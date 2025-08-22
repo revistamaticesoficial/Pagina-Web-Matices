@@ -1,66 +1,85 @@
+'use client';
+
+import { Suspense } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
-
-// Mock data para los negocios sugeridos
-const suggestedBusinesses = [
-  {
-    id: 1,
-    name: 'Betos',
-    description: 'Lomitos de calidad',
-    logo: '/images/logo.jpg',
-    category: 'GASTRONOMIA',
-    backgroundColor: 'bg-green-500'
-  },
-  {
-    id: 2,
-    name: 'Vidón Bar',
-    description: 'Bar & Restaurante',
-    logo: '/images/logo.jpg',
-    category: 'GASTRONOMIA',
-    backgroundColor: 'bg-black'
-  },
-  {
-    id: 3,
-    name: 'Pizza Libre',
-    description: 'Pizzería artesanal',
-    logo: '/images/logo.jpg',
-    category: 'GASTRONOMIA',
-    backgroundColor: 'bg-yellow-400'
-  },
-  {
-    id: 4,
-    name: 'Kit Wonder',
-    description: 'Productos innovadores',
-    logo: '/images/logo.jpg',
-    category: 'SERVICIOS',
-    backgroundColor: 'bg-orange-400'
-  },
-  {
-    id: 5,
-    name: 'Betos',
-    description: 'Lomitos de calidad',
-    logo: '/images/logo.jpg',
-    category: 'GASTRONOMIA',
-    backgroundColor: 'bg-green-500'
-  },
-  {
-    id: 6,
-    name: 'Betos',
-    description: 'Lomitos de calidad',
-    logo: '/images/logo.jpg',
-    category: 'GASTRONOMIA',
-    backgroundColor: 'bg-green-500'
-  }
-];
+import { useTabNavigation } from '@/hooks/useTabNavigation';
+import { usePagination } from '@/hooks/usePagination';
+import { ComercioCard } from './components/ComercioCard';
+import { EventCard } from './components/EventCard';
+import { BenefitCard } from './components/BenefitCard';
+import { Pagination } from './components/Pagination';
+import { comerciosSugerencias } from '@/data/comercios-sugerencias';
+import { eventos } from '@/data/eventos';
+import { beneficios } from '@/data/beneficios';
+import { TabType } from '@/types/sugerencias';
 
 const categories = [
-  { name: 'COMERCIOS', color: 'bg-blue-600 hover:bg-blue-700' },
-  { name: 'EVENTOS', color: 'bg-orange-500 hover:bg-orange-600' },
-  { name: 'BENEFICIOS', color: 'bg-green-600 hover:bg-green-700' }
+  { name: 'comercios' as TabType, label: 'COMERCIOS', color: 'bg-blue-600 hover:bg-blue-700 hover:cursor-pointer' },
+  { name: 'eventos' as TabType, label: 'EVENTOS', color: 'bg-orange-500 hover:bg-orange-600 hover:cursor-pointer' },
+  { name: 'beneficios' as TabType, label: 'BENEFICIOS', color: 'bg-green-600 hover:bg-green-700 hover:cursor-pointer' }
 ];
 
-export default function SugerenciasPage() {
+function SugerenciasContent() {
+  const { currentTab, currentPage, setTab, setPage } = useTabNavigation();
+
+  // Get pagination data for each tab separately
+  const eventosPagination = usePagination({
+    items: eventos,
+    currentPage: currentTab === 'eventos' ? currentPage : 1,
+    itemsPerPage: 10
+  });
+
+  const beneficiosPagination = usePagination({
+    items: beneficios,
+    currentPage: currentTab === 'beneficios' ? currentPage : 1,
+    itemsPerPage: 10
+  });
+
+  const comerciosPagination = usePagination({
+    items: comerciosSugerencias,
+    currentPage: currentTab === 'comercios' ? currentPage : 1,
+    itemsPerPage: 10
+  });
+
+  // Get current pagination data
+  const getCurrentPaginationData = () => {
+    switch (currentTab) {
+      case 'eventos':
+        return eventosPagination;
+      case 'beneficios':
+        return beneficiosPagination;
+      default:
+        return comerciosPagination;
+    }
+  };
+
+  const paginationData = getCurrentPaginationData();
+
+  const renderCards = () => {
+    switch (currentTab) {
+      case 'eventos':
+        return eventosPagination.items.map((evento) => (
+          <EventCard key={evento.id} event={evento} />
+        ));
+      case 'beneficios':
+        return beneficiosPagination.items.map((beneficio) => (
+          <BenefitCard key={beneficio.id} benefit={beneficio} />
+        ));
+      default:
+        return comerciosPagination.items.map((comercio) => (
+          <ComercioCard key={comercio.id} comercio={comercio} />
+        ));
+    }
+  };
+
+  const getGridCols = () => {
+    if (currentTab === 'beneficios') {
+      return 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3';
+    }
+    return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -68,10 +87,10 @@ export default function SugerenciasPage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="/images/logo.jpg"
-            alt="Niños plantando árboles"
+            src="/images/bg.jpg"
+            alt="bg orange matices"
             fill
-            className="object-cover opacity-30"
+            className="object-cover opacity-80"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-black/20" />
@@ -93,73 +112,62 @@ export default function SugerenciasPage() {
       {/* Categories Section */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-4xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-4 justify-between max-w-4xl mx-auto">
             {categories.map((category) => (
               <Button
                 key={category.name}
                 size="lg"
-                className={`${category.color} text-white font-bold text-lg px-12 py-6 rounded-none flex-1 min-h-[80px] text-center`}
+                onClick={() => setTab(category.name)}
+                className={`${
+                  currentTab === category.name 
+                    ? category.color.replace('hover:', '') + ' shadow-lg' 
+                    : category.color
+                } text-white font-bold text-lg px-12 py-6 rounded-none flex-1 min-h-[80px] text-center transition-all duration-200`}
               >
-                {category.name}
+                {category.label}
               </Button>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Suggested Businesses Grid */}
+      {/* Content Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {suggestedBusinesses.map((business) => (
-              <Card key={`${business.id}-${business.name}`} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
-                {/* Logo Section */}
-                <div className={`${business.backgroundColor} h-48 flex items-center justify-center relative`}>
-                  {business.name === 'Betos' && (
-                    <div className="text-white text-center">
-                      <div className="w-16 h-16 border-2 border-white rounded-full flex items-center justify-center mb-2 mx-auto">
-                        <span className="font-bold text-lg">B</span>
-                      </div>
-                      <div className="text-2xl font-bold">el verdadero</div>
-                      <div className="text-3xl font-bold">LOMITO</div>
-                    </div>
-                  )}
-                  {business.name === 'Vidón Bar' && (
-                    <div className="text-white text-center">
-                      <div className="text-4xl font-serif italic mb-2">Vidón</div>
-                      <div className="text-lg tracking-wider">~ BAR ~</div>
-                    </div>
-                  )}
-                  {business.name === 'Pizza Libre' && (
-                    <div className="text-black text-center">
-                      <div className="text-3xl font-bold">PIZZA</div>
-                      <div className="text-2xl font-serif italic">Libre</div>
-                    </div>
-                  )}
-                  {business.name === 'Kit Wonder' && (
-                    <div className="text-white text-center">
-                      <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-2 mx-auto">
-                        <span className="text-2xl font-bold">W</span>
-                      </div>
-                      <div className="text-lg font-bold">KIT WONDER</div>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Content */}
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-lg text-gray-900 mb-2">
-                    {business.name}
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    {business.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+          {/* Results Info */}
+          <div className="mb-8 text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              {currentTab === 'comercios' && 'Comercios Sugeridos'}
+              {currentTab === 'eventos' && 'Próximos Eventos'}
+              {currentTab === 'beneficios' && 'Beneficios Disponibles'}
+            </h2>
+            <p className="text-gray-600">
+              Mostrando {paginationData.items.length} de {paginationData.totalItems} resultados
+              {paginationData.totalPages > 1 && ` - Página ${currentPage} de ${paginationData.totalPages}`}
+            </p>
           </div>
+
+          {/* Cards Grid */}
+          <div className={`grid ${getGridCols()} gap-6 max-w-7xl mx-auto`}>
+            {renderCards()}
+          </div>
+
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={paginationData.totalPages}
+            onPageChange={setPage}
+          />
         </div>
       </section>
     </div>
+  );
+}
+
+export default function SugerenciasPage() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <SugerenciasContent />
+    </Suspense>
   );
 }

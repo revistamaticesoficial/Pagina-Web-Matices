@@ -39,20 +39,20 @@ export const BUSINESS_PLANS = [
 ];
 
 export const SOCIAL_LINKS = {
-  facebook: 'https://facebook.com/revistamatices',
-  instagram: 'https://instagram.com/revistamatices',
-  twitter: 'https://twitter.com/revistamatices',
-  youtube: 'https://youtube.com/revistamatices',
-  whatsapp: 'https://wa.me/5493511234567'
+  facebook: 'https://www.facebook.com/profile.php?id=61579318061468',
+  instagram: 'https://instagram.com/revistamaticesoficial',
+  twitter: '/',
+  youtube: '/',
+  whatsapp: 'https://api.whatsapp.com/send?phone=5493515141456&text=Hola%20te%20escribo%20desde%20la%20web%20de%20Revista%20Matices'
 };
 
 export const NAVIGATION = [
   { name: 'Inicio', href: '/', current: true },
   { name: 'Sugerencias', href: '/sugerencias', current: false },
-  { name: 'Artículos', href: '/articulos', current: false },
-  { name: 'Comercios', href: '/comercios', current: false },
-  { name: 'Suscripciones', href: '/suscripciones', current: false },
-  { name: 'Nosotros', href: '/nosotros', current: false }
+  // { name: 'Artículos', href: '/articulos', current: false },
+  // { name: 'Comercios', href: '/comercios', current: false },
+  // { name: 'Suscripciones', href: '/suscripciones', current: false },
+  // { name: 'Nosotros', href: '/nosotros', current: false }
 ];
 
 export const FOOTER_LINKS = {

@@ -2,7 +2,7 @@ import { ArticleCard } from '@/components/content/ArticleCard';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Separator } from '@/components/ui/Separator';
-import { Search, Filter, Clock, Calendar } from 'lucide-react';
+import { Search, Filter, Calendar } from 'lucide-react';
 import { mockArticles, getArticlesByCategory } from '@/data/articles';
 import { CATEGORIES } from '@/data/constants';
 import { formatDate } from '@/lib/utils';

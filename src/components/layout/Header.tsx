@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { Menu, X, Search, User } from 'lucide-react';
-import { APP_CONFIG, NAVIGATION } from '@/data/constants';
+import { Menu, X, User } from 'lucide-react';
+import { NAVIGATION } from '@/data/constants';
+import Image from 'next/image';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,15 +16,7 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">M</span>
-              </div>
-              <div className="hidden sm:block">
-                <h1 className="text-xl font-bold text-foreground">{APP_CONFIG.name}</h1>
-                <p className="text-xs text-muted-foreground">{APP_CONFIG.tagline}</p>
-              </div>
-            </Link>
+            <Image src="/images/logotipo.png" alt="Logo" width={100} height={40} />
           </div>
 
           {/* Desktop Navigation */}
@@ -38,21 +30,21 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-          </nav>
-
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
+            {/* <Button variant="ghost" size="icon">
               <Search className="h-4 w-4" />
-            </Button>
+            </Button> */}
             <Button variant="outline" size="sm">
               <User className="h-4 w-4 mr-2" />
               Iniciar Sesión
             </Button>
             <Button size="sm">
-              Suscribirse
+              Crear Cuenta
             </Button>
           </div>
+          </nav>
+
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">

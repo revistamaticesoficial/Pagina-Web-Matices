@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Separator } from '@/components/ui/Separator';
+// import { Badge } from '@/components/ui/Badge';
+// import { Separator } from '@/components/ui/Separator';
 import { Check, Crown, Star, Zap, Shield, Users, Clock } from 'lucide-react';
 import { subscriptionPlans } from '@/data/subscriptions';
 import { formatPrice } from '@/lib/utils';

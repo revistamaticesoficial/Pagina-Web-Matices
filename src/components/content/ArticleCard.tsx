@@ -4,7 +4,7 @@ import { Clock, User, Crown } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/Card';
 import { Article } from '@/types';
-import { formatDate, getCategoryColor, getImagePlaceholder, truncateText } from '@/lib/utils';
+import { formatDate, getCategoryColor, truncateText } from '@/lib/utils';
 
 interface ArticleCardProps {
   article: Article;

@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { Separator } from '@/components/ui/Separator';
 import { 
   Calendar, 
   MapPin, 
@@ -14,8 +13,7 @@ import {
   Globe,
   Phone,
   Mail,
-  Clock,
-  Star
+  Clock
 } from 'lucide-react';
 import { APP_CONFIG } from '@/data/constants';
 
