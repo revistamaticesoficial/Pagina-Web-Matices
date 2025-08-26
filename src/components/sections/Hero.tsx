@@ -26,7 +26,7 @@ export function Hero() {
               
               <p className="text-xl lg:text-2xl text-gray-600 leading-relaxed">
                 Tu fuente confiable de noticias locales, comercios del barrio y contenido 
-                de interés para la comunidad del Cerro de las Rosas.
+                de interés para la comunidad de zona norte de Córdoba.
               </p>
             </div>
 
