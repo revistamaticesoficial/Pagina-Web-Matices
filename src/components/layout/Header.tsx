@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Menu, X, User } from 'lucide-react';
 import { NAVIGATION } from '@/data/constants';
@@ -9,6 +10,7 @@ import Image from 'next/image';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -32,9 +34,6 @@ export function Header() {
             ))}
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* <Button variant="ghost" size="icon">
-              <Search className="h-4 w-4" />
-            </Button> */}
             <Button variant="outline" size="sm">
               <User className="h-4 w-4 mr-2" />
               Iniciar Sesión

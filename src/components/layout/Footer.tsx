@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from 'lucide-react';
 import { APP_CONFIG, FOOTER_LINKS, SOCIAL_LINKS } from '@/data/constants';
 
@@ -7,38 +8,8 @@ export function Footer() {
     <footer className="bg-background border-t">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">M</span>
-              </div>
-              <div>
-                <h3 className="text-lg font-bold">{APP_CONFIG.name}</h3>
-                <p className="text-sm text-muted-foreground">{APP_CONFIG.tagline}</p>
-              </div>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              34 años informando al norte de Córdoba con noticias locales, 
-              comercios del barrio y contenido de interés para la comunidad.
-            </p>
-            
-            {/* Contact Info */}
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <Mail className="h-4 w-4" />
-                <span>{APP_CONFIG.email}</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <Phone className="h-4 w-4" />
-                <span>{APP_CONFIG.phone}</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4" />
-                <span className="max-w-[200px]">{APP_CONFIG.address}</span>
-              </div>
-            </div>
-          </div>
+
+          <Image src="/images/logotipo.png" alt="Logo" width={100} height={60} />
 
           {/* Company Links */}
           <div className="space-y-4">
