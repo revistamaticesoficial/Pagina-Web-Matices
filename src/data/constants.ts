@@ -52,7 +52,7 @@ export const NAVIGATION = [
   // { name: 'Artículos', href: '/articulos', current: false },
   // { name: 'Comercios', href: '/comercios', current: false },
   // { name: 'Suscripciones', href: '/suscripciones', current: false },
-  // { name: 'Nosotros', href: '/nosotros', current: false }
+  { name: '¿Quienes somos?', href: '/nosotros', current: false }
 ];
 
 export const FOOTER_LINKS = {
