@@ -34,6 +34,7 @@ export function Header() {
             ))}
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
+          
             <Button variant="outline" size="sm">
               <User className="h-4 w-4 mr-2" />
               Iniciar Sesión
@@ -71,6 +72,32 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
+              <div className="px-4 py-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start text-muted-foreground hover:text-black transition-colors"
+                  onClick={() => {
+                    router.push('/nosotros');
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  Quienes Somos
+                </Button>
+              </div>
+              <div className="px-4 py-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start text-muted-foreground hover:text-black transition-colors"
+                  onClick={() => {
+                    router.push('/todoslosnumeros');
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  Todos los Números
+                </Button>
+              </div>
               <div className="px-4 py-2 space-y-2">
                 <Button variant="outline" size="sm" className="w-full">
                   <User className="h-4 w-4 mr-2" />

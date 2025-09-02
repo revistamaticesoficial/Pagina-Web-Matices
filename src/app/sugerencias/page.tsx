@@ -15,9 +15,9 @@ import { beneficios } from '@/data/beneficios';
 import { TabType } from '@/types/sugerencias';
 
 const categories = [
-  { name: 'comercios' as TabType, label: 'COMERCIOS', color: 'bg-blue-600 hover:bg-blue-700 hover:cursor-pointer' },
+  { name: 'gastronomía' as TabType, label: 'GASTRONOMÍA', color: 'bg-blue-600 hover:bg-blue-700 hover:cursor-pointer' },
   { name: 'eventos' as TabType, label: 'EVENTOS', color: 'bg-orange-500 hover:bg-orange-600 hover:cursor-pointer' },
-  { name: 'beneficios' as TabType, label: 'BENEFICIOS', color: 'bg-green-600 hover:bg-green-700 hover:cursor-pointer' }
+  { name: 'promociones' as TabType, label: 'PROMOCIONES', color: 'bg-green-600 hover:bg-green-700 hover:cursor-pointer' }
 ];
 
 function SugerenciasContent() {
@@ -32,13 +32,13 @@ function SugerenciasContent() {
 
   const beneficiosPagination = usePagination({
     items: beneficios,
-    currentPage: currentTab === 'beneficios' ? currentPage : 1,
+    currentPage: currentTab === 'promociones' ? currentPage : 1,
     itemsPerPage: 10
   });
 
   const comerciosPagination = usePagination({
     items: comerciosSugerencias,
-    currentPage: currentTab === 'comercios' ? currentPage : 1,
+    currentPage: currentTab === 'gastronomía' ? currentPage : 1,
     itemsPerPage: 10
   });
 
@@ -47,7 +47,7 @@ function SugerenciasContent() {
     switch (currentTab) {
       case 'eventos':
         return eventosPagination;
-      case 'beneficios':
+      case 'promociones':
         return beneficiosPagination;
       default:
         return comerciosPagination;
@@ -62,7 +62,7 @@ function SugerenciasContent() {
         return eventosPagination.items.map((evento) => (
           <EventCard key={evento.id} event={evento} />
         ));
-      case 'beneficios':
+      case 'promociones':
         return beneficiosPagination.items.map((beneficio) => (
           <BenefitCard key={beneficio.id} benefit={beneficio} />
         ));
