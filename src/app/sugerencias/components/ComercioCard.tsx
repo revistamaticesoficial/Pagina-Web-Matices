@@ -1,7 +1,9 @@
-import { MapPin, Phone, Globe, Star } from 'lucide-react';
+import { MapPin, Phone, Globe, Star, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
 import { Comercio } from '@/types/sugerencias';
+import Link from 'next/link';
 
 interface ComercioCardProps {
   comercio: Comercio;
@@ -120,7 +122,7 @@ export function ComercioCard({ comercio }: ComercioCardProps) {
 
         {/* Services */}
         {comercio.services && comercio.services.length > 0 && (
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1 mb-4">
             {comercio.services.slice(0, 3).map((service, index) => (
               <Badge key={index} variant="outline" className="text-xs">
                 {service}
@@ -133,6 +135,18 @@ export function ComercioCard({ comercio }: ComercioCardProps) {
             )}
           </div>
         )}
+
+        {/* Ver más botón */}
+        <Link href={`/comercios/${comercio.id}`}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full group-hover:bg-blue-50 group-hover:border-blue-200 group-hover:text-blue-600 transition-all duration-300"
+          >
+            Ver más detalles
+            <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+          </Button>
+        </Link>
       </CardContent>
     </Card>
   );
