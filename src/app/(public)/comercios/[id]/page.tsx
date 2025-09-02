@@ -22,20 +22,14 @@ export default function ComercioPage() {
       const comercioEncontrado = comerciosSugerencias.find(
         (c) => c.id === params.id || c.name.toLowerCase().replace(/\s+/g, '-') === params.id
       );
-      
-      if (comercioEncontrado) {
-        setComercio(comercioEncontrado);
-      } else {
-        // Si no se encuentra, redirigir a la página de sugerencias
-        router.push('/sugerencias');
-      }
+      if (comercioEncontrado) setComercio(comercioEncontrado);
+      else router.push('/sugerencias');
       setLoading(false);
     }
   }, [params.id, router]);
 
   const renderBusinessLogo = () => {
     if (!comercio) return null;
-
     if (comercio.name === 'Betos') {
       return (
         <div className="text-white text-center">
@@ -47,7 +41,6 @@ export default function ComercioPage() {
         </div>
       );
     }
-    
     if (comercio.name === 'Vidón Bar') {
       return (
         <div className="text-white text-center">
@@ -56,7 +49,6 @@ export default function ComercioPage() {
         </div>
       );
     }
-    
     if (comercio.name === 'Pizza Libre') {
       return (
         <div className="text-black text-center">
@@ -65,7 +57,6 @@ export default function ComercioPage() {
         </div>
       );
     }
-    
     if (comercio.name === 'Kit Wonder') {
       return (
         <div className="text-white text-center">
@@ -76,14 +67,10 @@ export default function ComercioPage() {
         </div>
       );
     }
-    
-    // Default logo for other businesses
     return (
       <div className="text-white text-center">
         <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-4 mx-auto">
-          <span className="text-3xl font-bold">
-            {comercio.name.charAt(0).toUpperCase()}
-          </span>
+          <span className="text-3xl font-bold">{comercio.name.charAt(0).toUpperCase()}</span>
         </div>
         <div className="text-2xl font-bold">{comercio.name}</div>
       </div>
@@ -117,7 +104,6 @@ export default function ComercioPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header con botón de regreso */}
       <div className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -127,35 +113,26 @@ export default function ComercioPage() {
                 Volver a Sugerencias
               </Button>
             </Link>
-            <Badge variant="secondary" className="bg-gray-100 text-gray-700">
-              {comercio.category}
-            </Badge>
+            <Badge variant="secondary" className="bg-gray-100 text-gray-700">{comercio.category}</Badge>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          {/* Hero Section */}
           <div className={`${comercio.backgroundColor} rounded-2xl p-8 mb-8 text-center relative overflow-hidden`}>
             {renderBusinessLogo()}
-            
-            {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
           </div>
 
-          {/* Información Principal */}
           <Card className="mb-8">
             <CardContent className="p-8">
               <div className="text-center mb-8">
                 <h1 className="text-4xl font-bold text-gray-900 mb-4">{comercio.name}</h1>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                  {comercio.description}
-                </p>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">{comercio.description}</p>
               </div>
 
-              {/* Rating y Stats */}
               <div className="flex items-center justify-center space-x-8 mb-8">
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-2">
@@ -174,7 +151,6 @@ export default function ComercioPage() {
                 </div>
               </div>
 
-              {/* Ubicación */}
               <div className="bg-gray-50 rounded-xl p-6 mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <MapPin className="h-5 w-5 mr-2 text-blue-500" />
@@ -186,14 +162,11 @@ export default function ComercioPage() {
                     <p className="text-gray-600">{comercio.neighborhood}</p>
                   </div>
                   <div className="text-right">
-                    <Button variant="outline" size="sm">
-                      Ver en Mapa
-                    </Button>
+                    <Button variant="outline" size="sm">Ver en Mapa</Button>
                   </div>
                 </div>
               </div>
 
-              {/* Información de Contacto */}
               {comercio.contact && (
                 <div className="bg-gray-50 rounded-xl p-6 mb-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Información de Contacto</h3>
@@ -204,9 +177,7 @@ export default function ComercioPage() {
                           <Phone className="h-5 w-5 mr-3 text-green-500" />
                           <span className="text-gray-700">{comercio.contact.phone}</span>
                         </div>
-                        <Button variant="outline" size="sm">
-                          Llamar
-                        </Button>
+                        <Button variant="outline" size="sm">Llamar</Button>
                       </div>
                     )}
                     {comercio.contact.website && (
@@ -215,24 +186,19 @@ export default function ComercioPage() {
                           <Globe className="h-5 w-5 mr-3 text-blue-500" />
                           <span className="text-gray-700">{comercio.contact.website}</span>
                         </div>
-                        <Button variant="outline" size="sm">
-                          Visitar Sitio
-                        </Button>
+                        <Button variant="outline" size="sm">Visitar Sitio</Button>
                       </div>
                     )}
                   </div>
                 </div>
               )}
 
-              {/* Servicios */}
               {comercio.services && comercio.services.length > 0 && (
                 <div className="bg-gray-50 rounded-xl p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Servicios Ofrecidos</h3>
                   <div className="flex flex-wrap gap-3">
                     {comercio.services.map((service, index) => (
-                      <Badge key={index} variant="secondary" className="px-4 py-2 text-sm">
-                        {service}
-                      </Badge>
+                      <Badge key={index} variant="secondary" className="px-4 py-2 text-sm">{service}</Badge>
                     ))}
                   </div>
                 </div>
@@ -240,7 +206,6 @@ export default function ComercioPage() {
             </CardContent>
           </Card>
 
-          {/* Horarios de Atención (ejemplo) */}
           <Card className="mb-8">
             <CardContent className="p-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -260,18 +225,13 @@ export default function ComercioPage() {
             </CardContent>
           </Card>
 
-          {/* CTA Section */}
           <div className="text-center">
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
               <h3 className="text-2xl font-bold mb-4">¿Te gustó este comercio?</h3>
               <p className="text-blue-100 mb-6">Comparte tu experiencia y ayúdanos a crecer</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
-                  Dejar Reseña
-                </Button>
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600">
-                  Compartir
-                </Button>
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">Dejar Reseña</Button>
+                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600">Compartir</Button>
               </div>
             </div>
           </div>
@@ -280,3 +240,4 @@ export default function ComercioPage() {
     </div>
   );
 }
+

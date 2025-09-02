@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,16 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Revista Matices - Cerro de las Rosas, Córdoba",
-  description: "Revista del Cerro de las Rosas con 34 años de trayectoria. Noticias locales, comercios del barrio y contenido de interés para la comunidad del norte de Córdoba.",
-  keywords: "revista, matices, cerro de las rosas, córdoba, noticias locales, comercios, barrio",
-  authors: [{ name: "Revista Matices" }],
-  openGraph: {
-    title: "Revista Matices - Cerro de las Rosas",
-    description: "34 años informando al norte de Córdoba",
-    type: "website",
-    locale: "es_AR",
-  },
+  title: "Revista Matices",
 };
 
 export default function RootLayout({
@@ -34,14 +23,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Header />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <Footer />
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {children}
       </body>
     </html>
   );

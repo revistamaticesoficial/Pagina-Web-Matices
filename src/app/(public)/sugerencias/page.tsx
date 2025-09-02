@@ -5,10 +5,10 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import { useTabNavigation } from '@/hooks/useTabNavigation';
 import { usePagination } from '@/hooks/usePagination';
-import { ComercioCard } from './components/ComercioCard';
-import { EventCard } from './components/EventCard';
-import { BenefitCard } from './components/BenefitCard';
-import { Pagination } from './components/Pagination';
+import { ComercioCard } from '@/app/sugerencias/components/ComercioCard';
+import { EventCard } from '@/app/sugerencias/components/EventCard';
+import { BenefitCard } from '@/app/sugerencias/components/BenefitCard';
+import { Pagination } from '@/app/sugerencias/components/Pagination';
 import { comerciosSugerencias } from '@/data/comercios-sugerencias';
 import { eventos } from '@/data/eventos';
 import { beneficios } from '@/data/beneficios';
@@ -23,26 +23,10 @@ const categories = [
 function SugerenciasContent() {
   const { currentTab, currentPage, setTab, setPage } = useTabNavigation();
 
-  // Get pagination data for each tab separately
-  const eventosPagination = usePagination({
-    items: eventos,
-    currentPage: currentTab === 'eventos' ? currentPage : 1,
-    itemsPerPage: 10
-  });
+  const eventosPagination = usePagination({ items: eventos, currentPage: currentTab === 'eventos' ? currentPage : 1, itemsPerPage: 10 });
+  const beneficiosPagination = usePagination({ items: beneficios, currentPage: currentTab === 'promociones' ? currentPage : 1, itemsPerPage: 10 });
+  const comerciosPagination = usePagination({ items: comerciosSugerencias, currentPage: currentTab === 'gastronomía' ? currentPage : 1, itemsPerPage: 10 });
 
-  const beneficiosPagination = usePagination({
-    items: beneficios,
-    currentPage: currentTab === 'promociones' ? currentPage : 1,
-    itemsPerPage: 10
-  });
-
-  const comerciosPagination = usePagination({
-    items: comerciosSugerencias,
-    currentPage: currentTab === 'gastronomía' ? currentPage : 1,
-    itemsPerPage: 10
-  });
-
-  // Get current pagination data
   const getCurrentPaginationData = () => {
     switch (currentTab) {
       case 'eventos':
@@ -82,34 +66,19 @@ function SugerenciasContent() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
       <section className="relative h-96 bg-gradient-to-r from-green-600/20 to-blue-600/20 overflow-hidden">
-        {/* Background Image */}
         <div className="absolute inset-0">
-          <Image
-            src="/images/bg.jpg"
-            alt="bg orange matices"
-            fill
-            className="object-cover opacity-80"
-            priority
-          />
+          <Image src="/images/bg.jpg" alt="bg orange matices" fill className="object-cover opacity-80" priority />
           <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-black/20" />
         </div>
-        
-        {/* Content */}
         <div className="relative z-10 container mx-auto px-4 h-full flex items-center justify-center text-center">
           <div className="max-w-3xl">
-            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4">
-              Matices se renueva
-            </h1>
-            <p className="text-xl lg:text-2xl text-white/90">
-              Descubrí nuestra nueva imagen
-            </p>
+            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4">Matices se renueva</h1>
+            <p className="text-xl lg:text-2xl text-white/90">Descubrí nuestra nueva imagen</p>
           </div>
         </div>
       </section>
 
-      {/* Categories Section */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row gap-4 justify-between max-w-4xl mx-auto">
@@ -118,11 +87,7 @@ function SugerenciasContent() {
                 key={category.name}
                 size="lg"
                 onClick={() => setTab(category.name)}
-                className={`${
-                  currentTab === category.name 
-                    ? category.color.replace('hover:', '') + ' shadow-lg' 
-                    : category.color
-                } text-white font-bold text-lg px-12 py-6 rounded-none flex-1 min-h-[80px] text-center transition-all duration-200`}
+                className={`${currentTab === category.name ? category.color.replace('hover:', '') + ' shadow-lg' : category.color} text-white font-bold text-lg px-12 py-6 rounded-none flex-1 min-h-[80px] text-center transition-all duration-200`}
               >
                 {category.label}
               </Button>
@@ -131,10 +96,8 @@ function SugerenciasContent() {
         </div>
       </section>
 
-      {/* Content Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          {/* Results Info */}
           <div className="mb-8 text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {currentTab === 'comercios' && 'Comercios Sugeridos'}
@@ -147,17 +110,11 @@ function SugerenciasContent() {
             </p>
           </div>
 
-          {/* Cards Grid */}
           <div className={`grid ${getGridCols()} gap-6 max-w-7xl mx-auto`}>
             {renderCards()}
           </div>
 
-          {/* Pagination */}
-          <Pagination
-            currentPage={currentPage}
-            totalPages={paginationData.totalPages}
-            onPageChange={setPage}
-          />
+          <Pagination currentPage={currentPage} totalPages={paginationData.totalPages} onPageChange={setPage} />
         </div>
       </section>
     </div>
@@ -171,3 +128,4 @@ export default function SugerenciasPage() {
     </Suspense>
   );
 }
+
