@@ -362,3 +362,4 @@ export const comerciosSugerencias: Comercio[] = [
     services: ['Consultas', 'Especialidades', 'Estudios']
   }
 ];
+

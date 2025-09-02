@@ -309,3 +309,4 @@ export const eventos: Event[] = [
     tags: ['año nuevo', 'fiesta', 'comunidad', 'celebración']
   }
 ];
+

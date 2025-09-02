@@ -151,3 +151,4 @@ export function ComercioCard({ comercio }: ComercioCardProps) {
     </Card>
   );
 }
+
