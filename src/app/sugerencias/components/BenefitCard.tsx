@@ -152,3 +152,4 @@ export function BenefitCard({ benefit }: BenefitCardProps) {
     </Card>
   );
 }
+
