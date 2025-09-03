@@ -29,6 +29,7 @@ export function Header() {
               <Image src="/images/logotipo.png" alt="Logo" width={100} height={40} />
             </Link>
           </div>
+
           <nav className="hidden md:flex items-center space-x-6">
             {NAVIGATION.map((item) => (
               <Link
@@ -39,7 +40,8 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-          <div className="hidden md:flex items-center space-x-4">
+            
+            <div className="hidden md:flex items-center space-x-4">
             {authState.isAuthenticated ? (
               <div className="relative">
                 <Button
@@ -120,32 +122,7 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
-              <div className="px-4 py-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start text-muted-foreground hover:text-black transition-colors"
-                  onClick={() => {
-                    router.push('/nosotros');
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  Quienes Somos
-                </Button>
-              </div>
-              <div className="px-4 py-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start text-muted-foreground hover:text-black transition-colors"
-                  onClick={() => {
-                    router.push('/todoslosnumeros');
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  Todos los Números
-                </Button>
-              </div>
+              
               <div className="px-4 py-2 space-y-2">
                 {authState.isAuthenticated ? (
                   <div className="space-y-2">
