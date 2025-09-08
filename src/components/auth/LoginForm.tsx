@@ -14,13 +14,13 @@ import { Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 export function LoginForm() {
   const router = useRouter();
   const { login, authState, clearError } = useAuth();
-  
+
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: '',
     password: '',
     rememberMe: false,
   });
-  
+
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
 
@@ -28,13 +28,12 @@ export function LoginForm() {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-    
+
     setCredentials(prev => ({
       ...prev,
       [field]: value
     }));
 
-    // Clear field error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({
         ...prev,
@@ -42,7 +41,6 @@ export function LoginForm() {
       }));
     }
 
-    // Clear global error
     if (authState.error) {
       clearError();
     }
@@ -54,32 +52,24 @@ export function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Mark all fields as touched
     setTouched({ email: true, password: true });
-    
-    // Validate form
+
     const validationErrors = validateLoginForm(credentials);
     setErrors(validationErrors);
-    
-    // If there are validation errors, don't submit
+
     if (Object.keys(validationErrors).length > 0) {
       return;
     }
 
     try {
       await login(credentials);
-      // Redirect will be handled by the auth provider based on user's business status
     } catch (error) {
-      // Error is handled by the auth context
       console.error('Login error:', error);
     }
   };
 
   return (
     <div className="w-full max-w-md mx-auto">
-      {/* Title removed - now handled by parent component */}
-
       {authState.error && (
         <div className="mb-6 p-4 rounded-md bg-red-50 border border-red-200">
           <div className="flex items-center">
@@ -124,9 +114,9 @@ export function LoginForm() {
             label="Recordarme"
             disabled={authState.isLoading}
           />
-          
-          <Link 
-            href="/auth/forgot-password" 
+
+          <Link
+            href="/auth/forgot-password"
             className="text-sm text-blue-600 hover:text-blue-500 transition-colors"
           >
             ¿Olvidaste tu contraseña?
@@ -152,8 +142,8 @@ export function LoginForm() {
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
           ¿No tienes cuenta?{' '}
-          <Link 
-            href="/auth/register" 
+          <Link
+            href="/auth/register"
             className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
           >
             Regístrate aquí

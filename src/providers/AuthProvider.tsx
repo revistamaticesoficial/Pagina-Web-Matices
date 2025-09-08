@@ -22,11 +22,11 @@ const supabaseAuthService = {
     const rawBusiness = await getUserBusiness(data.user.id);
     const business = rawBusiness
       ? ({
-          ...rawBusiness,
-          comercio_schedules: Array.isArray((rawBusiness as any).comercio_schedules)
-            ? (rawBusiness as any).comercio_schedules
-            : [],
-        } as unknown as ProfileWithBusiness['business'])
+        ...rawBusiness,
+        comercio_schedules: Array.isArray((rawBusiness as any).comercio_schedules)
+          ? (rawBusiness as any).comercio_schedules
+          : [],
+      } as unknown as ProfileWithBusiness['business'])
       : undefined;
 
     return {
@@ -83,7 +83,7 @@ const supabaseAuthService = {
 
   async getCurrentUser(): Promise<User | null> {
     const { data: { user }, error } = await supabase.auth.getUser();
-    
+
     if (error || !user) return null;
 
     try {
@@ -92,7 +92,6 @@ const supabaseAuthService = {
         profile = await getUserProfile(user.id);
       } catch (profileError: any) {
         if (profileError.code === 'PGRST116') {
-          // Profile doesn't exist, create it
           console.log('Profile not found, creating default profile...');
           const { error: createError } = await supabase
             .from('profiles')
@@ -101,28 +100,26 @@ const supabaseAuthService = {
               full_name: user.user_metadata?.full_name || '',
               role: 'owner',
             });
-          
+
           if (createError) {
             console.error('Error creating profile:', createError);
             return null;
           }
-          
-          // Fetch the newly created profile
+
           profile = await getUserProfile(user.id);
         } else {
           throw profileError;
         }
       }
-      
-      // Get user business from comercios table and normalize schedules shape
+
       const rawBusiness = await getUserBusiness(user.id);
       const business = rawBusiness
         ? ({
-            ...rawBusiness,
-            comercio_schedules: Array.isArray((rawBusiness as any).comercio_schedules)
-              ? (rawBusiness as any).comercio_schedules
-              : [],
-          } as unknown as ProfileWithBusiness['business'])
+          ...rawBusiness,
+          comercio_schedules: Array.isArray((rawBusiness as any).comercio_schedules)
+            ? (rawBusiness as any).comercio_schedules
+            : [],
+        } as unknown as ProfileWithBusiness['business'])
         : undefined;
 
       return {
@@ -155,7 +152,7 @@ const AuthContext = createContext<{
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  
+
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     isLoading: true,
@@ -163,7 +160,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     error: null,
   });
 
-  // Initialize auth state and listen for auth changes
   useEffect(() => {
     const initializeAuth = async () => {
       try {
@@ -183,7 +179,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
@@ -212,15 +207,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // Handle redirections after authentication
   useEffect(() => {
     if (!authState.isLoading && authState.isAuthenticated && authState.user) {
-      // If user has a business and is on auth pages, send to dashboard
       if (pathname.startsWith('/auth/')) {
         if (authState.user.business) {
-          router.push('/dashboard');
+          router.push('/gestion/inicio');
         } else {
-          // Keep onboarding inside /auth/register
           if (pathname !== '/auth/register') {
             router.push('/auth/register');
           }
@@ -228,7 +220,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // If user is elsewhere and has no business, ensure they go to /auth/register
       if (!authState.user.business && pathname !== '/auth/register') {
         router.push('/auth/register');
         return;
@@ -238,10 +229,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (credentials: LoginCredentials) => {
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
-    
+
     try {
       const user = await supabaseAuthService.login(credentials);
-      
+
       setAuthState({
         user,
         isLoading: false,
@@ -260,10 +251,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (credentials: RegisterCredentials) => {
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
-    
+
     try {
       const user = await supabaseAuthService.register(credentials);
-      
+
       setAuthState({
         user,
         isLoading: false,
@@ -282,10 +273,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
-    
+
     try {
       await supabaseAuthService.logout();
-      
+
       setAuthState({
         user: null,
         isLoading: false,
@@ -306,13 +297,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider 
-      value={{ 
-        authState, 
-        login, 
-        register, 
-        logout, 
-        clearError 
+    <AuthContext.Provider
+      value={{
+        authState,
+        login,
+        register,
+        logout,
+        clearError
       }}
     >
       {children}

@@ -40,7 +40,7 @@ export function BenefitCard({ benefit }: BenefitCardProps) {
   };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
+    <Card className="group transition-all duration-300 overflow-hidden">
       {/* Header with Business Info */}
       <div className="relative h-32 bg-gradient-to-r from-purple-500 to-pink-500">
         <Image
@@ -66,7 +66,7 @@ export function BenefitCard({ benefit }: BenefitCardProps) {
       </div>
       
       {/* Content */}
-      <CardContent className="p-6">
+      <CardContent className="p-6 justify-between flex flex-col " >
         <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
           {benefit.title}
         </h3>
@@ -74,31 +74,6 @@ export function BenefitCard({ benefit }: BenefitCardProps) {
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
           {benefit.description}
         </p>
-
-        {/* Code Section */}
-        <div className="bg-gray-50 rounded-lg p-3 mb-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-xs text-gray-500 uppercase tracking-wide">Código</span>
-              <div className="font-mono font-bold text-lg text-gray-900">
-                {benefit.code}
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={copyCode}
-              className="flex items-center space-x-1"
-            >
-              {copied ? (
-                <Check className="h-4 w-4 text-green-600" />
-              ) : (
-                <Copy className="h-4 w-4" />
-              )}
-              <span>{copied ? 'Copiado' : 'Copiar'}</span>
-            </Button>
-          </div>
-        </div>
 
         {/* Valid Until */}
         <div className="flex items-center text-sm text-gray-500 mb-4">
@@ -143,7 +118,7 @@ export function BenefitCard({ benefit }: BenefitCardProps) {
 
         {/* Action Button */}
         <Button 
-          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+          className="hover:shadow-xl w-full bg-gradient-to-r from-green-600 to-green-600 hover:cursor-pointer hover:from-green-700 hover:to-white-700 text-white"
           disabled={!benefit.isActive}
         >
           {benefit.isActive ? 'Canjear Beneficio' : 'No Disponible'}

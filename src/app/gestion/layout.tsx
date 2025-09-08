@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function GestionLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-white text-black">
+    <main className="min-h-screen bg-white text-black">
       <div className="flex">
         <div className="hidden md:block">
           <DashboardSidebar />
@@ -31,12 +31,12 @@ export default function GestionLayout({ children }: { children: ReactNode }) {
             </Sheet>
           </div>
 
-          <main className="mx-auto max-w-6xl px-4 py-6 md:px-8">
+          <div className="mx-auto max-w-6xl px-4 py-6 md:px-8">
             {children}
-          </main>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 
