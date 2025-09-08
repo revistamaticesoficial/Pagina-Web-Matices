@@ -8,61 +8,9 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { ArrowRight, Users, Award, Heart, Calendar, MapPin, Newspaper, ChevronLeft, ChevronRight } from 'lucide-react';
 
-export function TeamCarrousel() {
+export function TeamCarrousel({ teamMembers }: { teamMembers: any[] }) {
   // Estado para el carrusel responsive
   const [currentSlide, setCurrentSlide] = useState(0);
-  
-  // Datos del equipo
-  const teamMembers = [
-    {
-      name: "Karina Marcela Flores",
-      role: "Directora",
-      image: "/images/team/karina.png",
-      color: "text-blue-600"
-    },
-    {
-      name: "Sergio A. Santolini",
-      role: "Asesor Comercial",
-      image: "/images/team/sergio.png",
-      color: "text-green-600"
-    },
-    {
-      name: "Brigitte H. Escalona",
-      role: "Coordinador Editorial",
-      image: "/images/team/brigitte.png",
-      color: "text-purple-600"
-    },
-    {
-      name: "Jessica Avila",
-      role: "Publicidad y Ventas",
-      image: "/images/team/jesi.png",
-      color: "text-pink-600"
-    },
-    {
-      name: "Favio Canderello",
-      role: "Diseño y Diagramación",
-      image: "/images/team/favio.png",
-      color: "text-orange-600"
-    },
-    {
-      name: "Dylan Peralta",
-      role: "Programador",
-      image: "/images/team/favio.png",
-      color: "text-red-600"
-    },
-    {
-      name: "Juan Ignacio",
-      role: "Programador",
-      image: "/images/team/favio.png",
-      color: "text-indigo-600"
-    },
-    {
-      name: "Jetzabel",
-      role: "Programadora",
-      image: "/images/team/favio.png",
-      color: "text-teal-600"
-    }
-  ];
 
   // Función para obtener el número de cards visibles según el breakpoint
   const getVisibleCards = () => {

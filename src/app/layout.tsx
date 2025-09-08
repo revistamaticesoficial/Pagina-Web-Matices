@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
+import { icons } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +26,11 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_AR",
   },
+  icons:{
+    icon: "/images/icon.png"
+  },
 };
+
 
 export default function RootLayout({
   children,

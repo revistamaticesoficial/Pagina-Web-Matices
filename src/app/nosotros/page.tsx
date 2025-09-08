@@ -62,20 +62,32 @@ export default function NosotrosPage() {
     {
       name: "Dylan Peralta",
       role: "Programador",
-      image: "/images/team/favio.png",
+      image: "/images/team/dylan1.png",
       color: "text-red-600"
     },
     {
       name: "Juan Ignacio",
       role: "Programador",
-      image: "/images/team/favio.png",
+      image: "/images/team/juani2.png",
       color: "text-indigo-600"
     },
     {
       name: "Jetzabel",
       role: "Programadora",
-      image: "/images/team/favio.png",
+      image: "/images/team/jet.png",
       color: "text-teal-600"
+    },
+    {
+      name: "Soledad",
+      role: "Community Manager",
+      image: "/images/team/sole.png",
+      color: "text-green-600"
+    },
+    {
+      name: "Aisha",
+      role: "Diseñadora",
+      image: "/images/team/aisha.png",
+      color: "text-green-600"
     }
   ];
 
@@ -149,7 +161,7 @@ export default function NosotrosPage() {
     </div>
   </div>
 </section>
-    <TeamCarrousel />
+    <TeamCarrousel teamMembers={teamMembers} />
 
         {/* Equipo Carrusel */}
         {/* <section className="mb-20">

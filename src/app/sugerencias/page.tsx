@@ -1,7 +1,6 @@
 'use client';
 
 import { Suspense } from 'react';
-import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import { useTabNavigation } from '@/hooks/useTabNavigation';
 import { usePagination } from '@/hooks/usePagination';
@@ -15,9 +14,9 @@ import { beneficios } from '@/data/beneficios';
 import { TabType } from '@/types/sugerencias';
 
 const categories = [
-  { name: 'gastronomía' as TabType, label: 'GASTRONOMÍA', color: 'bg-blue-600 hover:bg-blue-700 hover:cursor-pointer' },
-  { name: 'eventos' as TabType, label: 'EVENTOS', color: 'bg-orange-500 hover:bg-orange-600 hover:cursor-pointer' },
-  { name: 'promociones' as TabType, label: 'PROMOCIONES', color: 'bg-green-600 hover:bg-green-700 hover:cursor-pointer' }
+  { name: 'gastronomía' as TabType, label: 'GASTRONOMÍA', color: 'bg-[#005B82] text-white bg-gradient-to-r from-[#005B82] via-[#004D6E] to-[#003C56] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 hover:cursor-pointer' },
+  { name: 'eventos' as TabType, label: 'EVENTOS', color: 'bg-[#F58220] text-white bg-gradient-to-r from-[#FA780A] via-[#D96400] to-[#D96400] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 hover:cursor-pointer' },
+  { name: 'promociones' as TabType, label: 'PROMOCIONES', color: 'bg-[#3BA740] text-white bg-gradient-to-r from-[#1AA221] via-[#1D8422] to-[#1D8422] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 hover:cursor-pointer' }
 ];
 
 function SugerenciasContent() {
@@ -86,13 +85,16 @@ function SugerenciasContent() {
       <section className="relative h-96 bg-gradient-to-r from-green-600/20 to-blue-600/20 overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
-          <Image
-            src="/images/bg.jpg"
-            alt="bg orange matices"
-            fill
-            className="object-cover opacity-80"
-            priority
-          />
+          <video
+            className="w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          >
+            <source src="/videosug/sugerencia.mp4" type="video/mp4" />
+          </video>
           <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-black/20" />
         </div>
         
@@ -122,7 +124,7 @@ function SugerenciasContent() {
                   currentTab === category.name 
                     ? category.color.replace('hover:', '') + ' shadow-lg' 
                     : category.color
-                } text-white font-bold text-lg px-12 py-6 rounded-none flex-1 min-h-[80px] text-center transition-all duration-200`}
+                } text-white font-bold text-lg px-12 rounded-md py-6 flex-1 min-h-[80px] text-center transition-all duration-200`}
               >
                 {category.label}
               </Button>
