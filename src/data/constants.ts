@@ -52,7 +52,8 @@ export const NAVIGATION = [
   // { name: 'Artículos', href: '/articulos', current: false },
   // { name: 'Comercios', href: '/comercios', current: false },
   // { name: 'Suscripciones', href: '/suscripciones', current: false },
-  { name: '¿Quienes somos?', href: '/nosotros', current: false }
+  { name: '¿Quienes somos?', href: '/nosotros', current: false },
+  { name: 'Todos los números', href: '/todoslosnumeros', current: false }
 ];
 
 export const FOOTER_LINKS = {
