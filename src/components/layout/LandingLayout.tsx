@@ -1,0 +1,17 @@
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+
+export default function PublicLayout({
+    children,
+}: Readonly<{
+    children: React.ReactNode;
+}>) {
+    return (
+        <>
+            <Header />
+            <section className="min-h-screen">{children}</section>
+            <Footer />
+        </>
+    );
+}
+

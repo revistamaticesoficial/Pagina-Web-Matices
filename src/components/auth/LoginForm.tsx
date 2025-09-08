@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -12,7 +11,6 @@ import { validateLoginForm } from '@/lib/validations';
 import { Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 
 export function LoginForm() {
-  const router = useRouter();
   const { login, authState, clearError } = useAuth();
 
   const [credentials, setCredentials] = useState<LoginCredentials>({

@@ -43,11 +43,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <Header />
           <main className="min-h-screen">
             {children}
           </main>
-          <Footer />
         </AuthProvider>
       </body>
     </html>

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button'
 import { Separator } from '@/components/ui/Separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/providers/AuthProvider'
 
 const NAV_ITEMS = [
   { label: 'Inicio', href: '/gestion/inicio' },
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
 
 export function DashboardSidebar() {
   const pathname = usePathname()
+  const { logout } = useAuth()
 
   return (
     <div className="flex h-screen w-[280px] flex-col bg-black text-white">
@@ -61,10 +63,7 @@ export function DashboardSidebar() {
         <Button
           variant="ghost"
           className="w-full justify-center bg-white/5 text-white hover:bg-white/10"
-          onClick={() => {
-            // Acción dummy de cierre de sesión
-            alert('Sesión cerrada (demo)')
-          }}
+          onClick={logout}
         >
           Cerrar sesión
         </Button>

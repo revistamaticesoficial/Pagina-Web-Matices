@@ -283,6 +283,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: false,
         error: null,
       });
+      router.push('/');
     } catch (error) {
       setAuthState(prev => ({
         ...prev,
