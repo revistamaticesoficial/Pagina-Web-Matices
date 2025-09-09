@@ -9,7 +9,7 @@ interface ComercioCardProps {
   comercio: Comercio;
 }
 
-export function ComercioCard({ comercio }: ComercioCardProps) {
+export default function ComercioCard({ comercio }: ComercioCardProps) {
   const renderBusinessLogo = () => {
     // Custom logos for specific businesses
     if (comercio.name === 'Betos') {

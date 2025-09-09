@@ -5,12 +5,14 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Benefit } from '@/types/sugerencias';
 import { useState } from 'react';
+import { ModalPromo } from '@/components/screens/sugerencias';
 
 interface BenefitCardProps {
   benefit: Benefit;
+  onRedeem?: (benefit: Benefit) => void;
 }
 
-export function BenefitCard({ benefit }: BenefitCardProps) {
+export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
   const [copied, setCopied] = useState(false);
 
   const formatDate = (dateString: string) => {
@@ -120,6 +122,10 @@ export function BenefitCard({ benefit }: BenefitCardProps) {
         <Button 
           className="hover:shadow-xl w-full bg-gradient-to-r from-green-600 to-green-600 hover:cursor-pointer hover:from-green-700 hover:to-white-700 text-white"
           disabled={!benefit.isActive}
+          onClick={() => {
+            if (!benefit.isActive) return;
+            onRedeem?.(benefit);
+          }}
         >
           {benefit.isActive ? 'Canjear Beneficio' : 'No Disponible'}
         </Button>

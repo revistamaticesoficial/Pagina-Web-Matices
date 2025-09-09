@@ -9,7 +9,7 @@ interface EventCardProps {
   event: Event;
 }
 
-export function EventCard({ event }: EventCardProps) {
+export default function EventCard({ event }: EventCardProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-AR', {
