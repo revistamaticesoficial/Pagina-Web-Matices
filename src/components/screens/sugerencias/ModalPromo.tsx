@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/Button';
 import { Benefit } from '@/types/sugerencias';
 
-const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: { isRedeemOpen: boolean, setIsRedeemOpen: (isRedeemOpen: boolean) => void, selectedBenefit: Benefit }) => {
+const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: { isRedeemOpen: boolean, setIsRedeemOpen: (isRedeemOpen: boolean) => void, selectedBenefit: Benefit | null }) => {
     return (
         <>
 {isRedeemOpen && (

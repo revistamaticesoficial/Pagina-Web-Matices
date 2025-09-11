@@ -44,47 +44,61 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
   return (
     <Card className="group transition-all duration-300 overflow-hidden">
       {/* Header with Business Info */}
-      <div className="relative h-32 bg-gradient-to-r from-purple-500 to-pink-500">
-        <Image
-          src={benefit.businessLogo}
-          alt={benefit.business}
-          fill
-          className="object-cover opacity-20"
-        />
+      <div className="relative h-64 bg-gradient-to-r from-purple-500 to-pink-500 overflow-hidden">
+        {/* Video Background */}
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          onError={(e) => {
+            console.warn('Error loading video:', benefit.businessLogo);
+            // Fallback to gradient background if video fails
+            e.currentTarget.style.display = 'none';
+          }}
+        >
+          <source src={benefit.businessLogo} type="video/mp4" />
+        </video>
+        
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/30" />
         
         {/* Discount Badge */}
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 z-10">
           <div className={`${getDiscountColor()} text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg`}>
             {benefit.discount}
           </div>
         </div>
 
         {/* Business Name */}
-        <div className="absolute bottom-4 left-4">
+        <div className="absolute bottom-4 left-4 z-10">
           <h4 className="text-white font-bold text-lg drop-shadow-lg">
             {benefit.business}
           </h4>
         </div>
       </div>
+          
       
       {/* Content */}
-      <CardContent className="p-6 justify-between flex flex-col " >
-        <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+      <CardContent className="p-4 justify-between flex flex-col" >
+        <h3 className="font-bold text-base text-gray-900 mb-1 line-clamp-2">
           {benefit.title}
         </h3>
         
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+        <p className="text-gray-600 text-xs mb-2 line-clamp-2">
           {benefit.description}
         </p>
 
         {/* Valid Until */}
-        <div className="flex items-center text-sm text-gray-500 mb-4">
-          <Calendar className="h-4 w-4 mr-2" />
+        <div className="flex items-center text-xs text-gray-500 mb-2">
+          <Calendar className="h-3 w-3 mr-1" />
           <span>Válido hasta: {formatDate(benefit.validUntil)}</span>
         </div>
 
         {/* Category Badge */}
-        <div className="mb-4">
+        <div className="mb-2">
           <Badge variant="outline" className="text-xs">
             <Gift className="h-3 w-3 mr-1" />
             {benefit.category}
@@ -93,18 +107,18 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
 
         {/* Terms Preview */}
         {benefit.terms && benefit.terms.length > 0 && (
-          <div className="mb-4">
+          <div className="mb-2">
             <span className="text-xs text-gray-500 uppercase tracking-wide">Términos:</span>
-            <ul className="text-xs text-gray-600 mt-1 space-y-1">
-              {benefit.terms.slice(0, 2).map((term, index) => (
+            <ul className="text-xs text-gray-600 mt-1 space-y-0.5">
+              {benefit.terms.slice(0, 1).map((term, index) => (
                 <li key={index} className="flex items-start">
                   <span className="mr-1">•</span>
-                  <span>{term}</span>
+                  <span className="line-clamp-1">{term}</span>
                 </li>
               ))}
-              {benefit.terms.length > 2 && (
+              {benefit.terms.length > 1 && (
                 <li className="text-blue-600">
-                  +{benefit.terms.length - 2} términos más...
+                  +{benefit.terms.length - 1} términos más...
                 </li>
               )}
             </ul>
@@ -113,14 +127,14 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
 
         {/* Usage Limit */}
         {benefit.usageLimit && (
-          <div className="text-xs text-gray-500 mb-4">
-            Límite: {benefit.usageLimit} usos disponibles
+          <div className="text-xs text-gray-500 mb-2">
+            Límite: {benefit.usageLimit} usos
           </div>
         )}
 
         {/* Action Button */}
         <Button 
-          className="hover:shadow-xl w-full bg-gradient-to-r from-green-600 to-green-600 hover:cursor-pointer hover:from-green-700 hover:to-white-700 text-white"
+          className="hover:shadow-xl w-full bg-gradient-to-r from-green-600 to-green-600 hover:cursor-pointer hover:from-green-700 hover:to-white-700 text-white text-sm py-2"
           disabled={!benefit.isActive}
           onClick={() => {
             if (!benefit.isActive) return;

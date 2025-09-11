@@ -20,7 +20,7 @@ const categories = [
 function SugerenciasContent() {
   const { currentTab, currentPage, setTab, setPage } = useTabNavigation();
   const [isRedeemOpen, setIsRedeemOpen] = useState(false);
-  const [selectedBenefit, setSelectedBenefit] = useState<Benefit>();
+  const [selectedBenefit, setSelectedBenefit] = useState<Benefit | null>(null);
 
   // Get pagination data for each tab separately
   const eventosPagination = usePagination({
@@ -150,7 +150,7 @@ function SugerenciasContent() {
             </div>
 
             {/* Cards Grid */}
-            <div className={`grid ${getGridCols()} gap-6 max-w-7xl mx-auto`}>
+            <div className={`grid ${getGridCols()} gap-8 max-w-7xl mx-auto`}>
               {renderCards()}
             </div>
 
