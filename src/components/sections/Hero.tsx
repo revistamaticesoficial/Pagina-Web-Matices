@@ -2,20 +2,18 @@
 
 export function Hero() {
   return (
-    <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
-      {/* Background Pattern */}
+    <section className=" relative bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-      
+
       <div className="container mx-auto px-4 py-16 lg:py-24">
-        <div className="flex flex-col justify-center text-center gap-12 items-center">
-          {/* Content */}
+        <div className=" flex flex-col justify-center text-center gap-12 items-center">
           <div className="space-y-8">
-            <div className="space-y-4">
+            <div className="space-y-4 min-h-[50vh]">
               <span className="bg-blue-100 text-blue-800 border-blue-200">
                 {/* <Calendar className="h-3 w-3 mr-1" /> */}
-                34 años informando al norte de Córdoba
+                35 años informando al norte de Córdoba
               </span>
-              
+
               <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
                 Revista{' '}
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -23,9 +21,9 @@ export function Hero() {
                 </span>
                 {' '}del Cerro
               </h1>
-              
+
               <p className="text-xl lg:text-2xl text-gray-600 leading-relaxed">
-                Tu fuente confiable de noticias locales, comercios del barrio y contenido 
+                Tu fuente confiable de noticias locales, comercios del barrio y contenido
                 de interés para la comunidad de zona norte de Córdoba.
               </p>
             </div>
@@ -111,7 +109,7 @@ export function Hero() {
             </div>
           </div> */}
         </div>
-      </div> 
+      </div>
 
       {/* Bottom Wave */}
       {/* <div className="absolute bottom-0 left-0 right-0">

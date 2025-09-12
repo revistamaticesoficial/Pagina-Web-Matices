@@ -1,18 +1,15 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { useTabNavigation } from '@/hooks/useTabNavigation';
 import { usePagination } from '@/hooks/usePagination';
-import { ComercioCard } from './components/ComercioCard';
-import { EventCard } from './components/EventCard';
-import { BenefitCard } from './components/BenefitCard';
-import { Pagination } from './components/Pagination';
 import { comerciosSugerencias } from '@/data/comercios-sugerencias';
 import { eventos } from '@/data/eventos';
 import { beneficios } from '@/data/beneficios';
-import { TabType } from '@/types/sugerencias';
+import { TabType, Benefit } from '@/types/sugerencias';
 import LandingLayout from '@/components/layout/LandingLayout';
+import { EventCard, BenefitCard, ComercioCard, Pagination, ModalPromo } from '@/components/screens/sugerencias';
 
 const categories = [
   { name: 'comercios' as TabType, label: 'GASTRONOMÍA', color: 'bg-[#005B82] text-white bg-gradient-to-r from-[#005B82] via-[#004D6E] to-[#003C56] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 hover:cursor-pointer' },
@@ -22,6 +19,8 @@ const categories = [
 
 function SugerenciasContent() {
   const { currentTab, currentPage, setTab, setPage } = useTabNavigation();
+  const [isRedeemOpen, setIsRedeemOpen] = useState(false);
+  const [selectedBenefit, setSelectedBenefit] = useState<Benefit | null>(null);
 
   // Get pagination data for each tab separately
   const eventosPagination = usePagination({
@@ -64,7 +63,7 @@ function SugerenciasContent() {
         ));
       case 'beneficios':
         return beneficiosPagination.items.map((beneficio) => (
-          <BenefitCard key={beneficio.id} benefit={beneficio} />
+          <BenefitCard key={beneficio.id} benefit={beneficio} onRedeem={(b) => { setSelectedBenefit(b); setIsRedeemOpen(true); }} />
         ));
       default:
         return comerciosPagination.items.map((comercio) => (
@@ -84,7 +83,7 @@ function SugerenciasContent() {
     <LandingLayout>
       <div className="min-h-screen bg-white">
         {/* Hero Section */}
-        <section className="relative h-96 bg-gradient-to-r from-green-600/20 to-blue-600/20 overflow-hidden">
+        <section className="relative h-[70vh] bg-gradient-to-r from-green-600/20 to-blue-600/20 overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
             <video
@@ -151,7 +150,7 @@ function SugerenciasContent() {
             </div>
 
             {/* Cards Grid */}
-            <div className={`grid ${getGridCols()} gap-6 max-w-7xl mx-auto`}>
+            <div className={`grid ${getGridCols()} gap-8 max-w-7xl mx-auto`}>
               {renderCards()}
             </div>
 
@@ -164,6 +163,8 @@ function SugerenciasContent() {
           </div>
         </section>
       </div>
+
+      <ModalPromo isRedeemOpen={isRedeemOpen} setIsRedeemOpen={setIsRedeemOpen} selectedBenefit={selectedBenefit} />
     </LandingLayout>
   );
 }

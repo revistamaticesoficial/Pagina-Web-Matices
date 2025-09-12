@@ -1,21 +1,14 @@
 import { Suspense } from 'react';
 import { LoginForm } from '@/components/auth/LoginForm';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import Image from 'next/image';
 
 function LoginContent() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen  flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="mx-auto h-12 w-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4">
-            <span className="text-white font-bold text-xl">M</span>
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Bienvenido de vuelta
-          </h2>
-          <p className="text-gray-600">
-            Inicia sesión en tu cuenta
-          </p>
+        <div className="text-center mb-8 flex justify-center">
+          <Image src="/images/logotipo.png" alt="Logo Revista Matices" width={140} height={80} />
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8">
