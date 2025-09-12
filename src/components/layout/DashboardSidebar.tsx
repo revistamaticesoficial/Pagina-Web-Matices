@@ -8,12 +8,13 @@ import { Separator } from '@/components/ui/Separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/providers/AuthProvider'
+import Image from 'next/image'
 
 const NAV_ITEMS = [
   { label: 'Inicio', href: '/gestion/inicio' },
   { label: 'Promos', href: '/gestion/promos' },
   { label: 'Eventos', href: '/gestion/eventos' },
-  { label: 'Configuración', href: '/gestion/configuracion' }
+  { label: 'Cuenta', href: '/gestion/cuenta' }
 ]
 
 export function DashboardSidebar() {
@@ -24,14 +25,15 @@ export function DashboardSidebar() {
     <div className="flex h-screen w-[280px] flex-col bg-black text-white">
       <div className="px-4 pt-6 pb-4">
         <div className="flex items-center gap-3">
-          <Avatar className="h-12 w-12 border border-white/10">
+          <Image src="/images/logotipo.png" alt="Logo Revista Matices" width={140} height={80} />
+          {/* <Avatar className="h-12 w-12 border border-white/10">
             <AvatarImage src="" alt="Avatar" />
             <AvatarFallback className="bg-[#005B82] text-white">NA</AvatarFallback>
-          </Avatar>
+          </Avatar> 
           <div className="min-w-0">
             <div className="truncate text-sm font-semibold">Nombre Apellido</div>
             <div className="truncate text-xs text-white/70">usuario@correo.com</div>
-          </div>
+          </div>*/}
         </div>
       </div>
 

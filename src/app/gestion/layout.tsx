@@ -15,9 +15,9 @@ export default function GestionLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <main className="min-h-screen bg-white text-black">
+    <main className="relative min-h-screen bg-white text-black ">
       <div className="flex">
-        <div className="hidden md:block">
+        <div className="hidden md:block fixed left-0 top-0 z-10">
           <DashboardSidebar />
         </div>
 
@@ -36,7 +36,7 @@ export default function GestionLayout({ children }: { children: ReactNode }) {
             </Sheet>
           </div>
 
-          <div className="mx-auto max-w-6xl px-4 py-6 md:px-8">
+          <div className="pl-[280px] static mx-auto max-w-6xl px-4 py-6 md:px-8">
             {children}
           </div>
         </div>

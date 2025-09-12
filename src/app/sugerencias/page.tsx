@@ -83,7 +83,7 @@ function SugerenciasContent() {
     <LandingLayout>
       <div className="min-h-screen bg-white">
         {/* Hero Section */}
-        <section className="relative h-96 bg-gradient-to-r from-green-600/20 to-blue-600/20 overflow-hidden">
+        <section className="relative h-[70vh] bg-gradient-to-r from-green-600/20 to-blue-600/20 overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
             <video
