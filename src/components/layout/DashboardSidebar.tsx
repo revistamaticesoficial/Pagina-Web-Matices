@@ -23,9 +23,9 @@ export function DashboardSidebar() {
 
   return (
     <div className="flex h-screen w-[280px] flex-col bg-black text-white">
-      <div className="px-4 pt-6 pb-4">
-        <div className="flex items-center gap-3">
-          <Image src="/images/logotipo.png" alt="Logo Revista Matices" width={140} height={80} />
+      <div className="px-4 pt-6 pb-4 mb-5 w-full">
+        <div className="flex items-center gap-3 justify-center w-full">
+          <Image src="/images/matices-white.png" alt="Logo Revista Matices" width={140} height={60} />
           {/* <Avatar className="h-12 w-12 border border-white/10">
             <AvatarImage src="" alt="Avatar" />
             <AvatarFallback className="bg-[#005B82] text-white">NA</AvatarFallback>
@@ -49,7 +49,7 @@ export function DashboardSidebar() {
                   variant={isActive ? 'secondary' : 'ghost'}
                   className={cn(
                     'w-full justify-start text-white',
-                    isActive ? 'bg-[#005B82] hover:bg-[#005B82]/90 text-white' : 'hover:bg-white/10'
+                    isActive ? 'bg-[#212121] hover:bg-[#005B82]/90 text-white' : 'hover:bg-[#005B82]/90 hover:text-white'
                   )}
                 >
                   {item.label}
@@ -64,7 +64,7 @@ export function DashboardSidebar() {
         <Separator className="mb-3 bg-white/10" />
         <Button
           variant="ghost"
-          className="w-full justify-center bg-white/5 text-white hover:bg-white/10"
+          className="w-full justify-center bg-red-500 text-white hover:bg-red-700 hover:text-white"
           onClick={logout}
         >
           Cerrar sesión
