@@ -150,7 +150,7 @@ export default function CuentaPage() {
     <div className="p-6 md:p-8 flex flex-col gap-6">
       {/* Card Usuario */}
       <h4 className="text-2xl font-extrabold text-[#005B82]">Cuenta</h4>
-      <Card className="border border-[#005B82] shadow-sm py-4">
+      <Card className=" bg-blue-50 shadow-lg hover:shadow-xl duration-300 shadow-sm py-4">
         <CardContent className="pt-2 pb-4 px-6">
           <div className="flex items-center gap-4">
             <Image src={"/images/foto-perfil.jpg"} alt="Foto perfil" width={80} height={80} className="rounded-full w-20 h-20 object-cover border border-[#000]" />
@@ -238,7 +238,7 @@ export default function CuentaPage() {
 
       {/* Card Comercio */}
       <h4 className="text-2xl font-extrabold text-[#005B82]">Comercio</h4>
-      <Card className="border border-[#005B82] shadow-sm py-4">
+      <Card className="shadow-lg hover:shadow-xl duration-300 bg-blue-50 shadow-sm py-4">
         <CardContent className="space-y-2 px-6 pb-5 text-left">
           {/* resumen visual */}
           <p><strong>Cargo:</strong> {comercio.cargo}</p>

@@ -88,7 +88,9 @@ export default function Page() {
     <div className="space-y-6">
       <header className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Promos</h1>
+        <h1 className="text-4xl md:text-5xl font-bold bg-[#005B82] via-red-600 to-pink-600 bg-clip-text text-transparent">
+            Promos
+            </h1>
           <p className="text-sm text-muted-foreground">Listado estático de promociones.</p>
         </div>
         <button

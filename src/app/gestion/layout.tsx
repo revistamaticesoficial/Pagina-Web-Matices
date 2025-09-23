@@ -10,9 +10,9 @@ export default function GestionLayout({ children }: { children: ReactNode }) {
   const { authState } = useAuth()
   const router = useRouter()
 
-  if (!authState.user) {
-    router.push('/')
-  }
+  // if (!authState.user) {
+  //   router.push('/')
+  // }
 
   return (
     <main className="relative min-h-screen bg-white text-black">

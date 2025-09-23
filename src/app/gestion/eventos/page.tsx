@@ -1,121 +1,75 @@
 'use client';
 
 import { useState, useRef} from 'react';
-import { Calendar, Clock, MapPin, Users, Camera, X, Plus, Edit, Eye, ChefHat, DollarSign, Star, Tag } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Camera, X, Plus, Edit, Eye, ChefHat, Star } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { eventos as eventosData } from '@/data/eventos';
+import { Event } from '@/types/sugerencias';
+import { useParams } from 'next/navigation';
 
-interface Evento {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  fecha: Date;
-  hora: string;
-  ubicacion: string;
-  chef: string;
-  tipoCocina: string;
-  precio: number;
-  capacidad: number;
-  imagen: string;
-  etiquetas: string[];
-  puntuacion: number;
-}
+
+
+
+// Usamos el tipo Event importado de tipos
 
 interface FormData {
   titulo: string;
   descripcion: string;
-  fecha: Date;
+  fecha: string;
   hora: string;
   ubicacion: string;
-  chef: string;
-  tipoCocina: string;
-  precio: string;
   capacidad: string;
-  etiquetas: string[];
   imagen: string | null;
 }
 
 const EventosGastronomicos = () => {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [eventos, setEventos] = useState<Evento[]>([
-    {
-      id: 1,
-      titulo: "Cena Maridaje de Vinos",
-      descripcion: "Una experiencia única combinando vinos seleccionados con platos gourmet",
-      fecha: "2024-12-15",
-      hora: "19:30",
-      ubicacion: "Restaurante El Patio",
-      chef: "María González",
-      tipoCocina: "Mediterránea",
-      precio: 85,
-      capacidad: 24,
-      imagen: "/api/placeholder/300/200",
-      etiquetas: ["Vinos", "Gourmet", "Maridaje"],
-      puntuacion: 4.8
-    },
-    {
-      id: 2,
-      titulo: "Masterclass de Pasta Artesanal",
-      descripcion: "Aprende a hacer pasta fresca con técnicas tradicionales italianas",
-      fecha: "2024-12-20",
-      hora: "16:00",
-      ubicacion: "Escuela Culinaria Italiana",
-      chef: "Giuseppe Romano",
-      tipoCocina: "Italiana",
-      precio: 65,
-      capacidad: 12,
-      imagen: "/api/placeholder/300/200",
-      etiquetas: ["Masterclass", "Pasta", "Italiano"],
-      puntuacion: 4.9
-    },
-    {
-      id: 3,
-      titulo: "Festival de Tacos Gourmet",
-      descripcion: "Degusta una variedad de tacos creativos con ingredientes premium",
-      fecha: "2024-12-25",
-      hora: "18:00",
-      ubicacion: "Plaza Central",
-      chef: "Carlos Mendoza",
-      tipoCocina: "Mexicana Fusion",
-      precio: 45,
-      capacidad: 50,
-      imagen: "/api/placeholder/300/200",
-      etiquetas: ["Tacos", "Festival", "Mexicana"],
-      puntuacion: 4.7
+  
+  // Función para cargar eventos desde localStorage
+  const loadEventos = (): Event[] => {
+    if (typeof window !== 'undefined') {
+      const storedEventos = localStorage.getItem('eventos');
+      if (storedEventos) {
+        return JSON.parse(storedEventos);
+      }
     }
-  ]);
+    return eventosData;
+  };
 
-  const [eventoEditando, setEventoEditando] = useState<Evento | null>(null);
+  // Función para guardar eventos en localStorage
+  const saveEventos = (eventos: Event[]) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('eventos', JSON.stringify(eventos));
+    }
+  };
+
+  const [eventos, setEventos] = useState<Event[]>(loadEventos);
+
+  const [eventoEditando, setEventoEditando] = useState<Event | null>(null);
   const [formData, setFormData] = useState<FormData>({
     titulo: '',
     descripcion: '',
     fecha: '',
     hora: '',
     ubicacion: '',
-    chef: '',
-    tipoCocina: '',
-    precio: '',
     capacidad: '',
-    etiquetas: [],
     imagen: null
   });
 
-  const [nuevaEtiqueta, setNuevaEtiqueta] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const abrirModal = (evento: Evento | null = null) => {
+  const abrirModal = (evento: Event | null = null) => {
     if (evento) {
       setEventoEditando(evento);
       setFormData({
-        titulo: evento.titulo,
-        descripcion: evento.descripcion,
-        fecha: evento.fecha,
-        hora: evento.hora,
-        ubicacion: evento.ubicacion,
-        chef: evento.chef,
-        tipoCocina: evento.tipoCocina,
-        precio: evento.precio.toString(),
-        capacidad: evento.capacidad.toString(),
-        etiquetas: [...evento.etiquetas],
-        imagen: evento.imagen
+        titulo: evento.title,
+        descripcion: evento.description,
+        fecha: evento.date,
+        hora: evento.time,
+        ubicacion: evento.location,
+        capacidad: evento.capacity?.toString() || '',
+        imagen: evento.image
       });
     } else {
       setEventoEditando(null);
@@ -125,11 +79,7 @@ const EventosGastronomicos = () => {
         fecha: '',
         hora: '',
         ubicacion: '',
-        chef: '',
-        tipoCocina: '',
-        precio: '',
         capacidad: '',
-        etiquetas: [],
         imagen: null
       });
     }
@@ -139,7 +89,6 @@ const EventosGastronomicos = () => {
   const cerrarModal = () => {
     setIsModalOpen(false);
     setEventoEditando(null);
-    setNuevaEtiqueta('');
   };
 
   const manejarCambio = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -150,22 +99,6 @@ const EventosGastronomicos = () => {
     }));
   };
 
-  const agregarEtiqueta = () => {
-    if (nuevaEtiqueta.trim() && !formData.etiquetas.includes(nuevaEtiqueta.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        etiquetas: [...prev.etiquetas, nuevaEtiqueta.trim()]
-      }));
-      setNuevaEtiqueta('');
-    }
-  };
-
-  const eliminarEtiqueta = (etiqueta: string) => {
-    setFormData(prev => ({
-      ...prev,
-      etiquetas: prev.etiquetas.filter(e => e !== etiqueta)
-    }));
-  };
 
   const manejarImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -188,49 +121,60 @@ const EventosGastronomicos = () => {
     }
 
     if (eventoEditando) {
-      const eventoActualizado: Evento = {
+      const eventoActualizado: Event = {
         ...eventoEditando,
-        titulo: formData.titulo,
-        descripcion: formData.descripcion,
-        fecha: formData.fecha,
-        hora: formData.hora,
-        ubicacion: formData.ubicacion,
-        chef: formData.chef,
-        tipoCocina: formData.tipoCocina,
-        precio: Number(formData.precio) || 0,
-        capacidad: Number(formData.capacidad) || 0,
-        etiquetas: formData.etiquetas,
-        imagen: formData.imagen || "/api/placeholder/300/200"
+        title: formData.titulo,
+        description: formData.descripcion,
+        date: formData.fecha,
+        time: formData.hora,
+        location: formData.ubicacion,
+        price: undefined,
+        capacity: Number(formData.capacidad) || undefined,
+        image: formData.imagen || "/images/logo.jpg",
+        tags: []
       };
-      setEventos(prev => prev.map(evento => 
+      const eventosActualizados = eventos.map(evento => 
         evento.id === eventoEditando.id ? eventoActualizado : evento
-      ));
+      );
+      setEventos(eventosActualizados);
+      saveEventos(eventosActualizados);
     } else {
-      const nuevoEvento: Evento = {
-        id: Date.now(),
-        titulo: formData.titulo,
-        descripcion: formData.descripcion,
-        fecha: formData.fecha,
-        hora: formData.hora,
-        ubicacion: formData.ubicacion,
-        chef: formData.chef,
-        tipoCocina: formData.tipoCocina,
-        precio: Number(formData.precio) || 0,
-        capacidad: Number(formData.capacidad) || 0,
-        etiquetas: formData.etiquetas,
-        imagen: formData.imagen || "/api/placeholder/300/200",
-        puntuacion: 0
+      const nuevoEvento: Event = {
+        id: Date.now().toString(),
+        title: formData.titulo,
+        description: formData.descripcion,
+        date: formData.fecha,
+        time: formData.hora,
+        location: formData.ubicacion,
+        neighborhood: 'Centro', // valor por defecto
+        category: 'ENTRETENIMIENTO', // valor por defecto
+        organizer: 'Organizador', // valor por defecto
+        price: undefined,
+        capacity: Number(formData.capacidad) || undefined,
+        image: formData.imagen || "/images/logo.jpg",
+        isFree: true,
+        tags: []
       };
-      setEventos(prev => [...prev, nuevoEvento]);
+      const eventosActualizados = [...eventos, nuevoEvento];
+      setEventos(eventosActualizados);
+      saveEventos(eventosActualizados);
     }
     
     cerrarModal();
   };
 
-  const verDetalleEvento = (eventoId: number) => {
-    // Aquí simularíamos la navegación a la página de detalles
-    console.log(`Navegando a /eventos/${eventoId}`);
-    alert(`Navegando a la página de detalles del evento ${eventoId}`);
+  const verDetalleEvento = (eventoId: string) => {
+    // Navegar a la página de detalles del evento
+    console.log('Navegando a evento:', eventoId);
+    console.log('URL:', `/gestion/eventos/${eventoId}`);
+    
+    try {
+      router.push(`/gestion/eventos/${eventoId}`);
+    } catch (error) {
+      console.error('Error con router.push:', error);
+      // Fallback usando window.location
+      window.location.href = `/gestion/eventos/${eventoId}`;
+    }
   };
 
   return (
@@ -247,7 +191,7 @@ const EventosGastronomicos = () => {
           
           <button
             onClick={() => abrirModal()}
-            className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-md hover:opacity-90 border-2 border-black hover:bg-black hover:text-white duration-200"
+            className="flex items-center gap-2 px-4 py-2 bg-[#005B82] text-white rounded-md hover:bg-[#004A6B] border-2 border-[#005B82] hover:border-[#004A6B] duration-200"
           >
             <Plus className="w-6 h-6" />
             Agregar Evento
@@ -257,69 +201,61 @@ const EventosGastronomicos = () => {
         {/* Grid de Eventos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {eventos.map((evento) => (
-            <div key={evento.id} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group hover:-translate-y-2">
+            <div key={evento.id} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group hover:-translate-y-2 h-[560px]">
               {/* Imagen del evento */}
-              <div className="relative h-48 bg-gradient-to-r from-orange-400 to-red-400 flex items-center justify-center">
-                {evento.imagen && evento.imagen !== "/api/placeholder/300/200" ? (
-                  <img src={evento.imagen} alt={evento.titulo} className="w-full h-full object-cover" />
+              <div className="relative h-40 flex-1 bg-gradient-to-r from-[#323333] to-[#111111] flex items-center justify-center">
+                {evento.image && evento.image !== "/images/logo.jpg" ? (
+                  <img src={evento.image} alt={evento.title} className="w-full h-full object-cover" />
                 ) : (
                   <ChefHat className="w-16 h-16 text-white" />
                 )}
                 <div className="absolute top-3 left-3 bg-black bg-opacity-50 text-white px-2 py-1 rounded-lg text-sm">
-                  {evento.tipoCocina}
+                  {evento.category}
                 </div>
-                {evento.puntuacion > 0 && (
-                  <div className="absolute top-3 right-3 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-lg text-sm font-semibold flex items-center gap-1">
-                    <Star className="w-4 h-4" />
-                    {evento.puntuacion}
-                  </div>
-                )}
               </div>
 
               {/* Contenido de la card */}
-              <div className="p-6">
+              <div className="p-6 flex flex-col justify-between h-4/6">
                 <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-red-600 transition-colors">
-                  {evento.titulo}
+                  {evento.title}
                 </h3>
                 
                 <p className="text-gray-600 mb-4 line-clamp-2">
-                  {evento.descripcion}
+                  {evento.description}
                 </p>
 
                 {/* Información del evento */}
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <Calendar className="w-4 h-4" />
-                    <span>{evento.fecha}</span>
+                    <span>{new Date(evento.date).toLocaleDateString('es-ES')}</span>
                     <Clock className="w-4 h-4 ml-2" />
-                    <span>{evento.hora}</span>
+                    <span>{evento.time}</span>
                   </div>
                   
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <MapPin className="w-4 h-4" />
-                    <span>{evento.ubicacion}</span>
+                    <span>{evento.location}</span>
                   </div>
                   
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <ChefHat className="w-4 h-4" />
-                    <span>Chef {evento.chef}</span>
+                    <span>{evento.organizer}</span>
                   </div>
                   
                   <div className="flex items-center justify-between text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4" />
-                      <span>{evento.capacidad} personas</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-green-600 font-semibold">
-                      <DollarSign className="w-4 h-4" />
-                      <span>${evento.precio}</span>
-                    </div>
+                    {evento.capacity && (
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        <span>{evento.capacity} personas</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Etiquetas */}
                 <div className="flex flex-wrap gap-1 mb-4">
-                  {evento.etiquetas.slice(0, 3).map((etiqueta, index) => (
+                  {evento.tags.slice(0, 3).map((etiqueta, index) => (
                     <span key={index} className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded-full">
                       {etiqueta}
                     </span>
@@ -327,18 +263,18 @@ const EventosGastronomicos = () => {
                 </div>
 
                 {/* Botones de acción */}
-                <div className="flex justify-between items-center">
+                <div className="flex justify-start w-full items-center gap-2">
                   <button
                     onClick={() => abrirModal(evento)}
-                    className="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-1"
-                    title="Editar evento"
+                    className="bg-[#3BA740] hover:bg-[#1D8422] active:bg-[#3BA740] text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg"
                   >
                     <Edit className="w-4 h-4" />
+                    Editar
                   </button>
                   
                   <button
                     onClick={() => verDetalleEvento(evento.id)}
-                    className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg"
+                    className="bg-[#005B82] hover:bg-[#0074B7] active:bg-[#0074B7] text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg"
                   >
                     <Eye className="w-4 h-4" />
                     Ver Detalles
@@ -352,9 +288,9 @@ const EventosGastronomicos = () => {
         {/* Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-              {/* Header del Modal */}
-              <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-6 rounded-t-2xl">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+              {/* Header del Modal - Fijo */}
+              <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-6 rounded-t-2xl flex-shrink-0 sticky top-0 z-10">
                 <div className="flex justify-between items-center">
                   <h3 className="text-2xl font-bold">
                     {eventoEditando ? '✏️ Editar Evento' : '🚀 Crear Nuevo Evento'}
@@ -368,8 +304,8 @@ const EventosGastronomicos = () => {
                 </div>
               </div>
 
-              {/* Cuerpo del Modal */}
-              <div className="p-6">
+              {/* Cuerpo del Modal - Scrolleable */}
+              <div className="p-6 overflow-y-auto flex-1">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Columna Izquierda */}
                   <div className="space-y-4">
@@ -442,110 +378,25 @@ const EventosGastronomicos = () => {
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        👨‍🍳 Chef
-                      </label>
-                      <input
-                        type="text"
-                        name="chef"
-                        value={formData.chef}
-                        onChange={manejarCambio}
-                        placeholder="Nombre del chef"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-                      />
-                    </div>
                   </div>
 
                   {/* Columna Derecha */}
                   <div className="space-y-4">
+
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        🍽️ Tipo de Cocina
+                        👥 Capacidad
                       </label>
-                      <select
-                        name="tipoCocina"
-                        value={formData.tipoCocina}
+                      <input
+                        type="number"
+                        name="capacidad"
+                        value={formData.capacidad}
                         onChange={manejarCambio}
+                        placeholder="0"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-                      >
-                        <option value="">Selecciona el tipo</option>
-                        <option value="Mediterránea">Mediterránea</option>
-                        <option value="Italiana">Italiana</option>
-                        <option value="Mexicana">Mexicana</option>
-                        <option value="Asiática">Asiática</option>
-                        <option value="Francesa">Francesa</option>
-                        <option value="Fusión">Fusión</option>
-                        <option value="Vegetariana">Vegetariana</option>
-                        <option value="Vegana">Vegana</option>
-                      </select>
+                      />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          💰 Precio
-                        </label>
-                        <input
-                          type="number"
-                          name="precio"
-                          value={formData.precio}
-                          onChange={manejarCambio}
-                          placeholder="0"
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          👥 Capacidad
-                        </label>
-                        <input
-                          type="number"
-                          name="capacidad"
-                          value={formData.capacidad}
-                          onChange={manejarCambio}
-                          placeholder="0"
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        🏷️ Etiquetas
-                      </label>
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {formData.etiquetas.map((etiqueta, index) => (
-                          <span key={index} className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm flex items-center gap-1">
-                            {etiqueta}
-                            <button
-                              type="button"
-                              onClick={() => eliminarEtiqueta(etiqueta)}
-                              className="text-red-500 hover:text-red-700"
-                            >
-                              ×
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={nuevaEtiqueta}
-                          onChange={(e) => setNuevaEtiqueta(e.target.value)}
-                          placeholder="Agregar etiqueta..."
-                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-                          onKeyPress={(e) => e.key === 'Enter' && agregarEtiqueta()}
-                        />
-                        <button
-                          type="button"
-                          onClick={agregarEtiqueta}
-                          className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
-                        >
-                          <Tag className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
 
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -589,28 +440,20 @@ const EventosGastronomicos = () => {
                         <ChefHat className="w-8 h-8 text-white" />
                       )}
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-gray-800">
-                        {formData.titulo || 'Título del evento'}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        📅 {formData.fecha || '2024-12-15'} | 🕐 {formData.hora || '19:00'}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        📍 {formData.ubicacion || 'Ubicación'}
-                      </p>
-                      {formData.chef && (
-                        <p className="text-sm text-gray-600">
-                          👨‍🍳 Chef {formData.chef}
-                        </p>
-                      )}
-                    </div>
-                    {formData.precio && (
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-800">
+                      {formData.titulo || 'Título del evento'}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      📅 {formData.fecha ? new Date(formData.fecha).toLocaleDateString('es-ES') : '2024-12-15'} | 🕐 {formData.hora || '19:00'}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      📍 {formData.ubicacion || 'Ubicación'}
+                    </p>
+                  </div>
+                    {formData.capacidad && (
                       <div className="text-right">
-                        <p className="text-lg font-bold text-green-600">${formData.precio}</p>
-                        {formData.capacidad && (
-                          <p className="text-sm text-gray-500">{formData.capacidad} personas</p>
-                        )}
+                        <p className="text-sm text-gray-500">{formData.capacidad} personas</p>
                       </div>
                     )}
                   </div>
@@ -620,13 +463,13 @@ const EventosGastronomicos = () => {
                 <div className="flex justify-end gap-4 mt-8 pt-6 border-t">
                   <button
                     onClick={cerrarModal}
-                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                    className="px-6 py-3 bg-red-700 hover:bg-red-500 active:bg-red-500 text-white rounded-lg hover:bg-red-500 transition-all duration-300 font-medium"
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={guardarEvento}
-                    className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
+                    className="px-6 py-3 bg-[#005B82] text-white rounded-lg hover:bg-[#004A6B] transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
                   >
                     {eventoEditando ? 'Actualizar Evento' : 'Crear Evento'}
                   </button>
