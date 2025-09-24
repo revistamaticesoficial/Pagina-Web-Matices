@@ -40,6 +40,7 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
+<<<<<<< HEAD
             {/* Desktop Actions */}
             <div className="hidden md:flex items-center space-x-4">
               {authState.isAuthenticated ? (
@@ -96,9 +97,66 @@ export function Header() {
                 </>
               )}
             </div>
+=======
+            
+            <div className="hidden md:flex items-center space-x-4">
+            {authState.isAuthenticated ? (
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center space-x-2"
+                >
+                  <User className="h-4 w-4" />
+                  <span>{authState.user?.firstName}</span>
+                </Button>
+                
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+                    <div className="px-4 py-2 text-sm text-gray-700 border-b">
+                      <p className="font-medium">{authState.user?.firstName} {authState.user?.lastName}</p>
+                      <p className="text-gray-500 text-xs">{authState.user?.email}</p>
+                    </div>
+                    
+                    <Link
+                      href="/profile"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Mi Perfil
+                    </Link>
+                    
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Cerrar Sesión
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link href="/auth/login">
+                  <Button variant="outline" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    Iniciar Sesión
+                  </Button>
+                </Link>
+                <Link href="/auth/register">
+                  <Button size="sm">
+                    Crear Cuenta
+                  </Button>
+                </Link>
+              </>
+            )}
+          </div>
+>>>>>>> 5d7ac29847bda9c553d6273a3cda5ba768c223df
           </nav>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <Button
               variant="ghost"
@@ -110,7 +168,6 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden border-t">
             <nav className="flex flex-col space-y-2 py-4">
@@ -124,7 +181,11 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
+<<<<<<< HEAD
 
+=======
+              
+>>>>>>> 5d7ac29847bda9c553d6273a3cda5ba768c223df
               <div className="px-4 py-2 space-y-2">
                 {authState.isAuthenticated ? (
                   <div className="space-y-2">
