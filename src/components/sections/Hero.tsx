@@ -1,4 +1,4 @@
-// import Image from 'next/image';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export function Hero() {
@@ -510,6 +510,34 @@ export function Hero() {
                       </button>
                     </Link>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Promotional Image Section */}
+            <div className="mt-16 w-full max-w-6xl mx-auto">
+              <div className="relative w-full group cursor-pointer">
+                <Image
+                  src="/images/Frame 1321317502 (1).png"
+                  alt="Descubre todo lo que Mati tiene para ofrecer - Ver Sugerencias"
+                  width={1200}
+                  height={400}
+                  className="w-full h-auto rounded-2xl shadow-lg border border-gray-200 object-cover transition-transform duration-300 group-hover:scale-105"
+                  priority={false}
+                />
+                {/* Optional overlay for better mobile readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl md:hidden"></div>
+                
+                {/* Centered Button Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Link href="/sugerencias">
+                    <button 
+                      className="bg-[#F58220] hover:bg-[#E5750D] text-white font-bold text-2xl px-20 py-10 rounded-full shadow-xl transform transition-all duration-300 hover:scale-110 hover:shadow-2xl active:scale-95"
+                      style={{ backgroundColor: '#F58220' }}
+                    >
+                      VER SUGERENCIAS
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>
