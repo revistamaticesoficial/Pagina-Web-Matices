@@ -81,19 +81,19 @@ export function Header() {
                   )}
                 </div>
               ) : (
-                <>
-                  <Link href="/auth/login">
-                    <Button variant="outline" size="sm">
-                      <User className="h-4 w-4 mr-2" />
-                      Iniciar Sesión
-                    </Button>
-                  </Link>
-                  <Link href="/auth/register">
-                    <Button size="sm">
-                      Crear Cuenta
-                    </Button>
-                  </Link>
-                </>
+                // <>
+                //   {/* <Link href="/auth/login">
+                //     <Button variant="outline" size="sm">
+                //       <User className="h-4 w-4 mr-2" />
+                //       Iniciar Sesión
+                //     </Button>
+                //   </Link>
+                //   <Link href="/auth/register">
+                //     <Button size="sm">
+                //       Crear Cuenta
+                //     </Button>
+                //   </Link> */}
+                // </>
               )}
             </div>
           </nav>

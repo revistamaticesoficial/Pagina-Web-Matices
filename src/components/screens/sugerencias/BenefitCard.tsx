@@ -42,25 +42,31 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
   };
 
   return (
-    <Card className="group transition-all duration-300 overflow-hidden">
+    <Card className="group transition-all duration-300 overflow-hidden h-full flex flex-col">
       {/* Header with Business Info */}
-      <div className="relative h-64 bg-gradient-to-r from-purple-500 to-pink-500 overflow-hidden">
+      <div className="relative h-64 bg-gradient-to-r from-purple-500 to-pink-500 overflow-hidden flex-shrink-0">
         {/* Video Background */}
-        <video
-          className="w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          onError={(e) => {
-            console.warn('Error loading video:', benefit.businessLogo);
-            // Fallback to gradient background if video fails
-            e.currentTarget.style.display = 'none';
-          }}
-        >
-          <source src={benefit.businessLogo} type="video/mp4" />
-        </video>
+        {benefit.businessLogo && (
+          <video
+            className="w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            onError={(e) => {
+              console.warn('Error loading video:', benefit.businessLogo);
+              // Fallback to gradient background if video fails
+              e.currentTarget.style.display = 'none';
+            }}
+            onLoadStart={() => {
+              console.log('Loading video:', benefit.businessLogo);
+            }}
+          >
+            <source src={benefit.businessLogo} type="video/mp4" />
+            Tu navegador no soporta videos.
+          </video>
+        )}
         
         {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-black/30" />
@@ -82,7 +88,7 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
           
       
       {/* Content */}
-      <CardContent className="p-4 justify-between flex flex-col" >
+      <CardContent className="p-4 flex flex-col flex-grow">
         <h3 className="font-bold text-base text-gray-900 mb-1 line-clamp-2">
           {benefit.title}
         </h3>
@@ -132,9 +138,12 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
           </div>
         )}
 
+        {/* Spacer to push button to bottom */}
+        <div className="flex-grow"></div>
+
         {/* Action Button */}
         <Button 
-          className="hover:shadow-xl w-full bg-gradient-to-r from-green-600 to-green-600 hover:cursor-pointer hover:from-green-700 hover:to-white-700 text-white text-sm py-2"
+          className="hover:shadow-xl w-full bg-gradient-to-r from-green-600 to-green-600 hover:cursor-pointer hover:from-green-700 hover:to-green-700 text-white text-sm py-2"
           disabled={!benefit.isActive}
           onClick={() => {
             if (!benefit.isActive) return;
