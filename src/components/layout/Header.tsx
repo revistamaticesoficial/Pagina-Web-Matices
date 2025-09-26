@@ -125,7 +125,7 @@ export function Header() {
                 </Link>
               ))}
 
-              <div className="px-4 py-2 space-y-2">
+              {/* <div className="px-4 py-2 space-y-2">
                 {authState.isAuthenticated ? (
                   <div className="space-y-2">
                     <div className="text-sm text-gray-700 py-2 border-b">
@@ -168,7 +168,7 @@ export function Header() {
                     </Link>
                   </>
                 )}
-              </div>
+              </div> */}
             </nav>
           </div>
         )}
