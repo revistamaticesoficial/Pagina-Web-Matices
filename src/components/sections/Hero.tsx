@@ -2,7 +2,7 @@ import ImageCarousel from '@/components/ui/ImageCarousel';
 
 // Banner images from public/images/banner/
 const bannerImages = [
-  '/images/banner/calle.avif',
+  // '/images/banner/calle.avif',
   '/images/banner/kemp.png',
   '/images/banner/Matices.jpg',
   '/images/banner/mujer-urbana1.jpg',
@@ -12,13 +12,13 @@ const bannerImages = [
 
 export function Hero() {
   return (
-    <section className="relative h-[70vh] bg-gradient-to-r from-green-600/20 to-blue-600/20 overflow-hidden">
+    <section className="relative h-[90vh] bg-gradient-to-r from-green-600/20 to-blue-600/20 overflow-hidden">
       {/* Background Carousel */}
       <div className="absolute inset-0">
         <ImageCarousel 
           images={bannerImages}
           autoPlayInterval={3000}
-          aspectRatio="aspect-auto h-full"
+          aspectRatio="aspect-auto h-full object-cover"
           className="h-full"
         />
         {/* Overlay for better text readability */}
