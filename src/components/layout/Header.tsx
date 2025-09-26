@@ -13,12 +13,12 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const { authState, logout } = useAuth();
+  // const { authState, logout } = useAuth();
 
-  const handleLogout = async () => {
-    await logout();
-    setIsUserMenuOpen(false);
-  };
+  // const handleLogout = async () => {
+  //   await logout();
+  //   setIsUserMenuOpen(false);
+  // };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -41,8 +41,8 @@ export function Header() {
               </Link>
             ))}
             {/* Desktop Actions */}
-            <div className="hidden md:flex items-center space-x-4">
-              {authState.isAuthenticated ? (
+             <div className="hidden md:flex items-center space-x-4">
+            {/*  {authState.isAuthenticated ? (
                 <div className="relative">
                   <Button
                     variant="ghost"
@@ -81,22 +81,22 @@ export function Header() {
                   )}
                 </div>
               ) : (
-                // <>
-                //   {/* <Link href="/auth/login">
-                //     <Button variant="outline" size="sm">
-                //       <User className="h-4 w-4 mr-2" />
-                //       Iniciar Sesión
-                //     </Button>
-                //   </Link>
-                //   <Link href="/auth/register">
-                //     <Button size="sm">
-                //       Crear Cuenta
-                //     </Button>
-                //   </Link> */}
-                // </>
+                <>
+                  {/* <Link href="/auth/login">
+                    <Button variant="outline" size="sm">
+                      <User className="h-4 w-4 mr-2" />
+                      Iniciar Sesión
+                    </Button>
+                  </Link>
+                  <Link href="/auth/register">
+                    <Button size="sm">
+                      Crear Cuenta
+                    </Button>
+                  </Link> 
+                </>
               )}
-            </div>
-          </nav>
+            </div> 
+          </nav>*/}
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
@@ -172,6 +172,8 @@ export function Header() {
             </nav>
           </div>
         )}
+      </nav>
+      </div>
       </div>
     </header>
   );

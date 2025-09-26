@@ -28,10 +28,11 @@ type Horario = { apertura: string; cierre: string } | { apertura: "Cerrado"; cie
 type ComercioState = {
   cargo: string;
   categoria: string;
+  descripcion?: string;
   direccion: string;
   telefono: string;
   horarios: Record<Dia, Horario>;
-  redes: { instagram: string; facebook: string };
+  redes: { instagram: string; facebook: string; tiktok: string };
   tags: string[];
 };
 

@@ -17,7 +17,7 @@ export function Dialog({ children }: PropsWithChildren) {
   );
 }
 
-export function DialogTrigger({ children, asChild }: { children: ReactElement; asChild?: boolean }) {
+export function DialogTrigger({ children, asChild }: { children: ReactElement<any>; asChild?: boolean }) {
   const ctx = useContext(DialogContext);
   if (!ctx) return children;
 
@@ -35,7 +35,7 @@ export function DialogTrigger({ children, asChild }: { children: ReactElement; a
   );
 }
 
-export function DialogClose({ children, asChild }: { children: ReactElement; asChild?: boolean }) {
+export function DialogClose({ children, asChild }: { children: ReactElement<any>; asChild?: boolean }) {
   const ctx = useContext(DialogContext);
   if (!ctx) return children;
   const props = {
