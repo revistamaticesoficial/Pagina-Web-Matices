@@ -1,5 +1,5 @@
 'use client'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode } from 'react'
 import { DashboardSidebar } from '@/components/layout/DashboardSidebar'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/Button'
@@ -10,11 +10,9 @@ export default function GestionLayout({ children }: { children: ReactNode }) {
   const { authState } = useAuth()
   const router = useRouter()
 
-  useEffect(() => {
-    if (!authState.isLoading && !authState.user) {
-      router.push('/')
-    }
-  }, [authState.isLoading, authState.user, router])
+  // if (!authState.user) {
+  //   router.push('/')
+  // }
 
   return (
     <main className="relative min-h-screen bg-white text-black">

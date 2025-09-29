@@ -30,6 +30,7 @@ export function Header() {
             </Link>
           </div>
 
+          {/* Navegación desktop */}
           <nav className="hidden md:flex items-center space-x-6">
             {NAVIGATION.map((item) => (
               <Link
@@ -40,8 +41,8 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-            {/* Desktop Actions */}
-             <div className="hidden md:flex items-center space-x-4">
+            {/* Desktop Actions (comentadas por ahora) */}
+            <div className="hidden md:flex items-center space-x-4">
             {/*  {authState.isAuthenticated ? (
                 <div className="relative">
                   <Button
@@ -95,8 +96,8 @@ export function Header() {
                   </Link> 
                 </>
               )}
-            </div> 
-          </nav>*/}
+            </div>
+          </nav>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">

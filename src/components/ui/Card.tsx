@@ -1,32 +1,33 @@
 import { cn } from '@/lib/utils';
 import { forwardRef } from 'react';
+import type React from 'react';
 
-export interface CardProps {
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   children: React.ReactNode;
 }
 
-export interface CardHeaderProps {
+export interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   children: React.ReactNode;
 }
 
-export interface CardTitleProps {
+export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   className?: string;
   children: React.ReactNode;
 }
 
-export interface CardDescriptionProps {
+export interface CardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
   className?: string;
   children: React.ReactNode;
 }
 
-export interface CardContentProps {
+export interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   children: React.ReactNode;
 }
 
-export interface CardFooterProps {
+export interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   children: React.ReactNode;
 }

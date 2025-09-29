@@ -10,16 +10,27 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/providers/AuthProvider'
 import Image from 'next/image'
 
-const NAV_ITEMS = [
+const NAV_ITEMS_GESTION = [
   { label: 'Inicio', href: '/gestion/inicio' },
-  { label: 'Promos', href: '/gestion/promos' },
+  { label: 'Beneficios', href: '/gestion/beneficios' },
   { label: 'Eventos', href: '/gestion/eventos' },
   { label: 'Cuenta', href: '/gestion/cuenta' }
+]
+
+const NAV_ITEMS_ADMIN = [
+  { label: 'Inicio', href: '/admin/inicio' },
+  { label: 'Notas', href: '/admin/notas' },
+  { label: 'Beneficios', href: '/admin/promos' },
+  { label: 'Eventos', href: '/admin/eventos' },
+  { label: 'Cuenta', href: '/admin/cuenta' },
+  { label: 'Configuración', href: '/admin/configuracion' }
 ]
 
 export function DashboardSidebar() {
   const pathname = usePathname()
   const { logout } = useAuth()
+
+  const navItems = pathname?.startsWith('/admin') ? NAV_ITEMS_ADMIN : NAV_ITEMS_GESTION
 
   return (
     <div className="flex h-screen w-[280px] flex-col bg-black text-white">
@@ -41,7 +52,7 @@ export function DashboardSidebar() {
 
       <ScrollArea className="flex-1 px-2 py-2">
         <nav className="grid gap-1">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const isActive = pathname?.startsWith(item.href)
             return (
               <Link key={item.href} href={item.href} aria-current={isActive ? 'page' : undefined} className="focus:outline-none">
