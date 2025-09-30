@@ -45,7 +45,7 @@ export default function ContactoPage() {
                     <span className="mt-0.5 rounded-lg bg-[#005B82]/10 p-2 text-[#005B82]"><Phone className="h-4 w-4" /></span>
                     <div>
                       <div className="font-medium text-foreground">Teléfono</div>
-                      <a href="tel:+543511234567" className="text-sm text-[#005B82] underline underline-offset-4">+54 351 123-4567</a>
+                      <a href="tel:+351 5141456" className="text-sm text-[#005B82] underline underline-offset-4">+54 351 514-1456</a>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
