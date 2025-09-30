@@ -20,10 +20,9 @@ const NAV_ITEMS_GESTION = [
 const NAV_ITEMS_ADMIN = [
   { label: 'Inicio', href: '/admin/inicio' },
   { label: 'Notas', href: '/admin/notas' },
-  { label: 'Beneficios', href: '/admin/promos' },
+  { label: 'Beneficios', href: '/admin/beneficios' },
   { label: 'Eventos', href: '/admin/eventos' },
   { label: 'Cuenta', href: '/admin/cuenta' },
-  { label: 'Configuración', href: '/admin/configuracion' }
 ]
 
 export function DashboardSidebar() {
