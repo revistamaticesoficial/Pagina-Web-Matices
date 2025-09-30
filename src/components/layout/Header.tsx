@@ -41,6 +41,12 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
+            <Link
+              href="/contacto"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Contacto
+            </Link>
             {/* Desktop Actions (comentadas por ahora) */}
             <div className="hidden md:flex items-center space-x-4">
             {/*  {authState.isAuthenticated ? (
@@ -125,6 +131,13 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
+              <Link
+                href="/contacto"
+                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contacto
+              </Link>
 
               {/* <div className="px-4 py-2 space-y-2">
                 {authState.isAuthenticated ? (

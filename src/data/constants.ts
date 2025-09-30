@@ -100,10 +100,9 @@ export const FOOTER_LINKS = {
     { name: "Contacto", href: "/contacto" },
   ],
   services: [
-    { name: "Publicidad", href: "/publicidad" },
-    { name: "Suscripciones", href: "/suscripciones" },
-    { name: "Eventos", href: "/eventos" },
-    { name: "Newsletter", href: "/newsletter" },
+    { name: "Publicidad", href: "mailto:publicidadnuevosmatices@gmail.com" },
+    { name: "Sugerencias", href: "/sugerencias" },
+    { name: "Notas", href: "/notas" },
   ],
   legal: [
     { name: "Términos y condiciones", href: "/terminos" },
