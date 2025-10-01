@@ -13,6 +13,8 @@ type Promo = {
   estado: "Activa" | "Programada" | "Finalizada";
   desde: string;
   hasta: string;
+  imagen?: string;
+  comercio?: string;
 };
 
 export default function Page() {
@@ -43,12 +45,12 @@ export default function Page() {
   // Modo y formulario
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [form, setForm] = useState<Promo>({ id: 0, titulo: '', descripcion: '', beneficio: 'descuento', cantidad: 0, canjeados: 0, estado: 'Activa', desde: '', hasta: '' });
+  const [form, setForm] = useState<Promo>({ id: 0, titulo: '', descripcion: '', beneficio: 'descuento', cantidad: 0, canjeados: 0, estado: 'Activa', desde: '', hasta: '', imagen: '', comercio: '' });
 
   const openCreate = () => {
     setIsEditing(false);
     setEditingId(null);
-    setForm({ id: 0, titulo: '', descripcion: '', beneficio: 'descuento', cantidad: 0, canjeados: 0, estado: 'Activa', desde: '', hasta: '' });
+    setForm({ id: 0, titulo: '', descripcion: '', beneficio: 'descuento', cantidad: 0, canjeados: 0, estado: 'Activa', desde: '', hasta: '', imagen: '', comercio: '' });
     setOpen(true);
   };
 
@@ -65,6 +67,8 @@ export default function Page() {
       estado: p.estado,
       desde: p.desde,
       hasta: p.hasta,
+      imagen: p.imagen ?? ''
+      , comercio: p.comercio ?? ''
     });
     setOpen(true);
   };
@@ -78,6 +82,16 @@ export default function Page() {
       setPromos(prev => [...prev, { ...form, id: newId }]);
     }
     setOpen(false);
+  };
+
+  const manejarImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setForm(prev => ({ ...prev, imagen: (ev.target?.result as string) || '' }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleDelete = (id: number) => {
@@ -103,8 +117,8 @@ export default function Page() {
 
       {/* Modal de creación/edición */}
       {open && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 h-[100vh] mt-0">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 max-h-[600px] overflow-y-auto">
             <h2 className="text-xl font-semibold mb-4">{isEditing ? 'Editar Promoción' : 'Nueva Promoción'}</h2>
             <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
               <Label>Título</Label>
@@ -172,22 +186,50 @@ export default function Page() {
                 <option value="Finalizada">Finalizada</option>
               </select>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
+              {/* Imagen */}
+              <Label>Imagen (opcional)</Label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={manejarImagen}
+                className="border p-2 rounded"
+              />
+              {form.imagen && (
+                <div className="mt-2">
+                  <img src={form.imagen} alt="Preview" className="w-32 h-32 object-cover rounded border" />
+                </div>
+              )}
+
+              {/* Comercio */}
+              <Label>Comercio</Label>
+              <select
+                className="border p-2 rounded"
+                value={form.comercio ?? ''}
+                onChange={(e) => setForm({ ...form, comercio: e.target.value })}
+                required
+              >
+                <option value="" disabled>Selecciona un comercio</option>
+                <option value="Topping">Topping</option>
+                <option value="Casa Criolla">Casa Criolla</option>
+                <option value="Tortas Rossi">Tortas Rossi</option>
+              </select>
+
+              <div className="grid grid-cols-2 gap-3 ">
+                <div className="gap-3">
                   <Label>Desde</Label>
                   <input
                     type="date"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded w-full mt-3"
                     value={form.desde}
                     onChange={(e) => setForm({ ...form, desde: e.target.value })}
                     required
                   />
                 </div>
-                <div>
+                <div className="gap-3">
                   <Label>Hasta</Label>
                   <input
                     type="date"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded w-full mt-3"
                     value={form.hasta}
                     onChange={(e) => setForm({ ...form, hasta: e.target.value })}
                     required
@@ -201,6 +243,7 @@ export default function Page() {
             </form>
           </div>
         </div>
+        
       )}
       
 

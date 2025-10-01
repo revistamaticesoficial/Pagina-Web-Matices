@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef} from 'react';
-import Link from 'next/link';
 import { Calendar, Clock, MapPin, Users, Camera, X, Plus, Edit, Eye, ChefHat, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { eventos as eventosData } from '@/data/eventos';
@@ -190,13 +189,13 @@ const EventosGastronomicos = () => {
             <p className="text-gray-600 mt-2 text-lg">Descubre experiencias gastronómicas únicas</p>
           </div>
           
-          {/* <button
+          <button
             onClick={() => abrirModal()}
             className="flex items-center gap-2 px-4 py-2 bg-[#005B82] text-white rounded-md hover:bg-[#004A6B] border-2 border-[#005B82] hover:border-[#004A6B] duration-200"
           >
             <Plus className="w-6 h-6" />
             Agregar Evento
-          </button> */}
+          </button>
         </div>
 
         {/* Grid de Eventos */}
@@ -265,21 +264,21 @@ const EventosGastronomicos = () => {
 
                 {/* Botones de acción */}
                 <div className="flex justify-start w-full items-center gap-2">
-                  {/* <button
+                  <button
                     onClick={() => abrirModal(evento)}
                     className="bg-[#3BA740] hover:bg-[#1D8422] active:bg-[#3BA740] text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg"
                   >
                     <Edit className="w-4 h-4" />
                     Editar
-                  </button> */}
+                  </button>
                   
-                  <Link
-                    href={`/gestion/eventos/${evento.id}`}
+                  <button
+                    onClick={() => verDetalleEvento(evento.id)}
                     className="bg-[#005B82] hover:bg-[#0074B7] active:bg-[#0074B7] text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg"
                   >
                     <Eye className="w-4 h-4" />
                     Ver Detalles
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
@@ -462,18 +461,18 @@ const EventosGastronomicos = () => {
 
                 {/* Botones de Acción */}
                 <div className="flex justify-end gap-4 mt-8 pt-6 border-t">
-                  {/* <button
+                  <button
                     onClick={cerrarModal}
                     className="px-6 py-3 bg-red-700 hover:bg-red-500 active:bg-red-500 text-white rounded-lg hover:bg-red-500 transition-all duration-300 font-medium"
                   >
                     Cancelar
-                  </button> */}
-                  {/* <button
+                  </button>
+                  <button
                     onClick={guardarEvento}
                     className="px-6 py-3 bg-[#005B82] text-white rounded-lg hover:bg-[#004A6B] transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
                   >
                     {eventoEditando ? 'Actualizar Evento' : 'Crear Evento'}
-                  </button> */}
+                  </button>
                 </div>
               </div>
             </div>

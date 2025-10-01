@@ -30,6 +30,7 @@ export function Header() {
             </Link>
           </div>
 
+          {/* Navegación desktop */}
           <nav className="hidden md:flex items-center space-x-6">
             {NAVIGATION.map((item) => (
               <Link
@@ -40,8 +41,14 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-            {/* Desktop Actions */}
-             <div className="hidden md:flex items-center space-x-4">
+            <Link
+              href="/contacto"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Contacto
+            </Link>
+            {/* Desktop Actions (comentadas por ahora) */}
+            <div className="hidden md:flex items-center space-x-4">
             {/*  {authState.isAuthenticated ? (
                 <div className="relative">
                   <Button
@@ -177,7 +184,15 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
-              <div className="px-4 py-2 space-y-2">
+              <Link
+                href="/contacto"
+                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contacto
+              </Link>
+
+              {/* <div className="px-4 py-2 space-y-2">
                 {authState.isAuthenticated ? (
                   <div className="space-y-2">
                     <div className="text-sm text-gray-700 py-2 border-b">
@@ -220,7 +235,7 @@ export function Header() {
                     </Link>
                   </>
                 )}
-              </div> 
+              </div>  */}
             </nav>
           </div>
         )}
