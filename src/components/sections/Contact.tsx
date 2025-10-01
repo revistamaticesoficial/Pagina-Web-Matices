@@ -1,57 +1,108 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React  from "react";
+import { useState, useRef } from "react";
+import { Button } from "@/components/ui/Button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/Label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog";
+import {
+  MessageCircle,
+  Instagram,
+  Linkedin,
+  Facebook,
+  Send,
+} from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import emailjs from "@emailjs/browser";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/Button"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card"
-import { Input } from "@/components/ui/Input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/Label"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog"
-import { MessageCircle, Instagram, Linkedin, Facebook, Send } from "lucide-react"
+const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!;
+const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
+const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!;
 
 export function Contact() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const formRef = useRef<HTMLFormElement>(null);
+  const [send, setSend] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
+    title: "",
     name: "",
     email: "",
     message: "",
-  })
+  });
 
   const handleCardClick = (cardType: string) => {
     if (cardType === "whatsapp") {
-      window.open("https://wa.me/3515141456?text=Hola, me gustaría obtener más información sobre...", "_blank")
+      window.open(
+        "https://wa.me/3515141456?text=Hola, me gustaría obtener más información sobre...",
+        "_blank"
+      );
     } else if (cardType === "form") {
-      setIsModalOpen(true)
+      setIsModalOpen(true);
     }
-  }
+  };
 
   const handleSocialClick = (platform: string) => {
     const urls = {
       instagram: "https://instagram.com/revistamaticesoficial",
       facebook: "https://www.facebook.com/profile.php?id=61579318061468",
-    //   twitter: "https://twitter.com/empresa",
-    //   linkedin: "https://linkedin.com/company/empresa",
-    }
-    window.open(urls[platform as keyof typeof urls], "_blank")
-  }
+      //   twitter: "https://twitter.com/empresa",
+      //   linkedin: "https://linkedin.com/company/empresa",
+    };
+    window.open(urls[platform as keyof typeof urls], "_blank");
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Form submitted:", formData)
-    // Aquí iría la lógica para enviar el formulario
-    setFormData({ name: "", email: "", message: "" })
-    setIsModalOpen(false)
-  }
+    e.preventDefault();
+    // console.log("Form submitted:", formData);
+
+    console.log('serviceId: ', SERVICE_ID);
+    console.log('templateId: ', TEMPLATE_ID);
+    console.log('publicKey: ', PUBLIC_KEY);
+  
+
+    emailjs.init(PUBLIC_KEY);
+    emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current).then(
+      (result) => {
+        console.log(result.text);
+        setSend(true);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    
+    setFormData({ title: "", name: "", email: "", message: "" });
+   setTimeout(() => {
+    setIsModalOpen(false);
+    setSend(false);
+   }, 5000);
+    (e.target as HTMLFormElement).reset();
+  };
 
   return (
     <section className="py-16 px-4 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-foreground mb-4 text-balance">{"¿Cómo prefieres contactarnos?"}</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-4 text-balance">
+            {"¿Cómo prefieres contactarnos?"}
+          </h2>
           <p className="text-muted-foreground text-pretty max-w-2xl mx-auto">
-            {"Selecciona tu método preferido de comunicación y te responderemos lo antes posible."}
+            {
+              "Selecciona tu método preferido de comunicación y te responderemos lo antes posible."
+            }
           </p>
         </div>
 
@@ -65,7 +116,9 @@ export function Contact() {
                 <Send className="w-6 h-6 text-primary" />
               </div>
               <CardTitle>{"Formulario"}</CardTitle>
-              <CardDescription>{"Envíanos un mensaje detallado"}</CardDescription>
+              <CardDescription>
+                {"Envíanos un mensaje detallado"}
+              </CardDescription>
             </CardHeader>
           </Card>
 
@@ -78,7 +131,9 @@ export function Contact() {
                 <MessageCircle className="w-6 h-6 text-green-500" />
               </div>
               <CardTitle>{"WhatsApp"}</CardTitle>
-              <CardDescription>{"Chatea con nosotros directamente"}</CardDescription>
+              <CardDescription>
+                {"Chatea con nosotros directamente"}
+              </CardDescription>
             </CardHeader>
           </Card>
         </div>
@@ -89,15 +144,18 @@ export function Contact() {
               <DialogTitle>{"Envíanos tu mensaje"}</DialogTitle>
               <span className="text-sm text-gray-500 mt-2">{`Completa el formulario y te responderemos en menos de 24 horas.`}</span>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-              <div className="grid md:grid-cols-2 gap-4">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 mt-4">
+              <div className="flex flex-col gap-4">
                 <div>
-                  <Label htmlFor="name">{"Nombre"}</Label>
+                  <Label htmlFor="title">{"Título"}</Label>
                   <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Tu nombre completo"
+                    id="title"
+                    value={formData.title}
+                    name="title"
+                    onChange={(e) =>
+                      setFormData({ ...formData, title: e.target.value })
+                    }
+                    placeholder="Tu título"
                     required
                   />
                 </div>
@@ -105,10 +163,26 @@ export function Contact() {
                   <Label htmlFor="email">{"Email"}</Label>
                   <Input
                     id="email"
-                    type="email"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    name="email"
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     placeholder="tu@email.com"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="name">{"Nombre"}</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    value={formData.name}
+                    name="name"
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    placeholder="Tu nombre completo"
                     required
                   />
                 </div>
@@ -118,7 +192,10 @@ export function Contact() {
                 <Textarea
                   id="message"
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  name="message"
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
                   placeholder="Cuéntanos en qué podemos ayudarte..."
                   rows={4}
                   required
@@ -128,16 +205,29 @@ export function Contact() {
                 <Button type="submit" className="flex-1">
                   {"Enviar Mensaje"}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsModalOpen(false)}
+                >
                   {"Cancelar"}
                 </Button>
               </div>
             </form>
+            {send && (
+              <div className="flex justify-center mt-4">
+                <p className="text-green-500 text-center font-bold text-lg">
+                  {"Mensaje enviado correctamente!"}
+                </p>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
 
         <div className="mt-12 text-center">
-          <h3 className="text-lg font-semibold text-foreground mb-6">{"También puedes encontrarnos en:"}</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-6">
+            {"También puedes encontrarnos en:"}
+          </h3>
           <div className="flex justify-center gap-4">
             <Button
               variant="outline"
@@ -170,5 +260,5 @@ export function Contact() {
         </div>
       </div>
     </section>
-  )
+  );
 }
