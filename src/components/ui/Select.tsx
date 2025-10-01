@@ -16,13 +16,15 @@ export function Select({ defaultValue, children }: PropsWithChildren<{ defaultVa
   return <SelectContext.Provider value={ctx}>{children}</SelectContext.Provider>;
 }
 
-export function SelectTrigger({ children }: PropsWithChildren) {
+export function SelectTrigger({ children, className }: PropsWithChildren<{ className?: string }>) {
   const ctx = useContext(SelectContext);
-  if (!ctx) return <button className="w-full border rounded px-3 py-2">{children}</button>;
+  const baseClass = `w-full border rounded px-3 py-2 text-left`;
+  const merged = className ? `${baseClass} ${className}` : baseClass;
+  if (!ctx) return <button className={merged}>{children}</button>;
   return (
     <button
       type="button"
-      className="w-full border rounded px-3 py-2 text-left"
+      className={merged}
       onClick={() => ctx.setOpen(!ctx.open)}
     >
       {children}
@@ -30,29 +32,31 @@ export function SelectTrigger({ children }: PropsWithChildren) {
   );
 }
 
-export function SelectValue() {
+export function SelectValue({ placeholder, className }: { placeholder?: string; className?: string }) {
   const ctx = useContext(SelectContext);
-  return <span>{ctx?.value ?? ''}</span>;
+  const display = ctx?.value ?? placeholder ?? '';
+  return <span className={className}>{display}</span>;
 }
 
-export function SelectContent({ children }: PropsWithChildren) {
+export function SelectContent({ children, className }: PropsWithChildren<{ className?: string }>) {
   const ctx = useContext(SelectContext);
   if (!ctx?.open) return null;
   return (
-    <div className="mt-1 w-full border rounded bg-white shadow">
+    <div className={`mt-1 w-full border rounded bg-white shadow${className ? ` ${className}` : ''}`}>
       {children}
     </div>
   );
 }
 
-export function SelectItem({ value, children }: PropsWithChildren<{ value: string }>) {
+export function SelectItem({ value, children, onClick, className }: PropsWithChildren<{ value: string; onClick?: () => void; className?: string }>) {
   const ctx = useContext(SelectContext);
-  if (!ctx) return <div className="px-3 py-2 hover:bg-gray-50 cursor-pointer">{children}</div>;
+  const baseClass = `px-3 py-2 hover:bg-gray-50 cursor-pointer`;
+  if (!ctx) return <div className={className ? `${baseClass} ${className}` : baseClass}>{children}</div>;
   const isSelected = ctx.value === value;
   return (
     <div
-      className={`px-3 py-2 hover:bg-gray-50 cursor-pointer ${isSelected ? 'bg-gray-100' : ''}`}
-      onClick={() => { ctx.setValue(value); ctx.setOpen(false); }}
+      className={`${baseClass} ${isSelected ? 'bg-gray-100' : ''}${className ? ` ${className}` : ''}`}
+      onClick={() => { ctx.setValue(value); ctx.setOpen(false); onClick?.(); }}
       role="option"
       aria-selected={isSelected}
     >

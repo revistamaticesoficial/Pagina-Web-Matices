@@ -29,14 +29,18 @@ export default function EventCard({ event }: EventCardProps) {
   };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
+    <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col">
       {/* Image Section */}
-      <div className="relative h-48 bg-gradient-to-br from-blue-500 to-purple-600">
+      <div className="relative h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0">
         <Image
           src={event.image}
           alt={event.title}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300 opacity-20"
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          onError={(e) => {
+            // Fallback to gradient background if image fails
+            e.currentTarget.style.display = 'none';
+          }}
         />
         
         {/* Date Badge */}
@@ -70,7 +74,7 @@ export default function EventCard({ event }: EventCardProps) {
       </div>
       
       {/* Content */}
-      <CardContent className="p-6">
+      <CardContent className="p-6 flex flex-col flex-grow">
         <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
           {event.title}
         </h3>
@@ -114,6 +118,9 @@ export default function EventCard({ event }: EventCardProps) {
             ))}
           </div>
         )}
+
+        {/* Spacer to push button to bottom */}
+        <div className="flex-grow"></div>
 
         {/* Action Button */}
         <Button 

@@ -7,8 +7,17 @@ type DialogContextValue = {
 
 const DialogContext = createContext<DialogContextValue | null>(null);
 
-export function Dialog({ children }: PropsWithChildren) {
-  const [open, setOpen] = useState(false);
+export function Dialog({ children, open: controlledOpen, onOpenChange }: PropsWithChildren<{ open?: boolean; onOpenChange?: (v: boolean) => void }>) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const isControlled = typeof controlledOpen === 'boolean';
+  const open = isControlled ? controlledOpen! : uncontrolledOpen;
+  const setOpen = (v: boolean) => {
+    if (onOpenChange) {
+      onOpenChange(v);
+    } else {
+      setUncontrolledOpen(v);
+    }
+  };
   const value = useMemo(() => ({ open, setOpen }), [open]);
   return (
     <DialogContext.Provider value={value}>
@@ -17,7 +26,7 @@ export function Dialog({ children }: PropsWithChildren) {
   );
 }
 
-export function DialogTrigger({ children, asChild }: { children: ReactElement; asChild?: boolean }) {
+export function DialogTrigger({ children, asChild }: { children: ReactElement<any>; asChild?: boolean }) {
   const ctx = useContext(DialogContext);
   if (!ctx) return children;
 
@@ -35,7 +44,7 @@ export function DialogTrigger({ children, asChild }: { children: ReactElement; a
   );
 }
 
-export function DialogClose({ children, asChild }: { children: ReactElement; asChild?: boolean }) {
+export function DialogClose({ children, asChild }: { children: ReactElement<any>; asChild?: boolean }) {
   const ctx = useContext(DialogContext);
   if (!ctx) return children;
   const props = {
@@ -68,7 +77,7 @@ export function DialogContent({ children, className }: PropsWithChildren<{ class
 
 export function DialogHeader({ children }: PropsWithChildren) {
   return (
-    <div className="px-6 py-4 border-b">
+    <div className=" ">
       {children}
     </div>
   );

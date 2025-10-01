@@ -47,7 +47,7 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
         
         <CardContent className="p-6">
           <h3 className="text-2xl font-bold mb-3 group-hover:text-blue-600 transition-colors">
-            <Link href={`/articulos/${article.slug}`}>
+            <Link href={`/notas/${article.id}`}>
               {article.title}
             </Link>
           </h3>
@@ -109,7 +109,7 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
             </div>
             
             <h3 className="font-semibold mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
-              <Link href={`/articulos/${article.slug}`}>
+              <Link href={`/notas/${article.id}`}>
                 {article.title}
               </Link>
             </h3>
@@ -159,7 +159,7 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
       
       <CardContent className="p-4">
         <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
-          <Link href={`/articulos/${article.slug}`}>
+          <Link href={`/notas/${article.id}`}>
             {article.title}
           </Link>
         </h3>

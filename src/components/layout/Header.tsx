@@ -15,10 +15,10 @@ export function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { authState, logout } = useAuth();
 
-  const handleLogout = async () => {
-    await logout();
-    setIsUserMenuOpen(false);
-  };
+  // const handleLogout = async () => {
+  //   await logout();
+  //   setIsUserMenuOpen(false);
+  // };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -40,10 +40,9 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-<<<<<<< HEAD
             {/* Desktop Actions */}
-            <div className="hidden md:flex items-center space-x-4">
-              {authState.isAuthenticated ? (
+             <div className="hidden md:flex items-center space-x-4">
+            {/*  {authState.isAuthenticated ? (
                 <div className="relative">
                   <Button
                     variant="ghost"
@@ -83,7 +82,7 @@ export function Header() {
                 </div>
               ) : (
                 <>
-                  <Link href="/auth/login">
+                  {/* <Link href="/auth/login">
                     <Button variant="outline" size="sm">
                       <User className="h-4 w-4 mr-2" />
                       Iniciar Sesión
@@ -93,11 +92,9 @@ export function Header() {
                     <Button size="sm">
                       Crear Cuenta
                     </Button>
-                  </Link>
+                  </Link> 
                 </>
               )}
-            </div>
-=======
             
             <div className="hidden md:flex items-center space-x-4">
             {authState.isAuthenticated ? (
@@ -154,8 +151,7 @@ export function Header() {
               </>
             )}
           </div>
->>>>>>> 5d7ac29847bda9c553d6273a3cda5ba768c223df
-          </nav>
+          </nav>*/}
 
           <div className="md:hidden">
             <Button
@@ -181,11 +177,6 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
-<<<<<<< HEAD
-
-=======
-              
->>>>>>> 5d7ac29847bda9c553d6273a3cda5ba768c223df
               <div className="px-4 py-2 space-y-2">
                 {authState.isAuthenticated ? (
                   <div className="space-y-2">
@@ -229,10 +220,12 @@ export function Header() {
                     </Link>
                   </>
                 )}
-              </div>
+              </div> 
             </nav>
           </div>
         )}
+      </nav>
+      </div>
       </div>
     </header>
   );

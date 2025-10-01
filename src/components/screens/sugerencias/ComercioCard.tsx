@@ -67,9 +67,9 @@ export default function ComercioCard({ comercio }: ComercioCardProps) {
   };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
+    <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col">
       {/* Logo Section */}
-      <div className={`${comercio.backgroundColor} h-48 flex items-center justify-center relative`}>
+      <div className={`${comercio.backgroundColor} h-48 flex items-center justify-center relative flex-shrink-0`}>
         {renderBusinessLogo()}
         
         {/* Category Badge */}
@@ -81,7 +81,7 @@ export default function ComercioCard({ comercio }: ComercioCardProps) {
       </div>
       
       {/* Content */}
-      <CardContent className="p-6">
+      <CardContent className="p-6 flex flex-col flex-grow">
         <div className="flex items-start justify-between mb-3">
           <h3 className="font-bold text-lg text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">
             {comercio.name}
@@ -135,6 +135,9 @@ export default function ComercioCard({ comercio }: ComercioCardProps) {
             )}
           </div>
         )}
+
+        {/* Spacer to push button to bottom */}
+        <div className="flex-grow"></div>
 
         {/* Ver más botón */}
         <Link href={`/comercios/${comercio.id}`}>
