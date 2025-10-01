@@ -50,9 +50,9 @@ export function FeaturedArticles() {
               Explora nuestro archivo completo de noticias, reportajes y contenido 
               especial sobre el Cerro de las Rosas y el norte de Córdoba.
             </p>
-            <Link href="/articulos" className="group">
+            <Link href="/notas" className="group">
               <Button size="lg" className="group">
-                Ver Todos los Artículos
+                Ver Todas las Notas
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
