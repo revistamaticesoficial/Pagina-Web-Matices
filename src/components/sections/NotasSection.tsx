@@ -48,7 +48,7 @@ function NotasSection() {
   return (
     <section className='py-16'>
       <h1 className="text-3xl font-bold text-[#005B82] text-center mb-8">Notas Destacadas</h1>
-      <div className="mt-8 w-full max-w-7xl mx-auto">
+      <div className="mt-8 w-full max-w-7xl mx-auto line-clamp-1">
         <div className="relative overflow-hidden" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
           {/* Track con 5 tarjetas, ancho flexible y desplazamiento por tarjeta */}
           <div
@@ -77,7 +77,7 @@ function NotasSection() {
 
                   <div className="p-5 flex flex-col justify-between h-64">
                     <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2">{nota.title}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-3">{nota.excerpt}</p>
+                    <p className="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-3">{nota.excerpt.length > 50 ? nota.excerpt.slice(0, 50) + '...' : nota.excerpt}</p>
 
                     <div className="flex items-center justify-between text-[11px] text-gray-500 mb-3">
                       <div className="flex items-center space-x-4">

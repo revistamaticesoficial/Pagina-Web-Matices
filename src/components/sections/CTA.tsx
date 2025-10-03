@@ -2,13 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 function CTA() {
     return (
-        <section className="py-16">
+        <section className="py-16 px-4">
             <div className="mt-16 w-full max-w-6xl mx-auto">
               <div className="relative w-full group cursor-pointer">
                 <Image
                   src="/images/mati-revista.png"
                   alt="Descubre todo lo que Mati tiene para ofrecer - Ver Sugerencias"
-                  width={1200}
+                  width={1400}
                   height={400}
                   className="w-full h-auto rounded-2xl shadow-lg border border-gray-200 object-cover"
                   priority={false}
