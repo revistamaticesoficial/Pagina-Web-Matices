@@ -1,20 +1,69 @@
 'use client'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useCallback, useState } from 'react'
 import { DashboardSidebar } from '@/components/layout/DashboardSidebar'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/providers/AuthProvider'
 import { useRouter } from 'next/navigation'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Dialog'
+import { supabase } from '@/lib/supabase'
 
 export default function GestionLayout({ children }: { children: ReactNode }) {
   const { authState } = useAuth()
   const router = useRouter()
+  const [showOnboardingModal, setShowOnboardingModal] = useState(false)
+
+  const evaluateOnboarding = useCallback(async () => {
+    if (!authState.user) return
+    try {
+      // Cargar perfil
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, isOnboardingComplete')
+        .eq('id', authState.user.id)
+        .maybeSingle()
+
+      // Cargar comercio
+      const { data: business } = await supabase
+        .from('comercios')
+        .select('name')
+        .eq('owner_id', authState.user.id)
+        .maybeSingle()
+
+      const hasFullName = Boolean(profile?.full_name && profile.full_name.trim().length > 1)
+      const hasBusinessName = Boolean(business?.name && business.name.trim().length > 1)
+      const isComplete = Boolean(profile?.isOnboardingComplete)
+
+      if (!isComplete && hasFullName && hasBusinessName) {
+        // Marcar onboarding como completo
+        await supabase
+          .from('profiles')
+          .update({ isOnboardingComplete: true })
+          .eq('id', authState.user.id)
+        setShowOnboardingModal(false)
+        return
+      }
+
+      // Mostrar modal si no está completo
+      setShowOnboardingModal(!isComplete)
+    } catch {
+      // En caso de error, no bloquear la UI pero mostrar modal
+      setShowOnboardingModal(true)
+    }
+  }, [authState.user])
 
   useEffect(() => {
     if (!authState.isLoading && !authState.user) {
       router.push('/')
     }
   }, [authState.isLoading, authState.user, router])
+
+  // Evaluar al entrar a gestión y cuando el usuario cambie
+  useEffect(() => {
+    if (!authState.isLoading && authState.user) {
+      evaluateOnboarding()
+    }
+  }, [authState.isLoading, authState.user, evaluateOnboarding])
 
   return (
     <main className="relative min-h-screen bg-white text-black">
@@ -67,6 +116,24 @@ export default function GestionLayout({ children }: { children: ReactNode }) {
         </div>
 
       </div>
+
+      {/* Modal de Onboarding */}
+      <Dialog open={showOnboardingModal} onOpenChange={setShowOnboardingModal}>
+        <DialogContent className="sm:max-w-[480px] p-5 text-center">
+          <DialogHeader>
+            <DialogTitle>Completa tu perfil</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">
+              Para utilizar la plataforma es necesario completar los datos de tu perfil y de tu comercio.
+            </p>
+            <div className="flex justify-center gap-2 mt-10">
+              {/* <Button variant="outline" onClick={() => setShowOnboardingModal(false)} className="bg-red-700 hover:bg-red-500 text-white">Cerrar</Button> */}
+              <Button onClick={() => setShowOnboardingModal(false)}>Ir a completar datos</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   )
 }

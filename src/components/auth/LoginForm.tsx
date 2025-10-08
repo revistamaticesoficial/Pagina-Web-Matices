@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -11,6 +12,7 @@ import { validateLoginForm } from '@/lib/validations';
 import { Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 
 export function LoginForm() {
+  const router = useRouter();
   const { login, authState, clearError } = useAuth();
 
   const [credentials, setCredentials] = useState<LoginCredentials>({
@@ -61,6 +63,8 @@ export function LoginForm() {
 
     try {
       await login(credentials);
+      // Ir a la página de validación después de login exitoso
+      router.push('/validation');
     } catch (error) {
       console.error('Login error:', error);
     }

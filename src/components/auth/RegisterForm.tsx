@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/Input';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import { RegisterCredentials, FormErrors } from '@/types/auth';
-import { validateRegisterForm } from '@/lib/validations';
+import { validateEmail, validatePassword, validateConfirmPassword } from '@/lib/validations';
 import { User, Mail, Lock, AlertCircle, Loader2, CheckCircle } from 'lucide-react';
 
 export function RegisterForm() {
@@ -16,13 +16,13 @@ export function RegisterForm() {
   const { register, authState, clearError } = useAuth();
   
   const [credentials, setCredentials] = useState<RegisterCredentials>({
-    firstName: '',
-    lastName: '',
+    firstName: '', // no se solicitará en UI
+    lastName: '', // no se solicitará en UI
     email: '',
     password: '',
     confirmPassword: '',
     acceptTerms: false,
-    newsletter: true,
+    newsletter: false,
   });
   
   const [errors, setErrors] = useState<FormErrors>({});
@@ -60,12 +60,16 @@ export function RegisterForm() {
     e.preventDefault();
     
     // Mark all fields as touched
-    const allFields = ['firstName', 'lastName', 'email', 'password', 'confirmPassword', 'acceptTerms'];
+    const allFields = ['email', 'password', 'confirmPassword'];
     const touchedState = allFields.reduce((acc, field) => ({ ...acc, [field]: true }), {});
     setTouched(touchedState);
     
-    // Validate form
-    const validationErrors = validateRegisterForm(credentials);
+    // Validate form (solo email/contraseñas/aceptTerms)
+    const validationErrors: FormErrors = {};
+    const e1 = validateEmail(credentials.email); if (e1) validationErrors.email = e1;
+    const e2 = validatePassword(credentials.password); if (e2) validationErrors.password = e2;
+    const e3 = validateConfirmPassword(credentials.password, credentials.confirmPassword); if (e3) validationErrors.confirmPassword = e3;
+    if (!credentials.acceptTerms) validationErrors.acceptTerms = 'Debes aceptar los términos y condiciones';
     setErrors(validationErrors);
     
     // If there are validation errors, don't submit
@@ -75,7 +79,7 @@ export function RegisterForm() {
 
     try {
       await register(credentials);
-      router.push('/'); // Redirect to home after successful registration
+      router.push('/validation');
     } catch (error) {
       // Error is handled by the auth context
       console.error('Registration error:', error);
@@ -103,33 +107,6 @@ export function RegisterForm() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <Input
-            type="text"
-            label="Nombre"
-            placeholder="Juan"
-            value={credentials.firstName}
-            onChange={handleChange('firstName')}
-            onBlur={handleBlur('firstName')}
-            error={touched.firstName ? errors.firstName : undefined}
-            leftIcon={<User />}
-            required
-            disabled={authState.isLoading}
-          />
-
-          <Input
-            type="text"
-            label="Apellido"
-            placeholder="Pérez"
-            value={credentials.lastName}
-            onChange={handleChange('lastName')}
-            onBlur={handleBlur('lastName')}
-            error={touched.lastName ? errors.lastName : undefined}
-            leftIcon={<User />}
-            required
-            disabled={authState.isLoading}
-          />
-        </div>
 
         <Input
           type="email"
@@ -176,7 +153,7 @@ export function RegisterForm() {
         <div className="space-y-4">
           <Checkbox
             checked={credentials.acceptTerms}
-            onChange={handleChange('acceptTerms')}
+            onChange={(e) => setCredentials(prev => ({ ...prev, acceptTerms: (e.target as HTMLInputElement).checked }))}
             error={touched.acceptTerms ? errors.acceptTerms : undefined}
             label={
               <span>

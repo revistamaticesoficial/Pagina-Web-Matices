@@ -9,27 +9,59 @@ import { ProfileWithBusiness } from '@/types/business';
 // Supabase auth service
 const supabaseAuthService = {
   async login(credentials: LoginCredentials): Promise<User> {
+    console.log('[Auth] Starting login process...');
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email: credentials.email,
       password: credentials.password,
     });
 
-    if (error) throw new Error(error.message);
-    if (!data.user) throw new Error('No se pudo obtener el usuario');
+    if (error) {
+      console.error('[Auth] Supabase auth error:', error);
+      throw new Error(error.message);
+    }
+    if (!data.user) {
+      console.error('[Auth] No user returned from Supabase');
+      throw new Error('No se pudo obtener el usuario');
+    }
+
+    console.log('[Auth] User authenticated, getting profile...');
 
     // Get profile data
-    const profile = await getUserProfile(data.user.id);
-    const rawBusiness = await getUserBusiness(data.user.id);
-    const business = rawBusiness
-      ? ({
-        ...rawBusiness,
-        comercio_schedules: Array.isArray((rawBusiness as any).comercio_schedules)
-          ? (rawBusiness as any).comercio_schedules
-          : [],
-      } as unknown as ProfileWithBusiness['business'])
-      : undefined;
+    let profile;
+    try {
+      profile = await getUserProfile(data.user.id);
+      console.log('[Auth] Profile loaded:', profile);
+    } catch (profileError) {
+      console.warn('[Auth] Error loading profile, creating default:', profileError);
+      // Crear un perfil por defecto si no existe
+      profile = {
+        id: data.user.id,
+        full_name: data.user.user_metadata?.full_name || '',
+        avatar_url: null,
+        role: 'owner',
+        created_at: data.user.created_at,
+      };
+    }
 
-    return {
+    let business;
+    try {
+      const rawBusiness = await getUserBusiness(data.user.id);
+      business = rawBusiness
+        ? ({
+          ...rawBusiness,
+          comercio_schedules: Array.isArray((rawBusiness as any).comercio_schedules)
+            ? (rawBusiness as any).comercio_schedules
+            : [],
+        } as unknown as ProfileWithBusiness['business'])
+        : undefined;
+      console.log('[Auth] Business loaded:', business);
+    } catch (businessError) {
+      console.warn('[Auth] Error loading business (non-critical):', businessError);
+      business = undefined;
+    }
+
+    const user = {
       id: data.user.id,
       email: data.user.email!,
       firstName: profile.full_name?.split(' ')[0] || '',
@@ -41,6 +73,9 @@ const supabaseAuthService = {
       profile: profile,
       business,
     };
+
+    console.log('[Auth] Login successful:', user);
+    return user;
   },
 
   async register(credentials: RegisterCredentials): Promise<User> {
@@ -208,30 +243,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!authState.isLoading && authState.isAuthenticated && authState.user) {
-      if (pathname.startsWith('/auth/')) {
-        if (authState.user.business) {
-          router.push('/gestion/inicio');
-        } else {
-          if (pathname !== '/auth/register') {
-            router.push('/auth/register');
-          }
-        }
-        return;
-      }
-
-      if (!authState.user.business && pathname !== '/auth/register') {
-        router.push('/auth/register');
-        return;
-      }
+    if (authState.isLoading) return;
+    // No forzar redirecciones automáticas; delegamos en /validation
+    // Solo aseguramos que si el usuario no está autenticado y está en rutas privadas
+    // (gestion/admin), lo enviemos a login.
+    const isPrivate = pathname.startsWith('/gestion') || pathname.startsWith('/admin');
+    if (isPrivate && !authState.isAuthenticated) {
+      router.push('/auth/login');
     }
-  }, [authState.isLoading, authState.isAuthenticated, authState.user, pathname, router]);
+  }, [authState.isLoading, authState.isAuthenticated, pathname, router]);
 
   const login = async (credentials: LoginCredentials) => {
+    console.log('[Auth] Login function called');
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
+      console.log('[Auth] Calling supabaseAuthService.login...');
       const user = await supabaseAuthService.login(credentials);
+      console.log('[Auth] Login service completed, setting auth state...');
 
       setAuthState({
         user,
@@ -239,7 +268,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: true,
         error: null,
       });
+      
+      console.log('[Auth] Login completed successfully');
     } catch (error) {
+      console.error('[Auth] Login error:', error);
       setAuthState(prev => ({
         ...prev,
         isLoading: false,

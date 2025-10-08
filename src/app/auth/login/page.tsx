@@ -36,3 +36,4 @@ export const metadata = {
   title: 'Iniciar Sesión - Revista Matices',
   description: 'Accede a tu cuenta de Revista Matices del Cerro de las Rosas',
 };
+

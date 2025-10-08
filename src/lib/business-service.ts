@@ -7,9 +7,6 @@ import {
 } from '@/types/business';
 
 export const businessService = {
-  /**
-   * Crear un nuevo comercio con sus horarios
-   */
   async createBusiness(userId: string, data: OnboardingData): Promise<BusinessWithDetails> {
     const { data: business, error: businessError } = await supabase
       .from('businesses')

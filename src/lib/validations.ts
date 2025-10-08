@@ -106,3 +106,41 @@ export const hasFormErrors = (errors: FormErrors): boolean => {
   return Object.values(errors).some(error => error !== undefined);
 };
 
+// Additional validation functions for the registration wizard
+export const validateRequired = (value: string, fieldName: string): string | undefined => {
+  if (!value.trim()) {
+    return `${fieldName} es requerido`;
+  }
+  return undefined;
+};
+
+export const validatePhone = (phone: string): string | undefined => {
+  if (!phone.trim()) {
+    return 'El teléfono es requerido';
+  }
+  // Basic phone validation - adjust regex as needed for your region
+  const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+  if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+    return 'Ingresa un teléfono válido';
+  }
+  return undefined;
+};
+
+export const validateSlug = (slug: string): string | undefined => {
+  if (!slug.trim()) {
+    return 'El slug es requerido';
+  }
+  // Slug validation - only lowercase letters, numbers, and hyphens
+  const slugRegex = /^[a-z0-9-]+$/;
+  if (!slugRegex.test(slug)) {
+    return 'El slug solo puede contener letras minúsculas, números y guiones';
+  }
+  if (slug.length < 3) {
+    return 'El slug debe tener al menos 3 caracteres';
+  }
+  if (slug.length > 50) {
+    return 'El slug no puede tener más de 50 caracteres';
+  }
+  return undefined;
+};
+

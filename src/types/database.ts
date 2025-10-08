@@ -312,6 +312,24 @@ export interface Database {
           }
         ];
       };
+      white_list: {
+        Row: {
+          id: string;
+          created_at: string;
+          email: string | null;
+        };
+        Insert: {
+          id?: string;
+          created_at?: string;
+          email?: string | null;
+        };
+        Update: {
+          id?: string;
+          created_at?: string;
+          email?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;

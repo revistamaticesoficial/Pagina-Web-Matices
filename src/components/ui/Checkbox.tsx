@@ -17,8 +17,8 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             <input
               type="checkbox"
               className={cn(
-                // Hide default checkbox
-                'sr-only',
+                // Make native checkbox capture clicks while remaining invisible
+                'absolute h-4 w-4 opacity-0 cursor-pointer',
                 className
               )}
               ref={ref}

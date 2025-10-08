@@ -41,16 +41,24 @@ export const getUserProfile = async (userId: string) => {
 
 // Helper function to get user business from comercios table
 export const getUserBusiness = async (userId: string) => {
-  const { data, error } = await supabase
-    .from('comercios')
-    .select(`
-      *,
-      comercio_schedules(*)
-    `)
-    .eq('owner_id', userId)
-    .single()
-  
-  if (error && error.code !== 'PGRST116') throw error // PGRST116 = no rows returned
-  return data
+  try {
+    const { data, error } = await supabase
+      .from('comercios')
+      .select(`
+        *,
+        comercio_schedules(*)
+      `)
+      .eq('owner_id', userId)
+      .single()
+    
+    if (error && error.code !== 'PGRST116') {
+      console.warn('Error fetching business data:', error);
+      return null; // Return null instead of throwing
+    }
+    return data
+  } catch (error) {
+    console.warn('Error in getUserBusiness:', error);
+    return null; // Return null instead of throwing
+  }
 }
 
