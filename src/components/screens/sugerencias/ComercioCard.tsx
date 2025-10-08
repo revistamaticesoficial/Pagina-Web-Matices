@@ -11,57 +11,14 @@ interface ComercioCardProps {
 
 export default function ComercioCard({ comercio }: ComercioCardProps) {
   const renderBusinessLogo = () => {
-    // Custom logos for specific businesses
-    if (comercio.name === 'Betos') {
-      return (
-        <div className="text-white text-center">
-          <div className="w-16 h-16 border-2 border-white rounded-full flex items-center justify-center mb-2 mx-auto">
-            <span className="font-bold text-lg">B</span>
-          </div>
-          <div className="text-2xl font-bold">el verdadero</div>
-          <div className="text-3xl font-bold">LOMITO</div>
-        </div>
-      );
-    }
-    
-    if (comercio.name === 'Vidón Bar') {
-      return (
-        <div className="text-white text-center">
-          <div className="text-4xl font-serif italic mb-2">Vidón</div>
-          <div className="text-lg tracking-wider">~ BAR ~</div>
-        </div>
-      );
-    }
-    
-    if (comercio.name === 'Pizza Libre') {
-      return (
-        <div className="text-black text-center">
-          <div className="text-3xl font-bold">PIZZA</div>
-          <div className="text-2xl font-serif italic">Libre</div>
-        </div>
-      );
-    }
-    
-    if (comercio.name === 'Kit Wonder') {
-      return (
-        <div className="text-white text-center">
-          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-2 mx-auto">
-            <span className="text-2xl font-bold">W</span>
-          </div>
-          <div className="text-lg font-bold">KIT WONDER</div>
-        </div>
-      );
-    }
-    
-    // Default logo for other businesses
     return (
       <div className="text-white text-center">
         <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-2 mx-auto">
           <span className="text-2xl font-bold">
-            {comercio.name.charAt(0).toUpperCase()}
+          {comercio.name.slice(0, 1).toUpperCase()}
           </span>
         </div>
-        <div className="text-lg font-bold">{comercio.name}</div>
+        <div className="text-lg font-bold line-clamp-2">{comercio.name}</div>
       </div>
     );
   };
@@ -69,7 +26,7 @@ export default function ComercioCard({ comercio }: ComercioCardProps) {
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col">
       {/* Logo Section */}
-      <div className={`${comercio.backgroundColor} h-48 flex items-center justify-center relative flex-shrink-0`}>
+      <div className={`bg-gradient-to-r from-[#005B82] via-[#004D6E] to-[#003C56] hover:bg-gradient-to-br h-48 flex items-center justify-center relative flex-shrink-0`}>
         {renderBusinessLogo()}
         
         {/* Category Badge */}
@@ -97,8 +54,8 @@ export default function ComercioCard({ comercio }: ComercioCardProps) {
         <div className="flex items-center text-sm text-gray-500 mb-3">
           <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
           <div className="min-w-0">
-            <div className="truncate">{comercio.location}</div>
-            <div className="text-xs text-gray-400">{comercio.neighborhood}</div>
+            <div className="truncate">{comercio.location || 'Dirección no disponible'}</div>
+            <div className="text-xs text-gray-400">{comercio.neighborhood || 'Zona Norte'}</div>
           </div>
         </div>
 
