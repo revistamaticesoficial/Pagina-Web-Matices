@@ -39,21 +39,25 @@ export class BenefitService {
         return { success: false, error: 'Este beneficio ya no está disponible' };
       }
 
-      // Simular verificación de límite de usos (por ahora usando datos mock)
-      if (benefit.usageLimit && benefit.usageLimit <= 10) {
-        return { success: false, error: 'Este beneficio ha alcanzado su límite de usos' };
+      // Llamar al endpoint server-side (valida expiración, stock, duplicados e inserta)
+      const response = await fetch('/api/benefits/redeem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          benefit_id: benefit.id,
+          full_name: formData.nombreCompleto.trim(),
+          dni: formData.dni.trim(),
+          phone: formData.telefono.trim(),
+          email: formData.email?.trim() || null,
+        }),
+      });
+
+      const json = await response.json();
+      if (!response.ok) {
+        return { success: false, error: json?.error || 'No se pudo completar el canje' };
       }
 
-      // Simular verificación de canje previo (por ahora siempre permite)
-      // En el futuro se implementará con Supabase
-
-      // Generar código único
-      const generatedCode = `${benefit.code || 'PROMO'}-${Date.now().toString().slice(-6)}`;
-
-      // Simular delay de procesamiento
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      return { success: true, code: generatedCode };
+      return { success: true };
 
     } catch (error) {
       console.error('Error inesperado al canjear beneficio:', error);

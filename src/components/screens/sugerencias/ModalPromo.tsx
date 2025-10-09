@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Benefit } from '@/types/sugerencias';
 import { BenefitService } from '@/lib/benefit-service';
 import { Gift, Calendar, X, CheckCircle, Loader2, AlertTriangle, Copy, Check, Download, QrCode, Printer } from 'lucide-react';
+import { formatDateLabel } from '@/lib/utils';
 
 interface ModalPromoProps {
   isRedeemOpen: boolean;
@@ -107,11 +108,15 @@ const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPro
         email: formData.email
       });
 
-      if (result.success && result.code) {
-        setGeneratedCode(result.code);
+      if (result.success) {
         setStep('success');
       } else {
         console.error('Error al canjear beneficio:', result.error);
+        setToastMessage(
+          typeof result.error === 'string' ? result.error : 'No se pudo canjear el beneficio.'
+        );
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 3500);
         setStep('error');
       }
     } catch (error) {
@@ -388,7 +393,7 @@ const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPro
             <div className="flex items-center gap-4 text-xs text-gray-500">
               <div className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
-                <span>Válido hasta: {formatDate(selectedBenefit.validUntil)}</span>
+                <span>Válido hasta: {formatDateLabel(selectedBenefit.validUntil)}</span>
               </div>
               <Badge variant="outline" className="text-xs">
                 {selectedBenefit.discount}
@@ -593,62 +598,21 @@ const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPro
 
       <div>
         <h3 className="text-xl font-bold text-gray-900 mb-2">
-          ¡Beneficio canjeado exitosamente!
+          ¡Solicitud registrada!
         </h3>
         <p className="text-gray-600">
-          Tu código de canje ha sido generado. Preséntalo en el comercio para disfrutar de tu beneficio.
+          Presenta tu DNI en el comercio para retirar tu beneficio.
         </p>
       </div>
 
       {/* Mostrar cupón visual si está activado */}
       {showCoupon && renderCouponVisual()}
 
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <p className="text-sm text-gray-500 mb-2">Tu código de canje:</p>
-        <div className="flex items-center justify-between bg-white border rounded-lg p-3">
-          <code className="text-lg font-mono font-bold text-gray-900">
-            {generatedCode}
-          </code>
-          <Button
-            onClick={copyToClipboard}
-            size="sm"
-            variant="outline"
-            className="ml-2"
-          >
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
+      
 
       {/* Botones de acción para el cupón */}
       <div className="flex gap-3">
-        {!showCoupon ? (
-          <Button
-            onClick={generateCouponImage}
-            className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
-          >
-            <Gift className="w-4 h-4 mr-2" />
-            Ver Cupón Visual
-          </Button>
-        ) : (
-          <div className="flex gap-2 flex-1">
-            <Button
-              onClick={downloadCoupon}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm"
-            >
-              <Download className="w-4 h-4 mr-1" />
-              Descargar
-            </Button>
-            <Button
-              onClick={printCoupon}
-              variant="outline"
-              className="flex-1 text-sm"
-            >
-              <Printer className="w-4 h-4 mr-1" />
-              Imprimir
-            </Button>
-          </div>
-        )}
+        
         <Button
           onClick={() => setIsRedeemOpen(false)}
           variant="outline"
@@ -658,18 +622,18 @@ const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPro
         </Button>
       </div>
 
-      <div className="bg-blue-50 p-4 rounded-lg">
+      <div className="bg-blue-50 p-4 rounded-lg text-left">
         <div className="flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-          <div className="text-left">
-            <p className="text-sm font-medium text-blue-900 mb-1">
-              Importante:
-            </p>
+          <div>
+            <p className="text-sm font-medium text-blue-900 mb-1">Importante:</p>
             <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Presenta este código en {selectedBenefit?.business}</li>
-              <li>• El beneficio es válido hasta {selectedBenefit ? formatDate(selectedBenefit.validUntil) : ''}</li>
-              <li>• Solo se puede usar una vez por persona</li>
-              <li>• Descarga tu cupón para tenerlo siempre a mano</li>
+              <li>• Beneficio: {selectedBenefit?.title}</li>
+              <li>• Comercio: {selectedBenefit?.business}</li>
+              <li>• Cliente: {formData.nombreCompleto} — DNI: {formData.dni}</li>
+              {formData.email && <li>• Email: {formData.email}</li>}
+              <li>• Válido hasta: {selectedBenefit ? formatDate(selectedBenefit.validUntil) : ''}</li>
+              <li>• Presenta tu DNI en el comercio para validar la identidad</li>
             </ul>
           </div>
         </div>
@@ -688,7 +652,7 @@ const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPro
           Error al canjear el beneficio
         </h3>
         <p className="text-gray-600">
-          Ha ocurrido un error al procesar tu solicitud. Por favor, intenta nuevamente.
+          {toastMessage || 'Ha ocurrido un error al procesar tu solicitud. Por favor, intenta nuevamente.'}
         </p>
       </div>
 

@@ -203,8 +203,10 @@ export interface Database {
           business_id: string;
           title: string;
           description: string | null;
-          type: "coupon" | "giveaway";
+          type: "discount" | "multipromo";
           quantity: number;
+          valid_from: string | null;
+          valid_to: string | null;
           created_at: string;
           expires_at: string | null;
         };
@@ -234,6 +236,47 @@ export interface Database {
             columns: ["business_id"];
             isOneToOne: false;
             referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      benefit_redemptions: {
+        Row: {
+          id: string;
+          benefit_id: string | null;
+          full_name: string;
+          dni: string | null;
+          email: string | null;
+          phone: string | null;
+          redeemed_at: string | null;
+          status: Database['public']['Enums']['benefit_redemption_status'] | null;
+        };
+        Insert: {
+          id?: string;
+          benefit_id?: string | null;
+          full_name: string;
+          dni?: string | null;
+          email?: string | null;
+          phone?: string | null;
+          redeemed_at?: string | null;
+          status?: Database['public']['Enums']['benefit_redemption_status'] | null;
+        };
+        Update: {
+          id?: string;
+          benefit_id?: string | null;
+          full_name?: string;
+          dni?: string | null;
+          email?: string | null;
+          phone?: string | null;
+          redeemed_at?: string | null;
+          status?: Database['public']['Enums']['benefit_redemption_status'] | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "benefit_redemptions_benefit_id_fkey";
+            columns: ["benefit_id"];
+            isOneToOne: false;
+            referencedRelation: "benefits";
             referencedColumns: ["id"];
           }
         ];
@@ -338,7 +381,7 @@ export interface Database {
       [_ in never]: never;
     };
     Enums: {
-      [_ in never]: never;
+      benefit_redemption_status: 'required' | 'redeemed' | 'canceled';
     };
     CompositeTypes: {
       [_ in never]: never;

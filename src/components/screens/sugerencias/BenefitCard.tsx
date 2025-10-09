@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Benefit } from '@/types/sugerencias';
 import { useState } from 'react';
 import { ModalPromo } from '@/components/screens/sugerencias';
+import { formatDateLabel } from '@/lib/utils';
 
 interface BenefitCardProps {
   benefit: Benefit;
@@ -15,14 +16,7 @@ interface BenefitCardProps {
 export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
   const [copied, setCopied] = useState(false);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-AR', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    });
-  };
+  const formatDate = (dateString: string) => formatDateLabel(dateString);
 
   const copyCode = async () => {
     try {
@@ -79,11 +73,11 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
         </div>
 
         {/* Business Name */}
-        <div className="absolute bottom-4 left-4 z-10">
+        {/* <div className="absolute bottom-4 left-4 z-10">
           <h4 className="text-white font-bold text-lg drop-shadow-lg">
             {benefit.business}
           </h4>
-        </div>
+        </div> */}
       </div>
           
       
@@ -107,7 +101,7 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
         <div className="mb-2">
           <Badge variant="outline" className="text-xs">
             <Gift className="h-3 w-3 mr-1" />
-            {benefit.category}
+            {benefit.type === 'discount' ? 'Descuento' : 'Multipromo'}
           </Badge>
         </div>
 

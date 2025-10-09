@@ -6,12 +6,34 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDate(date: string | Date): string {
-  const d = new Date(date);
+  const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleDateString('es-AR', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   });
+}
+
+// Parse 'YYYY-MM-DD' safely as local date (no UTC shift) and return end of local day
+export function parseDateOnlyToEndOfLocalDay(dateStr: string): Date {
+  const m = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return new Date(dateStr);
+  const [_, y, mo, d] = m;
+  return new Date(Number(y), Number(mo) - 1, Number(d), 23, 59, 59, 999);
+}
+
+// Safe formatter for labels: if input is 'YYYY-MM-DD', format without UTC shifts
+export function formatDateLabel(dateStr: string): string {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    const y = Number(dateStr.slice(0, 4));
+    const m = Number(dateStr.slice(5, 7));
+    const d = Number(dateStr.slice(8, 10));
+    // Create local date without timezone shift
+    const dt = new Date(y, m - 1, d);
+    return dt.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  // Fallback for full ISO/timestamptz
+  return new Date(dateStr).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 export function formatPrice(price: number): string {
