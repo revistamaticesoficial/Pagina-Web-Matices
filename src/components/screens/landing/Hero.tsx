@@ -39,6 +39,7 @@ export function HeroHome() {
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length)
+
     }, 5000)
 
     return () => clearInterval(interval)
@@ -90,7 +91,7 @@ export function HeroHome() {
                 }`}
               >
                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-4 text-balance">
-                  {slide.title} <span className="text-[#005B82]">{slide.highlight}</span>
+                  {slide.title} <span className="text-[#005B82]">{slide.highlight} </span>
                   <br />
                   {slide.subtitle}
                 </h1>
