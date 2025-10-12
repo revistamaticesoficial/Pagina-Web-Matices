@@ -27,12 +27,14 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import emailjs from "@emailjs/browser";
+import { useRouter } from "next/navigation";
 
 const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!;
 const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!;
 
 export function Contact() {
+  const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [send, setSend] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,7 +52,7 @@ export function Contact() {
         "_blank"
       );
     } else if (cardType === "form") {
-      setIsModalOpen(true);
+      router.push("/contacto");
     }
   };
 
@@ -66,13 +68,8 @@ export function Contact() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // console.log("Form submitted:", formData);
-
-    console.log('serviceId: ', SERVICE_ID);
-    console.log('templateId: ', TEMPLATE_ID);
-    console.log('publicKey: ', PUBLIC_KEY);
-  
-
+    if (!formRef.current) return;
+    
     emailjs.init(PUBLIC_KEY);
     emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current).then(
       (result) => {

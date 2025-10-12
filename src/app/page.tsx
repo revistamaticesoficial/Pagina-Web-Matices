@@ -1,4 +1,5 @@
-import { Hero } from '@/components/sections/Hero';
+import { HeroHome } from '@/components/screens/landing/Hero';
+// import {Hero} from '@/components/sections/Hero';
 import { Stats } from '@/components/sections/Stats';
 import LandingLayout from '@/components/layout/LandingLayout';
 import NotasSection from '@/components/sections/NotasSection';
@@ -8,7 +9,8 @@ import { Contact } from '@/components/sections/Contact';
 export default function Home() {
     return (
         <LandingLayout>
-            <Hero />
+            <HeroHome />
+            {/* <Hero /> */}
             <Stats />
             <NotasSection />
             <CTA />

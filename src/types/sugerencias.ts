@@ -30,6 +30,7 @@ export interface Benefit {
   terms: string[];
   isActive: boolean;
   usageLimit?: number;
+  type?: "discount" | "multipromo";
 }
 
 export interface Comercio {

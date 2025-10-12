@@ -3,17 +3,16 @@
  import { useCallback, useEffect, useState } from 'react';
  import { supabase } from '@/lib/supabase';
 
- export interface BenefitRedemption {
-   id: string;
-   benefit_id: string;
-   full_name: string;
-   dni: string;
-   phone: string;
-   email?: string | null;
-   generated_code: string;
-   claimed_at: string;
-   user_id?: string | null;
- }
+export interface BenefitRedemption {
+  id: string;
+  benefit_id: string | null;
+  full_name: string;
+  dni: string | null;
+  phone: string | null;
+  email: string | null;
+  redeemed_at: string | null;
+  status: 'required' | 'redeemed' | 'canceled' | null;
+}
 
  interface UseBenefitRedemptionsReturn {
    redemptions: BenefitRedemption[];
@@ -32,10 +31,10 @@
        setLoading(true);
        setError(null);
 
-       let query = supabase
-         .from('benefits_redemptions')
+        let query = supabase
+          .from('benefit_redemptions')
          .select('*')
-         .order('claimed_at', { ascending: false });
+         .order('redeemed_at', { ascending: false });
 
        if (benefitId) {
          query = query.eq('benefit_id', benefitId);

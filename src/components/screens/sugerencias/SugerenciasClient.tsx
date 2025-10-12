@@ -5,6 +5,7 @@
  import LandingLayout from '@/components/layout/LandingLayout';
  import { EventCard, BenefitCard, ComercioCard, Pagination, ModalPromo } from '@/components/screens/sugerencias';
  import { Benefit } from '@/types/sugerencias';
+ import HeroSugerencias from './Hero';
 
  type TabType = 'comercios' | 'eventos' | 'beneficios';
 
@@ -56,24 +57,10 @@
      <LandingLayout>
        <div className="min-h-screen bg-white">
          {/* Hero Section */}
-         <section className="relative h-[70vh] bg-gradient-to-r from-green-600/20 to-blue-600/20 overflow-hidden">
-           <div className="absolute inset-0">
-             <video className="w-full h-full object-cover" autoPlay muted loop playsInline preload="metadata">
-               <source src="/videosug/sugerencia.mp4" type="video/mp4" />
-             </video>
-             <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-black/20" />
-           </div>
-
-           <div className="relative z-10 container mx-auto px-4 h-full flex items-center justify-center text-center">
-             <div className="max-w-3xl">
-               <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4">Matices se renueva</h1>
-               <p className="text-xl lg:text-2xl text-white/90">Descubrí nuestra nueva imagen</p>
-             </div>
-           </div>
-         </section>
+         <HeroSugerencias categories={categories} setCurrentTab={setCurrentTab} setCurrentPage={setCurrentPage} />
 
          {/* Categories Section */}
-         <section className="py-12 bg-gray-50">
+         {/* <section className="py-12 bg-gray-50">
            <div className="container mx-auto px-4">
              <div className="flex flex-col sm:flex-row gap-4 justify-between max-w-4xl mx-auto">
                {categories.map((category) => (
@@ -91,7 +78,7 @@
                ))}
              </div>
            </div>
-         </section>
+         </section> */}
 
          {/* Content Section */}
          <section className="py-16 bg-white">

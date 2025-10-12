@@ -9,8 +9,9 @@ const SECTION_MAP: Record<string, string> = {
   beneficios: '/admin/beneficios',
 }
 
-export default function AdminSectionPage({ params }: { params: { section: string } }) {
-  const target = SECTION_MAP[params.section]
+export default async function AdminSectionPage({ params }: { params: Promise<{ section: string }> }) {
+  const { section } = await params
+  const target = SECTION_MAP[section]
   if (target) {
     redirect(target)
   }

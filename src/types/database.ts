@@ -16,6 +16,7 @@ export interface Database {
           avatar_url: string | null;
           role: string;
           created_at: string;
+          isOnboardingComplete?: boolean;
         };
         Insert: {
           id: string;
@@ -23,6 +24,7 @@ export interface Database {
           avatar_url?: string | null;
           role?: string;
           created_at?: string;
+          isOnboardingComplete?: boolean;
         };
         Update: {
           id?: string;
@@ -30,6 +32,7 @@ export interface Database {
           avatar_url?: string | null;
           role?: string;
           created_at?: string;
+          isOnboardingComplete?: boolean;
         };
         Relationships: [
           {
