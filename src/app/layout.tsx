@@ -3,10 +3,15 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { AuthProvider } from "@/providers/AuthProvider";
-import { Noto_Sans } from "next/font/google";
+import { Noto_Sans, Gabarito } from "next/font/google";
 import "./globals.css";
 
-const notoSans = Noto_Sans({
+  const notoSans = Noto_Sans({
+    weight: '400',
+    subsets: ['latin'],
+  })
+
+const gabarito = Gabarito({
   weight: '400',
   subsets: ['latin'],
 })
@@ -37,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${notoSans.className} antialiased`}
+        className={`${gabarito.className} antialiased`}
       >
         <AuthProvider>
           <main className="min-h-screen">

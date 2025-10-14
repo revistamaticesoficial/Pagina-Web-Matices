@@ -2,70 +2,132 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
-type Beneficio = {
-  id: number;
-  titulo: string;
-  descripcion?: string;
-  beneficio?: "descuento" | "multipromo";
-  cantidad?: number;
-  canjeados?: number;
-  estado: "Activa" | "Programada" | "Finalizada";
-  desde: string;
-  hasta: string;
-  createdAt?: string;
-};
-
-type CuponRedencion = {
+type BenefitRow = {
   id: string;
-  beneficioId: number;
-  nombre: string;
-  dni: string;
-  telefono: string;
-  email: string;
-  estado: "pedido" | "usado"; // pedido = generado/no usado; usado = canjeado
-  fecha: string; // fecha de creación del cupón
+  title: string;
+  description?: string | null;
+  quantity?: number | null;
+  expires_at?: string | null;
+  valid_to?: string | null;
+  type?: string | null;
+  created_at?: string | null;
 };
 
-const loadBeneficios = (): Beneficio[] => {
-  try {
-    const saved = localStorage.getItem("promos");
-    if (!saved) return [];
-    return JSON.parse(saved) as Beneficio[];
-  } catch {
-    return [];
-  }
-};
-
-const loadCupones = (): CuponRedencion[] => {
-  try {
-    const saved = localStorage.getItem("cupones");
-    if (!saved) return [];
-    return JSON.parse(saved) as CuponRedencion[];
-  } catch {
-    return [];
-  }
+type RedemptionRow = {
+  id: string;
+  benefit_id: string | null;
+  full_name: string;
+  dni: string | null;
+  phone: string | null;
+  email: string | null;
+  redeemed_at: string | null;
+  status: 'required' | 'redeemed' | 'canceled' | null;
 };
 
 export default function BeneficioDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const id = Number(params.id as string);
+  const id = String(params.id as string);
 
-  const [beneficio, setBeneficio] = useState<Beneficio | null>(null);
-  const [cupones, setCupones] = useState<CuponRedencion[]>([]);
+  const [benefit, setBenefit] = useState<BenefitRow | null>(null);
+  const [redemptions, setRedemptions] = useState<RedemptionRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<null | { type: 'redeem' | 'cancel', row: RedemptionRow }>(null);
 
   useEffect(() => {
-    const beneficios = loadBeneficios();
-    const found = beneficios.find((b) => b.id === id) || null;
-    setBeneficio(found);
-    setCupones(loadCupones().filter((c) => c.beneficioId === id));
-    setLoading(false);
+    const load = async () => {
+      setLoading(true);
+      try {
+        const [{ data: b }, { data: r }] = await Promise.all([
+          supabase.from('benefits').select('*').eq('id', id).maybeSingle(),
+          supabase.from('benefit_redemptions').select('*').eq('benefit_id', id).order('redeemed_at', { ascending: false })
+        ]);
+        setBenefit((b || null) as any);
+        setRedemptions((r || []) as any);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
   }, [id]);
 
-  const usados = useMemo(() => cupones.filter(c => c.estado === "usado").length, [cupones]);
-  const pedidos = useMemo(() => cupones.filter(c => c.estado === "pedido").length, [cupones]);
+  const usados = useMemo(() => redemptions.filter(c => c.status === "redeemed").length, [redemptions]);
+  const pedidos = useMemo(() => redemptions.filter(c => c.status === "required").length, [redemptions]);
+
+  const handlerCancel = async (redemptionId: string) => {
+    try {
+      setUpdatingId(redemptionId);
+      const { error } = await (supabase as any)
+        .from('benefit_redemptions')
+        .update({ status: 'canceled' })
+        .eq('id', redemptionId)
+        .eq('status', 'required');
+      if (error) throw error;
+      setRedemptions(prev => prev.map(r => r.id === redemptionId ? { ...r, status: 'canceled' } : r));
+    } catch (e) {
+      console.error('Error cancelando cupón:', e);
+      alert('No se pudo cancelar el cupón.');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handlerUse = async (r: RedemptionRow) => {
+    try {
+      setUpdatingId(r.id);
+      const nowIso = new Date().toISOString();
+      const { error } = await (supabase as any)
+        .from('benefit_redemptions')
+        .update({ status: 'redeemed', redeemed_at: nowIso })
+        .eq('id', r.id)
+        .eq('status', 'required');
+      if (error) throw error;
+      setRedemptions(prev => prev.map(x => x.id === r.id ? { ...x, status: 'redeemed', redeemed_at: nowIso } : x));
+    } catch (e) {
+      console.error('Error marcando canjeado:', e);
+      alert('No se pudo marcar como canjeado.');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const openConfirm = (type: 'redeem' | 'cancel', row: RedemptionRow) => {
+    setConfirmAction({ type, row });
+    setConfirmOpen(true);
+  };
+
+  const closeConfirm = () => {
+    setConfirmOpen(false);
+    setConfirmAction(null);
+  };
+
+  const acceptConfirm = async () => {
+    if (!confirmAction) return;
+    const { type, row } = confirmAction;
+    closeConfirm();
+    if (type === 'redeem') {
+      await handlerUse(row);
+    } else {
+      await handlerCancel(row);
+    }
+  };
+
+  const statusToSpanish = (s: RedemptionRow['status']) => {
+    switch (s) {
+      case 'required':
+        return 'Pendiente';
+      case 'redeemed':
+        return 'Canjeado';
+      case 'canceled':
+        return 'Cancelado';
+      default:
+        return '-';
+    }
+  };
 
   if (loading) {
     return (
@@ -75,7 +137,7 @@ export default function BeneficioDetailPage() {
     );
   }
 
-  if (!beneficio) {
+  if (!benefit) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -91,7 +153,9 @@ export default function BeneficioDetailPage() {
     );
   }
 
-  const createdAt = beneficio.createdAt || new Date().toISOString().slice(0, 10);
+  const createdAt = benefit.created_at || new Date().toISOString().slice(0, 10);
+  const vence = (benefit.valid_to || benefit.expires_at || '') as string;
+  const categoria = benefit.type || '—';
 
   return (
     <div className="space-y-6">
@@ -108,8 +172,8 @@ export default function BeneficioDetailPage() {
 
       {/* Título y metadatos */}
       <div>
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{beneficio.titulo}</h1>
-        <p className="text-gray-600 mt-2">{beneficio.descripcion}</p>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{benefit.title}</h1>
+        <p className="text-gray-600 mt-2">{benefit.description}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -119,15 +183,15 @@ export default function BeneficioDetailPage() {
         </div>
         <div className="border rounded-lg p-4">
           <div className="text-sm text-gray-500">Vence</div>
-          <div className="text-lg font-semibold">{beneficio.hasta}</div>
+          <div className="text-lg font-semibold">{vence}</div>
         </div>
         <div className="border rounded-lg p-4">
           <div className="text-sm text-gray-500">Categoría</div>
-          <div className="text-lg font-semibold capitalize">{beneficio.beneficio || '—'}</div>
+          <div className="text-lg font-semibold capitalize">{categoria}</div>
         </div>
         <div className="border rounded-lg p-4">
-          <div className="text-sm text-gray-500">Estado</div>
-          <div className="text-lg font-semibold">{beneficio.estado}</div>
+          <div className="text-sm text-gray-500">Cantidad</div>
+          <div className="text-lg font-semibold">{benefit.quantity ?? 0}</div>
         </div>
       </div>
 
@@ -142,7 +206,7 @@ export default function BeneficioDetailPage() {
         </div>
       </div>
 
-      {/* Tabla de clientes */}
+      {/* Tabla de redenciones */}
       <div className="border rounded-lg overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead className="bg-black text-white">
@@ -153,28 +217,63 @@ export default function BeneficioDetailPage() {
               <th className="px-4 py-2 text-left">Email</th>
               <th className="px-4 py-2 text-left">Fecha</th>
               <th className="px-4 py-2 text-left">Estado</th>
+              <th className="px-4 py-2 text-left">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {cupones.length === 0 ? (
+            {redemptions.length === 0 ? (
               <tr>
-                <td className="px-4 py-6 text-center text-gray-500" colSpan={6}>Sin redenciones aún</td>
+                <td className="px-4 py-6 text-center text-gray-500" colSpan={7}>Sin redenciones aún</td>
               </tr>
             ) : (
-              cupones.map((c) => (
+              redemptions.map((c) => (
                 <tr key={c.id} className="border-b last:border-b-0">
-                  <td className="px-4 py-2">{c.nombre}</td>
+                  <td className="px-4 py-2">{c.full_name}</td>
                   <td className="px-4 py-2">{c.dni}</td>
-                  <td className="px-4 py-2">{c.telefono}</td>
+                  <td className="px-4 py-2">{c.phone}</td>
                   <td className="px-4 py-2">{c.email}</td>
-                  <td className="px-4 py-2">{c.fecha}</td>
-                  <td className="px-4 py-2 capitalize">{c.estado}</td>
+                  <td className="px-4 py-2">{c.redeemed_at ? new Date(c.redeemed_at).toLocaleString('es-AR') : '-'}</td>
+                  <td className="px-4 py-2">{statusToSpanish(c.status)}</td>
+                  <td className="px-4 py-2">
+                    <div className="flex justify-start gap-2">
+                      <button
+                        type="button"
+                        disabled={c.status !== 'required' || updatingId === c.id}
+                        onClick={() => openConfirm('redeem', c)}
+                        className={`px-2 py-1 rounded text-white ${c.status !== 'required' ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
+                      >
+                        Usar
+                      </button>
+                      <button
+                        type="button"
+                        disabled={c.status !== 'required' || updatingId === c.id}
+                        onClick={() => openConfirm('cancel', c)}
+                        className={`px-2 py-1 rounded text-white ${c.status !== 'required' ? 'bg-gray-300 cursor-not-allowed' : 'bg-red-500 hover:bg-red-700'}`}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
       </div>
+
+      {/* Modal de confirmación */}
+      {confirmOpen && confirmAction && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-lg shadow-xl w-[90%] max-w-md p-6">
+            <h3 className="text-lg font-semibold mb-2">Confirmar cambio de estado</h3>
+            <p className="text-gray-700 mb-6">El estado del cupón solo puede modificarse una sola vez. ¿Aceptas este cambio?</p>
+            <div className="flex justify-end gap-3">
+              <button onClick={closeConfirm} className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancelar</button>
+              <button onClick={acceptConfirm} className="px-4 py-2 rounded text-white bg-[#005B82] hover:bg-[#004A6B]">Aceptar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
