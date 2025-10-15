@@ -33,7 +33,7 @@ export default function HeroSugerencias({ categories, setCurrentTab, setCurrentP
   setCurrentPage: (page: number) => void 
 }) {
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative h-[80vh] w-full overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0">
         <video autoPlay loop muted playsInline className="w-full h-full object-cover">

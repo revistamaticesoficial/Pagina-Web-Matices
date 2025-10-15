@@ -102,6 +102,8 @@ export default function ComercioDetailPage() {
     // }
   }, []);
 
+
+  console.log('comercio: ', comercio?.banners_url[selectedImage]);
   useEffect(() => {
     if (typeof window !== "undefined" && comercio) {
       setShareUrl(
@@ -210,7 +212,7 @@ export default function ComercioDetailPage() {
                 className="flex items-center gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
-                Volver a Sugerencias
+                Volver
               </Button>
 
               <div className="flex items-center gap-2">
@@ -252,7 +254,7 @@ export default function ComercioDetailPage() {
                         key={selectedImage}
                       >
                         <source
-                          src={galleryImages[selectedImage]}
+                          src={comercio?.banners_url[selectedImage]}
                           type="video/mp4"
                         />
                         <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
@@ -263,13 +265,13 @@ export default function ComercioDetailPage() {
 
                     {/* Indicador de posición */}
                     <div className="absolute top-4 right-4 bg-black/70 text-white px-2 py-1 rounded text-sm">
-                      {selectedImage + 1} / {galleryImages.length}
+                      {selectedImage + 1} / {comercio?.banners_url.length}
                     </div>
 
                     {/* Miniaturas */}
                     <div className="p-4 bg-gray-50">
                       <div className="flex gap-2 overflow-x-auto">
-                        {galleryImages.map((image, index) => (
+                        {comercio?.banners_url?.map((image, index) => (
                           <button
                             key={index}
                             onClick={() => setSelectedImage(index)}
@@ -296,30 +298,6 @@ export default function ComercioDetailPage() {
                   </div>
                 </CardContent>
               </Card>
-
-              {/* <Card>
-                <CardContent className="p-6 flex flex-col flex-grow">
-                  <h3 className="flex items-start justify-between mb-4">
-                    Sobre este comercio
-                  </h3>
-
-                  <div className="p-6">
-                    <p>
-                      Este establecimiento forma parte de la comunidad del Cerro
-                      de las Rosas y se destaca por su compromiso con la calidad
-                      y el servicio al cliente.
-                    </p>
-                    {/* <p>
-                      <strong>Barrio:</strong> {comercio.neighborhood}
-                    </p> */}
-                    {/* <p>
-                      <strong>Categoría:</strong> {comercio?.category}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card> */} 
-
-              {/* Información del comercio */}
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
