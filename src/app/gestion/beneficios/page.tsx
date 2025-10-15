@@ -4,7 +4,7 @@ import { formatDateLabel } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
-type Estado = 'Activa' | 'Programada' | 'Finalizada';
+type Estado = 'Activa' | 'Finalizada' | 'No disponible';
 
 type Row = {
   id: string;
@@ -20,6 +20,7 @@ export default function Page() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [unauth, setUnauth] = useState<boolean>(false);
+console.log('rows:', rows);
 
   useEffect(() => {
     const load = async () => {
@@ -70,7 +71,7 @@ export default function Page() {
           const m = validUntil ? Number(validUntil.slice(5,7)) : 1;
           const d = validUntil ? Number(validUntil.slice(8,10)) : 1;
           const endOfDay = validUntil ? new Date(y, m - 1, d, 23, 59, 59, 999) : null;
-          const estado: Estado = endOfDay && endOfDay.getTime() < Date.now() ? 'Finalizada' : 'Activa';
+          const estado: Estado = b.isActive ? (endOfDay && endOfDay.getTime() < Date.now() ? 'Finalizada' : 'Activa' ) : 'No disponible';
 
           return {
             id: b.id as string,
@@ -78,8 +79,8 @@ export default function Page() {
             cantidad: typeof b.quantity === 'number' ? b.quantity : 0,
             canjeados: countsMap[b.id] ?? 0,
             estado,
-            desde: '-',
-            hasta: validUntil ? formatDateLabel(validUntil) : '-',
+            desde: b.valid_from || '-',
+            hasta: b.valid_to || '-',
           };
         });
 
@@ -125,11 +126,13 @@ export default function Page() {
             <tr>
               <th className="px-4 py-2 text-left">Título</th>
               <th className="px-4 py-2 text-left">Estado</th>
-              <th className="px-4 py-2 text-right">Cantidad</th>
+              <th className="px-4 py-2 text-right">Cantidad Total</th>
               <th className="px-4 py-2 text-right">Canjeados</th>
+              <th className="px-4 py-2 text-right">Cantidad Disponible</th>
               <th className="px-4 py-2 text-left">Desde</th>
               <th className="px-4 py-2 text-left">Hasta</th>
               <th className="px-4 py-2 text-right">Acciones</th>
+              
             </tr>
           </thead>
           <tbody>
@@ -144,6 +147,7 @@ export default function Page() {
                   </td>
                   <td className="px-4 py-2 text-right">{b.cantidad ?? 0}</td>
                   <td className="px-4 py-2 text-right">{b.canjeados ?? 0}</td>
+                  <td className="px-4 py-2 text-right">{b.cantidad - b.canjeados ?? 0}</td>
                   <td className="px-4 py-2">{b.desde}</td>
                   <td className="px-4 py-2">{b.hasta}</td>
                   <td className="px-4 py-2">
