@@ -531,7 +531,7 @@ const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPro
             </Button>
             <Button
               type="submit"
-          disabled={isLoading}
+          disabled={isLoading || !formData.aceptaTerminos}
           className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6"
         >
           {isLoading ? (

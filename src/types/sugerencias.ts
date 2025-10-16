@@ -4,10 +4,10 @@ export interface Event {
   description: string;
   date: string;
   time: string;
-  location: string;
+  direction: string;
   neighborhood: string;
   category: string;
-  image: string;
+  banner_url: string;
   price?: number;
   isFree: boolean;
   organizer: string;
@@ -48,6 +48,13 @@ export interface Comercio {
     website?: string;
   };
   services?: string[];
+  // Campos opcionales provenientes de Supabase en vistas/detalles
+  slug?: string;
+  logo_url?: string;
+  direction?: string;
+  phone?: string;
+  banners_url?: string[];
+  tags?: string[];
 }
 
 export type TabType = 'comercios' | 'eventos' | 'beneficios';

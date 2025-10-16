@@ -2,11 +2,12 @@ import { Calendar, Clock, MapPin, Users, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 
-export default async function EventDetailPage({ params }: { params: { id: string } }) {
+export default async function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const { data } = await supabase
     .from('events')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .maybeSingle()
 
   if (!data) {

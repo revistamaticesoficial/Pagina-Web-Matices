@@ -137,7 +137,7 @@ const EventDetailPage = () => {
             {/* Imagen principal */}
             <div className="relative h-96 bg-gradient-to-r from-orange-400 to-red-400 rounded-2xl overflow-hidden">
               <img 
-                src={evento.image} 
+                src={evento.banner_url} 
                 alt={evento.title}
                 className="w-full h-full object-cover"
               />
@@ -166,7 +166,7 @@ const EventDetailPage = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Barrio:</span>
-                  <span className="font-semibold">{evento.neighborhood}</span>
+                  <span className="font-semibold">Cerro de las rosas</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tipo:</span>
@@ -237,8 +237,8 @@ const EventDetailPage = () => {
                   <MapPin className="w-5 h-5 text-[#005B82]" />
                   <div>
                     <p className="font-semibold">Ubicación</p>
-                    <p>{evento.location}</p>
-                    <p className="text-sm text-gray-500">{evento.neighborhood}</p>
+                    <p>{evento.direction}</p>
+                    <p className="text-sm text-gray-500">Cerro de las rosas</p>
                   </div>
                 </div>
 

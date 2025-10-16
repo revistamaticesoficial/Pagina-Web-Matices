@@ -116,10 +116,10 @@ const mapSupabaseToEvent = (data: any): Event => {
     description: data.description || 'Evento especial en nuestra comunidad. ¡No te lo pierdas!',
     date: dateStr,
     time: timeStr,
-    location: data.location || 'Ubicación por confirmar',
+    direction: data.direction || 'Ubicación por confirmar',
     neighborhood: generateNeighborhood(data.location),
     category: generateCategory(data.title),
-    image: '/images/logo.jpg', // Imagen por defecto
+    banner_url: '/images/logo.jpg', // Imagen por defecto
     price: generatePrice(data.title, data.description),
     isFree,
     organizer: generateOrganizer(data.business_id),

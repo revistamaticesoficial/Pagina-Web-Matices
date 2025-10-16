@@ -112,7 +112,7 @@ export default function BeneficioDetailPage() {
     if (type === 'redeem') {
       await handlerUse(row);
     } else {
-      await handlerCancel(row);
+      await handlerCancel(row.id);
     }
   };
 

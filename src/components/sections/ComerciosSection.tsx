@@ -1,10 +1,8 @@
 "use client"
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { mockArticles } from '@/data/articles'
-import { Calendar, Clock, User, BookOpen, List, MapPin } from 'lucide-react'
+import { List, MapPin } from 'lucide-react'
 import Image from 'next/image'
-import { comerciosSugerencias } from '@/data/comercios-sugerencias'
 import { supabase } from '@/lib/supabase'
 import { Comercio } from '@/types/sugerencias'
 
@@ -18,7 +16,7 @@ function ComerciosSection() {
         .order('created_at',{ ascending:false })
         .limit(5);
 
-        setComercios(data || []);
+        setComercios((data as unknown as Comercio[]) || []);
 
       if (error) {
         console.error('Error fetching comercios:', error);

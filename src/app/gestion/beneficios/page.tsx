@@ -145,9 +145,9 @@ console.log('rows:', rows);
                       {b.estado}
                     </span>
                   </td>
-                  <td className="px-4 py-2 text-right">{b.cantidad ?? 0}</td>
-                  <td className="px-4 py-2 text-right">{b.canjeados ?? 0}</td>
-                  <td className="px-4 py-2 text-right">{b.cantidad - b.canjeados ?? 0}</td>
+                  <td className="px-4 py-2 text-right">{(b.cantidad ?? 0)}</td>
+                  <td className="px-4 py-2 text-right">{(b.canjeados ?? 0)}</td>
+                  <td className="px-4 py-2 text-right">{Math.max(0, (b.cantidad ?? 0) - (b.canjeados ?? 0))}</td>
                   <td className="px-4 py-2">{b.desde}</td>
                   <td className="px-4 py-2">{b.hasta}</td>
                   <td className="px-4 py-2">

@@ -160,4 +160,3 @@ export const getFeaturedArticles = () => mockArticles.filter(article => article.
 export const getLatestArticles = (limit = 6) => mockArticles.slice(0, limit);
 export const getArticlesByCategory = (category: string) => mockArticles.filter(article => article.category === category);
 export const getArticleBySlug = (slug: string) => mockArticles.find(article => article.slug === slug);
-
