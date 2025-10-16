@@ -7,9 +7,6 @@ import { eventos as eventosData } from '@/data/eventos';
 import { Event } from '@/types/sugerencias';
 import { useParams } from 'next/navigation';
 
-
-
-
 // Usamos el tipo Event importado de tipos
 
 interface FormData {
@@ -67,9 +64,9 @@ const EventosGastronomicos = () => {
         descripcion: evento.description,
         fecha: evento.date,
         hora: evento.time,
-        ubicacion: evento.location,
+        ubicacion: evento.direction,
         capacidad: evento.capacity?.toString() || '',
-        imagen: evento.image
+        imagen: evento.banner_url
       });
     } else {
       setEventoEditando(null);
@@ -127,10 +124,10 @@ const EventosGastronomicos = () => {
         description: formData.descripcion,
         date: formData.fecha,
         time: formData.hora,
-        location: formData.ubicacion,
+        direction: formData.ubicacion,
         price: undefined,
         capacity: Number(formData.capacidad) || undefined,
-        image: formData.imagen || "/images/logo.jpg",
+        banner_url: formData.imagen || "/images/logo.jpg",
         tags: []
       };
       const eventosActualizados = eventos.map(evento => 
@@ -145,13 +142,13 @@ const EventosGastronomicos = () => {
         description: formData.descripcion,
         date: formData.fecha,
         time: formData.hora,
-        location: formData.ubicacion,
+        direction: formData.ubicacion,
         neighborhood: 'Centro', // valor por defecto
         category: 'ENTRETENIMIENTO', // valor por defecto
         organizer: 'Organizador', // valor por defecto
         price: undefined,
         capacity: Number(formData.capacidad) || undefined,
-        image: formData.imagen || "/images/logo.jpg",
+        banner_url: formData.imagen || "/images/logo.jpg",
         isFree: true,
         tags: []
       };
@@ -204,8 +201,8 @@ const EventosGastronomicos = () => {
             <div key={evento.id} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group hover:-translate-y-2 h-[560px]">
               {/* Imagen del evento */}
               <div className="relative h-40 flex-1 bg-gradient-to-r from-[#323333] to-[#111111] flex items-center justify-center">
-                {evento.image && evento.image !== "/images/logo.jpg" ? (
-                  <img src={evento.image} alt={evento.title} className="w-full h-full object-cover" />
+                {evento.banner_url && evento.banner_url !== "/images/logo.jpg" ? (
+                  <img src={evento.banner_url} alt={evento.title} className="w-full h-full object-cover" />
                 ) : (
                   <ChefHat className="w-16 h-16 text-white" />
                 )}
@@ -235,7 +232,7 @@ const EventosGastronomicos = () => {
                   
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <MapPin className="w-4 h-4" />
-                    <span>{evento.location}</span>
+                    <span>{evento.direction}</span>
                   </div>
                   
                   <div className="flex items-center gap-2 text-sm text-gray-500">

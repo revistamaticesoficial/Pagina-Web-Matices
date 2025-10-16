@@ -6,9 +6,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Separator } from "@/components/ui/Separator";
 import LandingLayout from "@/components/layout/LandingLayout";
-import { comerciosSugerencias } from "@/data/comercios-sugerencias";
 import { Comercio } from "@/types/sugerencias";
 import {
   MapPin,
@@ -93,9 +91,15 @@ export default function ComercioDetailPage() {
         const { data, error } = await supabase
           .from("comercios")
           .select("*")
-          .eq("slug", params.id as string);
-          setComercio(data[0]);
-          console.log('data: ', data[0]);
+          .eq("slug", params.id as string)
+          .maybeSingle();
+        if (error) {
+          console.error('Error cargando comercio:', error);
+          return;
+        }
+        if (data) {
+          setComercio(data as any);
+        }
       };
 
       fetchComercio()
@@ -103,11 +107,11 @@ export default function ComercioDetailPage() {
   }, []);
 
 
-  console.log('comercio: ', comercio?.banners_url[selectedImage]);
+  console.log('comercio: ', (comercio as any)?.banners_url?.[selectedImage]);
   useEffect(() => {
     if (typeof window !== "undefined" && comercio) {
       setShareUrl(
-        `${window.location.origin}/comercios/${comercio.slug}`
+        `${window.location.origin}/comercios/${(comercio as any)?.slug}`
       );
     }
   }, [comercio]);
@@ -254,7 +258,7 @@ export default function ComercioDetailPage() {
                         key={selectedImage}
                       >
                         <source
-                          src={comercio?.banners_url[selectedImage]}
+                          src={(comercio as any)?.banners_url?.[selectedImage]}
                           type="video/mp4"
                         />
                         <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
@@ -265,13 +269,13 @@ export default function ComercioDetailPage() {
 
                     {/* Indicador de posición */}
                     <div className="absolute top-4 right-4 bg-black/70 text-white px-2 py-1 rounded text-sm">
-                      {selectedImage + 1} / {comercio?.banners_url.length}
+                      {selectedImage + 1} / {((comercio as any)?.banners_url?.length || 0)}
                     </div>
 
                     {/* Miniaturas */}
                     <div className="p-4 bg-gray-50">
                       <div className="flex gap-2 overflow-x-auto">
-                        {comercio?.banners_url?.map((image, index) => (
+                        {(comercio as any)?.banners_url?.map((image: string, index: number) => (
                           <button
                             key={index}
                             onClick={() => setSelectedImage(index)}
@@ -356,7 +360,7 @@ export default function ComercioDetailPage() {
               <Card>
                 <CardContent className="p-6 flex flex-col flex-grow">
                   <h3 className="flex items-center gap-3 mb-4 ">
-                  <Image src={comercio?.logo_url} alt={comercio?.name} width={80} height={80} className="flex-shrink-0 rounded" />
+                  <Image src={comercio?.logo_url || '/images/logo.jpg'} alt={comercio?.name || 'Comercio'} width={80} height={80} className="flex-shrink-0 rounded" />
                   <span className="font-semibold text-gray-900">Sobre este comercio</span>
                   </h3>
 
@@ -450,7 +454,7 @@ export default function ComercioDetailPage() {
                     <Button
                       variant="outline"
                       className="w-full"
-                      onClick={() => openInMaps(comercio)}
+                      onClick={() => comercio && openInMaps(comercio)}
                     >
                       <Navigation className="w-4 h-4 mr-2" />
                       Cómo llegar
@@ -459,7 +463,7 @@ export default function ComercioDetailPage() {
                     <Button
                       variant="outline"
                       className="w-full"
-                      onClick={() => shareCommerce(comercio)}
+                      onClick={() => comercio && shareCommerce(comercio)}
                     >
                       <Share2 className="w-4 h-4 mr-2" />
                       Compartir
