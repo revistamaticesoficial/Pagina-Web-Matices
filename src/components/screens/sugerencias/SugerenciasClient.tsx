@@ -1,6 +1,6 @@
  'use client';
 
- import { useState } from 'react';
+ import { useState, useRef } from 'react';
  import { Button } from '@/components/ui/Button';
  import LandingLayout from '@/components/layout/LandingLayout';
  import { EventCard, BenefitCard, ComercioCard, Pagination, ModalPromo } from '@/components/screens/sugerencias';
@@ -26,6 +26,13 @@
    const [currentPage, setCurrentPage] = useState(1);
    const [isRedeemOpen, setIsRedeemOpen] = useState(false);
    const [selectedBenefit, setSelectedBenefit] = useState<Benefit | null>(null);
+   const sugerenciasRef = useRef<HTMLDivElement>(null);
+
+   const scrollToSugerencias = () => {
+    if (sugerenciasRef.current) {
+      sugerenciasRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+   };
 
    const itemsPerPage = 10;
 
@@ -57,31 +64,10 @@
      <LandingLayout>
        <div className="min-h-screen bg-white">
          {/* Hero Section */}
-         <HeroSugerencias categories={categories} setCurrentTab={setCurrentTab} setCurrentPage={setCurrentPage} />
-
-         {/* Categories Section */}
-         {/* <section className="py-12 bg-gray-50">
-           <div className="container mx-auto px-4">
-             <div className="flex flex-col sm:flex-row gap-4 justify-between max-w-4xl mx-auto">
-               {categories.map((category) => (
-                 <Button
-                   key={category.name}
-                   size="lg"
-                   onClick={() => { setCurrentTab(category.name); setCurrentPage(1); }}
-                   className={`${currentTab === category.name
-                     ? category.color.replace('hover:', '') + ' shadow-lg'
-                     : category.color
-                     } text-white font-bold text-lg px-12 rounded-md py-6 flex-1 min-h-[80px] text-center transition-all duration-200`}
-                 >
-                   {category.label}
-                 </Button>
-               ))}
-             </div>
-           </div>
-         </section> */}
+         <HeroSugerencias categories={categories} setCurrentTab={setCurrentTab} setCurrentPage={setCurrentPage} scrollToSugerencias={scrollToSugerencias} />
 
          {/* Content Section */}
-         <section className="py-16 bg-white">
+         <section ref={sugerenciasRef} className="py-16 bg-white">
            <div className="container mx-auto px-4">
              {/* Results Info */}
              <div className="mb-8 text-center">

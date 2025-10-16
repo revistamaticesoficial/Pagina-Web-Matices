@@ -34,7 +34,6 @@ async function loadData() {
   const [{ data: comercios }, { data: eventos }, { data: beneficios }] = await Promise.all([
     comerciosQ, eventosQ, beneficiosQ
   ]);
-  console.log("beneficios", beneficios);
   return {
     comercios: comercios ?? [],
     eventos: eventos ?? [],
