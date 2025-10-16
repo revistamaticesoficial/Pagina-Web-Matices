@@ -33,7 +33,7 @@ export default function EventCard({ event }: EventCardProps) {
       {/* Image Section */}
       <div className="relative h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0">
         <Image
-          src={event.image}
+          src={event.banner_url}
           alt={event.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -92,12 +92,12 @@ export default function EventCard({ event }: EventCardProps) {
           
           <div className="flex items-center text-sm text-gray-500">
             <MapPin className="h-4 w-4 mr-2" />
-            <span className="truncate">{event.location}</span>
+            <span className="truncate">{event.direction}</span>
           </div>
           
           <div className="flex items-center text-sm text-gray-500">
             <Calendar className="h-4 w-4 mr-2" />
-            <span>{event.organizer}</span>
+            <span>{event.date}</span>
           </div>
 
           {event.capacity && (

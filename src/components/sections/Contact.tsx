@@ -23,6 +23,7 @@ import {
   Instagram,
   Linkedin,
   Facebook,
+  Mail,
   Send,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -66,29 +67,6 @@ export function Contact() {
     window.open(urls[platform as keyof typeof urls], "_blank");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formRef.current) return;
-    
-    emailjs.init(PUBLIC_KEY);
-    emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current).then(
-      (result) => {
-        console.log(result.text);
-        setSend(true);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-    
-    setFormData({ title: "", name: "", email: "", message: "" });
-   setTimeout(() => {
-    setIsModalOpen(false);
-    setSend(false);
-   }, 5000);
-    (e.target as HTMLFormElement).reset();
-  };
-
   return (
     <section className="py-16 px-4 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="max-w-6xl mx-auto">
@@ -105,12 +83,12 @@ export function Contact() {
 
         <div className="grid md:grid-cols-2 gap-6 mb-8 max-w-2xl mx-auto">
           <Card
-            className="cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg border-2 hover:border-primary/20"
+            className="cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg border-2 hover:border-[#E6020220]"
             onClick={() => handleCardClick("form")}
           >
             <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Send className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 bg-[#E6020220] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-6 h-6 text-[#E60202]" />
               </div>
               <CardTitle>{"Formulario"}</CardTitle>
               <CardDescription>
@@ -134,93 +112,7 @@ export function Contact() {
             </CardHeader>
           </Card>
         </div>
-
-        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="sm:max-w-[500px] p-6 md:p-8 border border-gray-200 rounded-2xl">
-            <DialogHeader>
-              <DialogTitle>{"Envíanos tu mensaje"}</DialogTitle>
-              <span className="text-sm text-gray-500 mt-2">{`Completa el formulario y te responderemos en menos de 24 horas.`}</span>
-            </DialogHeader>
-            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 mt-4">
-              <div className="flex flex-col gap-4">
-                <div>
-                  <Label htmlFor="title">{"Título"}</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    name="title"
-                    onChange={(e) =>
-                      setFormData({ ...formData, title: e.target.value })
-                    }
-                    placeholder="Tu título"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">{"Email"}</Label>
-                  <Input
-                    id="email"
-                    value={formData.email}
-                    name="email"
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    placeholder="tu@email.com"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="name">{"Nombre"}</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    value={formData.name}
-                    name="name"
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    placeholder="Tu nombre completo"
-                    required
-                  />
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="message">{"Mensaje"}</Label>
-                <Textarea
-                  id="message"
-                  value={formData.message}
-                  name="message"
-                  onChange={(e) =>
-                    setFormData({ ...formData, message: e.target.value })
-                  }
-                  placeholder="Cuéntanos en qué podemos ayudarte..."
-                  rows={4}
-                  required
-                />
-              </div>
-              <div className="flex gap-4 pt-4">
-                <Button type="submit" className="flex-1">
-                  {"Enviar Mensaje"}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  {"Cancelar"}
-                </Button>
-              </div>
-            </form>
-            {send && (
-              <div className="flex justify-center mt-4">
-                <p className="text-green-500 text-center font-bold text-lg">
-                  {"Mensaje enviado correctamente!"}
-                </p>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
-
+        
         <div className="mt-12 text-center">
           <h3 className="text-lg font-semibold text-foreground mb-6">
             {"También puedes encontrarnos en:"}
