@@ -48,7 +48,7 @@ export function BusinessCard({ business, variant = 'default' }: BusinessCardProp
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-3">
             <h3 className="text-xl font-bold group-hover:text-blue-600 transition-colors">
-              <Link href={`/comercios/${business.id}`}>
+              <Link href={`/comercios/${business.slug}`}>
                 {business.name}
               </Link>
             </h3>
@@ -81,12 +81,12 @@ export function BusinessCard({ business, variant = 'default' }: BusinessCardProp
           <div className="flex items-center space-x-4 text-sm text-muted-foreground">
             <div className="flex items-center space-x-1">
               <MapPin className="h-4 w-4" />
-              <span>{business.location.neighborhood}</span>
+              <span>{business.direction}</span>
             </div>
-            {business.contact.phone && (
+            {business.phone && (
               <div className="flex items-center space-x-1">
                 <Phone className="h-4 w-4" />
-                <span>{business.contact.phone}</span>
+                <span>{business.phone}</span>
               </div>
             )}
           </div>
@@ -109,7 +109,7 @@ export function BusinessCard({ business, variant = 'default' }: BusinessCardProp
               placeholder="blur"
               blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
             />
-            {business.featured && (
+            {business.tags && (
               <div className="absolute -top-1 -right-1">
                 <Star className="h-4 w-4 text-yellow-500" />
               </div>
@@ -131,7 +131,7 @@ export function BusinessCard({ business, variant = 'default' }: BusinessCardProp
             </div>
             
             <h3 className="font-semibold mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
-              <Link href={`/comercios/${business.id}`}>
+              <Link href={`/comercios/${business.slug}`}>
                 {business.name}
               </Link>
             </h3>
@@ -142,7 +142,7 @@ export function BusinessCard({ business, variant = 'default' }: BusinessCardProp
             
             <div className="flex items-center space-x-1 text-xs text-muted-foreground">
               <MapPin className="h-3 w-3" />
-              <span>{business.location.neighborhood}</span>
+              <span>{business.direction}</span>
             </div>
           </div>
         </div>
@@ -183,7 +183,7 @@ export function BusinessCard({ business, variant = 'default' }: BusinessCardProp
       <CardContent className="p-4">
         <div className="flex items-start justify-between mb-2">
           <h3 className="font-bold text-lg group-hover:text-blue-600 transition-colors line-clamp-2">
-            <Link href={`/comercios/${business.id}`}>
+            <Link href={`/comercios/${business.slug}`}>
               {business.name}
             </Link>
           </h3>
@@ -218,9 +218,9 @@ export function BusinessCard({ business, variant = 'default' }: BusinessCardProp
         <div className="flex items-center justify-between w-full text-sm text-muted-foreground">
           <div className="flex items-center space-x-1">
             <MapPin className="h-4 w-4" />
-            <span>{business.location.neighborhood}</span>
+            <span>{business.direction}</span>
           </div>
-          {business.contact.phone && (
+          {business.phone && (
             <div className="flex items-center space-x-1">
               <Phone className="h-4 w-4" />
               <span className="hidden sm:inline">Contactar</span>

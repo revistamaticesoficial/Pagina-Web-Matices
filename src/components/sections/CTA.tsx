@@ -5,7 +5,7 @@ function CTA() {
         <section className="py-16 px-4">
             <div className="mt-16 w-full max-w-6xl mx-auto">
               {/* Card de fondo (portada) */}
-              <div className="relative w-full rounded-2xl bg-gradient-to-br from-[#005B82] to-[#003C56] h-[300px]  shadow-lg border border-gray-200 overflow-hidden">
+              <div className="relative w-full rounded-2xl bg-gradient-to-br from-[#005B82] to-[#003C56] h-[420px]	 lg:h-[300px]  shadow-lg border border-gray-200 overflow-hidden">
                 {/* Título centrado */}
                 <div className="absolute top-6 left-1/2 -translate-x-1/2 w-full px-6 sm:px-10">
                   <h1 className="font-bold text-white text-2xl sm:text-3xl text-center">Descubre todo lo que mati tiene para ofrecerte</h1>

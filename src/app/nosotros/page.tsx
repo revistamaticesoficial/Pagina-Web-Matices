@@ -78,18 +78,6 @@ export default function NosotrosPage() {
       role: "Programadora",
       image: "/images/team/jet.png",
       color: "text-teal-600"
-    },
-    {
-      name: "Soledad",
-      role: "Community Manager",
-      image: "/images/team/sole.png",
-      color: "text-green-600"
-    },
-    {
-      name: "Aisha",
-      role: "Diseñadora",
-      image: "/images/team/aisha.png",
-      color: "text-green-600"
     }
   ];
 
@@ -112,20 +100,20 @@ export default function NosotrosPage() {
 
   return (
     <LandingLayout>
-      <div className="min-h-screen bg-gray-50 px-4">
+      <div className="min-h-screen bg-gray-50">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white py-16">
+        <section className="bg-gradient-to-r from-[#003c56] to-[#005B82] text-white py-16">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-4xl lg:text-5xl font-bold mb-4">
               Sobre Revista Matices
             </h1>
             <p className="text-xl lg:text-2xl opacity-90 max-w-3xl mx-auto">
-              34 años informando y conectando a la comunidad del Cerro de las Rosas
+              35 años informando y conectando a la comunidad del Cerro de las Rosas
             </p>
           </div>
         </section>
 
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-8 py-16">
           {/* Historia Section - Full Width */}
           <section className="mb-20 px-4 sm:px-6 lg:px-20">
             <div className="text-center mb-12">
@@ -134,32 +122,37 @@ export default function NosotrosPage() {
                 Desde 1990
               </Badge>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                Nuestra Historia
+                Sobre nosotros
               </h2>
             </div>
 
             <div className="max-w-5xl mx-auto">
               <div className="space-y-6 text-base sm:text-lg text-gray-600 leading-relaxed text-justify">
                 <p className="break-inside-avoid">
-                  Revistas matices: 35 años de calidad, seriedad y experiencia en publicidad
+                Revista Matices celebra 35 años de trayectoria consolidada como referente en comunicación, publicidad y compromiso con la sostenibilidad.
+                A lo largo de más de tres décadas, hemos combinado calidad, seriedad y experiencia para conectar empresas con su comunidad, impulsando el crecimiento local y la difusión de prácticas responsables.
+                <br/>
+                Nos enorgullece ser un medio que promueve la construcción de una cultura sostenible, difundiendo iniciativas verdes, proyectos ambientales y hábitos de consumo conscientes que inspiran un futuro más equilibrado para Córdoba y su gente.
+                <br/>
+                Con miles de ejemplares gratuitos entregados puerta a puerta en los principales barrios, zonas residenciales y centros comerciales del norte de Córdoba, Matices es mucho más que una revista:
+                es un canal de encuentro entre negocios, personas y valores compartidos.
+                <br/>
+                Tu marca también puede formar parte de este cambio.
+                Con Matices, tu mensaje llega directamente a los hogares de nuestros lectores, generando impacto, visibilidad y contribuyendo al desarrollo de una economía más sostenible. 
+                <br/>
+                <br/>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Nuestra historia</h3>
                 </p>
                 <p className="break-inside-avoid">
-                  ofrecemos cientos de servicios organizados por rubros y miles de ejemplares gratuitos entregados
-                  puerta a puerta en los principales barrios, zonas residenciales y comerciales del norte de Córdoba.
+                Hace 35 años, cuando la publicidad local se hacía de puerta en puerta, nació Revista Matices con una visión clara: conectar a las personas y a las empresas de Córdoba a través de un medio confiable, cercano y de calidad.
+                <br/>
+                Desde entonces, hemos crecido junto a nuestra comunidad, adaptándonos a los cambios del mundo y manteniendo intactos los valores que nos dieron origen: la seriedad, el compromiso y la confianza.
+Cada edición refleja el pulso de nuestra ciudad, su diversidad y sus matices
                 </p>
                 <p className="break-inside-avoid">
-                  Somos la mejor alternativa para hacer crecer tu negocio. ¡Contáctanos! Te enviaremos la información
-                  que necesitas. Con Matices, tus anuncios estarán presentes en los hogares de nuestros lectores,
-                  brindándote beneficios únicos en la promoción de tu negocio. Nuestro compromiso va más allá de la
-                  publicidad: construimos puentes entre comerciantes y vecinos, fomentando el crecimiento económico
-                  local y fortaleciendo el tejido social de nuestra comunidad.
-                </p>
-                <p className="break-inside-avoid">
-                  Nuestro equipo de profesionales, formado por periodistas, diseñadores, comerciales y distribuidores,
-                  trabaja incansablemente para mantener la calidad editorial que nos caracteriza. Nos enorgullece
-                  ser parte integral de la identidad del Cerro de las Rosas, y continuamos comprometidos con la
-                  misión de informar, conectar y fortalecer los lazos que hacen de nuestra comunidad un lugar
-                  especial para vivir, trabajar y crecer.
+                Hoy, Matices no solo es una revista: es una red de vínculos que impulsa el desarrollo local, promueve el comercio responsable y da visibilidad a iniciativas que construyen un futuro más sostenible.
+                <br/>
+                Nuestra historia es también la historia de quienes confían en nosotros: miles de hogares, comercios y emprendedores que apuestan por un crecimiento más humano, consciente y en equilibrio con el entorno.
                 </p>
               </div>
             </div>

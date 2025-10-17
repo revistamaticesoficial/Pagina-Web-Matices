@@ -12,8 +12,8 @@ export default function Home() {
             <HeroHome />
             <Stats />
             <ComerciosSection />
-            <NotasSection />
             <CTA />
+            <NotasSection />
             <Contact />
         </LandingLayout>
     );

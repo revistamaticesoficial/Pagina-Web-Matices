@@ -13,6 +13,7 @@ async function loadData() {
   const comerciosQ = supabase
     .from('comercios')
     .select('*')
+    .eq('category', 'GASTRONOMIA')
     .not('name','is',null)
     .not('name','eq','')
     .order('created_at',{ ascending:false })

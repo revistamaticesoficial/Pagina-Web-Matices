@@ -5,10 +5,10 @@ import Image from 'next/image';
 
 function LoginContent() {
   return (
-    <div className="min-h-screen  flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="h-[80vh] lg:min-h-screen flex items-center justify-center py-6 lg:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
         <div className="text-center mb-8 flex justify-center">
-          <Image src="/images/logotipo.png" alt="Logo Revista Matices" width={140} height={80} />
+          <Image src="/images/logotipo.png" alt="Logo Revista Matices" width={140} height={100} />
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8">

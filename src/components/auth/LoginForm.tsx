@@ -118,8 +118,8 @@ export function LoginForm() {
           />
 
           <Link
-            href="/auth/forgot-password"
-            className="text-sm text-blue-600 hover:text-blue-500 transition-colors"
+            href="/contacto"
+            className="text-sm text-blue-600 hover:text-blue-500 transition-colors height{100} heightmobile{80}"
           >
             ¿Olvidaste tu contraseña?
           </Link>
@@ -152,8 +152,6 @@ export function LoginForm() {
           </Link>
         </p>
       </div>
-
-
     </div>
   );
 }

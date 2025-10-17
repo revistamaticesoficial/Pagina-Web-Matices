@@ -49,7 +49,7 @@ function NotasSection() {
     <section className='py-16'>
       <h1 className="text-3xl font-bold text-[#005B82] text-center mb-8">Notas Destacadas</h1>
       <div className="mt-8 w-full max-w-7xl mx-auto line-clamp-1">
-        <div className="relative overflow-hidden" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+        <div className="relative overflow-hidden h-[60vh] lg:h-full" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
           {/* Track con 5 tarjetas, ancho flexible y desplazamiento por tarjeta */}
           <div
             className="flex transition-transform duration-500"
@@ -63,7 +63,7 @@ function NotasSection() {
                       nota.image ? (
                         <Image src={nota.image} alt={nota.title} fill className={`object-cover`} />
                       ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="absolute inset-1 flex items-center justify-center">
                           <div className="text-center">
                             <div className="w-14 h-14 mx-auto mb-2 bg-[#005B82] rounded-full flex items-center justify-center">
                               <BookOpen className="w-7 h-7 text-white" />
@@ -115,7 +115,7 @@ function NotasSection() {
             <>
               <button
                 onClick={() => setIndex((i) => (i === 0 ? maxIndex : i - 1))}
-                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border rounded-full p-2 shadow"
+                className="absolute right-16 bottom-0 -translate-y-1/2  bg-white/90 hover:bg-white border rounded-full p-2 shadow"
                 aria-label="Anterior"
               >
                 {/* simple chevron */}
@@ -123,7 +123,7 @@ function NotasSection() {
               </button>
               <button
                 onClick={() => setIndex((i) => (i >= maxIndex ? 0 : i + 1))}
-                className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border rounded-full p-2 shadow"
+                className="absolute right-4 bottom-0 -translate-y-1/2 bg-white/90 hover:bg-white border rounded-full p-2 shadow"
                 aria-label="Siguiente"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>

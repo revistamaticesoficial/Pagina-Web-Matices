@@ -40,9 +40,9 @@ const mockData = {
     comerciosTotal: 30
   },
   trends: {
-    visitasChange: 12.5,
-    suscriptoresChange: 8.3,
-    canjesChange: -2.1
+    visitasChange: 0,
+    suscriptoresChange: 0,
+    canjesChange: 0
   },
   recentActivities: [
     {

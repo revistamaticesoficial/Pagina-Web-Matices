@@ -78,7 +78,6 @@ export default function ComercioDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [comercio, setComercio] = useState<Comercio | null>(null);
-  const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isFavorited, setIsFavorited] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -86,12 +85,11 @@ export default function ComercioDetailPage() {
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
 
   useEffect(() => {
-    // if (params.id) {
       const fetchComercio = async () => {
         const { data, error } = await supabase
           .from("comercios")
           .select("*")
-          .eq("slug", params.id as string)
+          .eq("slug", params.slug as string)
           .maybeSingle();
         if (error) {
           console.error('Error cargando comercio:', error);
@@ -103,11 +101,9 @@ export default function ComercioDetailPage() {
       };
 
       fetchComercio()
-    // }
   }, []);
 
 
-  console.log('comercio: ', (comercio as any)?.banners_url?.[selectedImage]);
   useEffect(() => {
     if (typeof window !== "undefined" && comercio) {
       setShareUrl(
@@ -182,27 +178,6 @@ export default function ComercioDetailPage() {
     setShowShareModal(false);
   };
 
-  // if (!comercio?.id) {
-  //   return (
-  //     <LandingLayout>
-  //       <div className="min-h-screen flex items-center justify-center">
-  //         <div className="text-center">
-  //           <h1 className="text-2xl font-bold text-gray-900 mb-4">
-  //             Comercio no encontrado
-  //           </h1>
-  //           <p className="text-gray-600 mb-6">
-  //             El comercio que buscas no existe o ha sido removido.
-  //           </p>
-  //           <Button onClick={() => router.back()}>
-  //             <ArrowLeft className="w-4 h-4 mr-2" />
-  //             Volver
-  //           </Button>
-  //         </div>
-  //       </div>
-  //     </LandingLayout>
-  //   );
-  // }
-
   return (
     <LandingLayout>
       <div className="min-h-screen bg-gray-50">
@@ -248,6 +223,7 @@ export default function ComercioDetailPage() {
                   <div className="relative">
                     {/* Imagen principal */}
                     <div className="aspect-video bg-gray-200 rounded-t-lg overflow-hidden">
+                      {comercio?.banners_url && (
                       <video
                         className="w-full h-full object-cover"
                         autoPlay
@@ -258,13 +234,14 @@ export default function ComercioDetailPage() {
                         key={selectedImage}
                       >
                         <source
-                          src={(comercio as any)?.banners_url?.[selectedImage]}
+                          src={(comercio as any)?.banners_url?.[selectedImage || 0]}
                           type="video/mp4"
                         />
                         <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
                           <Camera className="w-12 h-12 text-gray-400" />
                         </div>
                       </video>
+                      )}
                     </div>
 
                     {/* Indicador de posición */}
