@@ -24,6 +24,8 @@ function ComerciosContent() {
         const { data, error } = await supabase
           .from('comercios')
           .select('*')
+          .not('slug', 'is', null)
+          .not('slug', 'eq', '')
           .not('name', 'is', null)
           .not('name', 'eq', '')
           .order('created_at', { ascending: false });
@@ -91,7 +93,7 @@ function ComerciosContent() {
     <LandingLayout>
       <div className="min-h-screen bg-white">
         {/* Hero Section */}
-        <section className="relative h-[60vh] bg-gradient-to-br from-[#F58220] via-white to-[#005B82] overflow-hidden">
+        <section className="bg-gradient-to-r from-[#003c56] to-[#005B82] text-white py-16">
           {/* Background Pattern */}
           {/* <div className="absolute inset-0 opacity-10">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 to-purple-50"></div>
@@ -100,10 +102,10 @@ function ComerciosContent() {
           {/* Content */}
           <div className="relative z-10 container mx-auto px-4 h-full flex items-center justify-center text-center">
             <div className="max-w-4xl">
-              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-4">
+              <h1 className="text-4xl lg:text-5xl font-bold mb-4">
                 Comercios de Matices
               </h1>
-              <p className="text-xl lg:text-2xl text-[#111]">
+              <p className="text-xl lg:text-2xl opacity-90 max-w-3xl mx-auto">
                 Todos los comercios del Cerro de las Rosas
               </p>
             </div>
@@ -128,9 +130,10 @@ function ComerciosContent() {
               {pagination.items.map((comercio) => {
                 const createdAt = comercio.created_at ?? new Date().toISOString();
                 const owner = comercio.owner_id ?? 'Matices';
-                const slug = comercio.slug ?? comercio.id;
+                const slug = comercio.slug;
                 const category = comercio.category ?? 'SERVICIOS';
                 const isPremium = false; // Por defecto no es premium
+                if (!slug) return null;
                 return (
                 <div key={comercio.id} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
                   {/* Image Section */}

@@ -46,7 +46,7 @@ function NotasContent() {
     <LandingLayout>
       <div className="min-h-screen bg-white">
         {/* Hero Section */}
-        <section className="relative h-[60vh] bg-gradient-to-br from-[#F58220] via-white to-[#005B82] overflow-hidden">
+        <section className="bg-gradient-to-r from-[#003c56] to-[#005B82] text-white py-16">
           {/* Background Pattern */}
           {/* <div className="absolute inset-0 opacity-10">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 to-purple-50"></div>
@@ -55,10 +55,10 @@ function NotasContent() {
           {/* Content */}
           <div className="relative z-10 container mx-auto px-4 h-full flex items-center justify-center text-center">
             <div className="max-w-4xl">
-              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-4">
+              <h1 className="text-4xl lg:text-5xl font-bold mb-4">
                 Notas de Matices
               </h1>
-              <p className="text-xl lg:text-2xl text-[#111]">
+              <p className="text-xl lg:text-2xl opacity-90 max-w-3xl mx-auto">
                 Todas las noticias, historias y acontecimientos del Cerro de las Rosas
               </p>
             </div>

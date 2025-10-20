@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -27,52 +27,10 @@ import {
   Twitter,
   Link as LinkIcon,
   Check,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-
-// Galería de fotos para cada comercio (basado en los videos que existen)
-const getCommerceGallery = (commerceId: string, commerceName: string) => {
-  const galleryImages: { [key: string]: string[] } = {
-    "1": ["/comida/lomito.mp4", "/comida/helado.mp4", "/comida/pizza.mp4"], // Betos
-    "2": ["/comida/diet.mp4", "/comida/fornello.mp4", "/comida/topping.mp4"], // Vidón Bar
-    "3": ["/comida/Pizza.mp4", "/comida/Pizza 2.mp4", "/comida/Pizza 3.mp4"], // Pizza Libre
-    "4": ["/comida/helado.mp4", "/comida/topping.mp4", "/comida/diet.mp4"], // Kit Wonder
-    "5": ["/comida/saludable.mp4", "/comida/diet.mp4", "/comida/fornello.mp4"], // Farmacia del Cerro
-    "6": ["/comida/topping.mp4", "/comida/helado.mp4", "/comida/lomito.mp4"], // Gimnasio Fitness Plus
-    "7": ["/comida/diet.mp4", "/comida/fornello.mp4", "/comida/topping.mp4"], // Librería Cultura
-    "8": ["/comida/helado.mp4", "/comida/topping.mp4", "/comida/diet.mp4"], // Peluquería Estilo
-    "9": ["/comida/lomito.mp4", "/comida/helado.mp4", "/comida/pizza.mp4"], // Ferretería El Martillo
-    "10": ["/comida/diet.mp4", "/comida/fornello.mp4", "/comida/topping.mp4"], // Café Central
-    "11": ["/comida/saludable.mp4", "/comida/diet.mp4", "/comida/fornello.mp4"], // Veterinaria Mascotas
-    "12": ["/comida/topping.mp4", "/comida/helado.mp4", "/comida/lomito.mp4"], // Taller Mecánico Rodriguez
-    "13": ["/comida/fornello.mp4", "/comida/topping.mp4", "/comida/diet.mp4"], // Panadería Artesanal
-    "14": ["/comida/helado.mp4", "/comida/topping.mp4", "/comida/diet.mp4"], // Inmobiliaria Norte
-    "15": ["/comida/diet.mp4", "/comida/fornello.mp4", "/comida/topping.mp4"], // Escuela de Música Armonía
-    "16": ["/comida/helado.mp4", "/comida/topping.mp4", "/comida/diet.mp4"], // Supermercado Familia
-    "17": ["/comida/saludable.mp4", "/comida/diet.mp4", "/comida/fornello.mp4"], // Clínica Dental Sonrisa
-    "18": ["/comida/topping.mp4", "/comida/helado.mp4", "/comida/lomito.mp4"], // Tienda de Ropa Moda
-    "19": ["/comida/fornello.mp4", "/comida/topping.mp4", "/comida/diet.mp4"], // Restaurante Gourmet
-    "20": ["/comida/helado.mp4", "/comida/topping.mp4", "/comida/diet.mp4"], // Centro de Estética Belleza
-    "21": ["/comida/lomito.mp4", "/comida/helado.mp4", "/comida/pizza.mp4"], // Lavandería Express
-    "22": ["/comida/Pizza.mp4", "/comida/Pizza 2.mp4", "/comida/Pizza 3.mp4"], // Pizzería Don Antonio
-    "23": ["/comida/saludable.mp4", "/comida/diet.mp4", "/comida/fornello.mp4"], // Óptica Visión
-    "24": ["/comida/topping.mp4", "/comida/helado.mp4", "/comida/lomito.mp4"], // Florería Jardín
-    "25": ["/comida/helado.mp4", "/comida/topping.mp4", "/comida/diet.mp4"], // Heladería Cremosa
-    "26": ["/comida/lomito.mp4", "/comida/helado.mp4", "/comida/pizza.mp4"], // Banco Regional
-    "27": ["/comida/diet.mp4", "/comida/fornello.mp4", "/comida/topping.mp4"], // Academia de Idiomas Global
-    "28": ["/comida/helado.mp4", "/comida/topping.mp4", "/comida/diet.mp4"], // Kiosco 24 Horas
-    "29": ["/comida/topping.mp4", "/comida/helado.mp4", "/comida/lomito.mp4"], // Taller de Bicicletas Rueda
-    "30": ["/comida/saludable.mp4", "/comida/diet.mp4", "/comida/fornello.mp4"], // Centro Médico Salud
-  };
-
-  return (
-    galleryImages[commerceId] || [
-      "/comida/diet.mp4",
-      "/comida/fornello.mp4",
-      "/comida/topping.mp4",
-    ]
-  );
-};
 
 export default function ComercioDetailPage() {
   const params = useParams();
@@ -83,6 +41,9 @@ export default function ComercioDetailPage() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
+  const [benefits, setBenefits] = useState<any[]>([]);
+  const [loadingBenefits, setLoadingBenefits] = useState<boolean>(false);
+  const benefitsScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
       const fetchComercio = async () => {
@@ -110,6 +71,40 @@ export default function ComercioDetailPage() {
         `${window.location.origin}/comercios/${(comercio as any)?.slug}`
       );
     }
+  }, [comercio]);
+
+  // Cargar beneficios asociados al comercio
+  useEffect(() => {
+    const loadBenefits = async () => {
+      if (!comercio) return;
+      try {
+        setLoadingBenefits(true);
+        // Primero intentar con campo comercio_id (usado en gestión)
+        let { data, error } = await supabase
+          .from('benefits')
+          .select('*')
+          .eq('comercio_id' as any, (comercio as any).id)
+          .order('created_at', { ascending: false });
+
+        // Si no hay resultados, intentar con business_id (definición en types/database)
+        if ((!data || data.length === 0) && !error) {
+          const alt = await supabase
+            .from('benefits')
+            .select('*')
+            .eq('business_id' as any, (comercio as any).id)
+            .order('created_at', { ascending: false });
+          data = alt.data as any[] | null;
+        }
+
+        setBenefits(data || []);
+      } catch (e) {
+        console.error('Error loading benefits:', e);
+        setBenefits([]);
+      } finally {
+        setLoadingBenefits(false);
+      }
+    };
+    loadBenefits();
   }, [comercio]);
 
   // Función para abrir Google Maps con la dirección
@@ -327,6 +322,64 @@ export default function ComercioDetailPage() {
                   )}
                 </CardContent>
               </Card>
+
+              {/* Carrusel de beneficios */}
+              {(!loadingBenefits && benefits.length > 0) && (
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-semibold text-gray-900">
+                        Beneficios de este comercio
+                      </h3>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => benefitsScrollRef.current?.scrollBy({ left: -320, behavior: 'smooth' })}
+                        >
+                          <ChevronLeft className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => benefitsScrollRef.current?.scrollBy({ left: 320, behavior: 'smooth' })}
+                        >
+                          <ChevronRight className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div
+                      ref={benefitsScrollRef}
+                      className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2"
+                    >
+                      {benefits.map((b) => (
+                        <div key={b.id} className="min-w-[300px] max-w-[300px] snap-start">
+                          <div className="border border-gray-200 rounded-xl p-4 bg-white h-full flex flex-col justify-between">
+                            <div>
+                              <div className="text-sm text-gray-500 mb-1">
+                                {(b.type === 'discount' || b.type === 'coupon') ? 'Cupón' : 'Beneficio'}
+                              </div>
+                              <h4 className="font-semibold text-gray-900 mb-1 line-clamp-2">{b.title}</h4>
+                              <p className="text-sm text-gray-600 line-clamp-3">{b.description || '—'}</p>
+                            </div>
+                            <div className="mt-4 flex items-center justify-between">
+                              <span className="text-xs text-gray-500">Válido hasta {b.valid_to || b.expires_at || '—'}</span>
+                              <Button 
+                                size="sm" 
+                                className="bg-indigo-600 hover:bg-indigo-700"
+                                onClick={() => router.push('/sugerencias?tab=beneficios')}
+                              >
+                                Ver detalle
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             
