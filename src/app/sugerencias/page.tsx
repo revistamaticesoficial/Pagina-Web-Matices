@@ -13,6 +13,7 @@ async function loadData() {
   const comerciosQ = supabase
     .from('comercios')
     .select('*')
+    .eq('category', 'GASTRONOMIA')
     .not('name','is',null)
     .not('name','eq','')
     .order('created_at',{ ascending:false })
@@ -55,13 +56,14 @@ async function loadData() {
   };
 }
 
-export default async function SugerenciasPage() {
+export default async function SugerenciasPage({ searchParams }: { searchParams: { tab: string } }) {
   const { comercios, eventos, beneficios } = await loadData();
   return (
     <SugerenciasClient
       initialComercios={comercios as any[]}
       initialEventos={eventos as any[]}
       initialBeneficios={beneficios as any[]}
+      initialTab={searchParams?.tab && (searchParams?.tab as 'comercios' | 'eventos' | 'promociones')}
     />
   );
 }

@@ -175,10 +175,10 @@ export default function CuentaPage() {
   const formatHorario = (h: Horario) => h.apertura === "Cerrado" ? "Cerrado" : `${h.apertura} - ${h.cierre}`;
 
   return (
-    <div className="p-6 md:p-8 flex flex-col gap-6">
+    <div className="p-6 md:p-8 flex flex-col gap-6 height{100} heightmobile{80}">
       {/* Card Usuario */}
       <h4 className="text-2xl font-extrabold text-[#005B82]">Cuenta</h4>
-      <Card className=" bg-transparent border-[1px] border-[#000] shadow-lg hover:shadow-xl duration-300 shadow-sm py-4">
+      <Card className=" bg-transparent border-[1px] border-[#000] shadow-lg hover:shadow-xl duration-300 shadow-sm py-4 height{100} heightmobile{80}">
         <CardContent className="pt-2 pb-4 px-6">
           <div className="flex items-center gap-4">
             <Image src={user.foto || "/images/foto-perfil.jpg"} alt="Foto perfil" width={80} height={80} className="rounded-full w-20 h-20 object-cover border border-[#000]" />

@@ -1,20 +1,54 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { usePagination } from '@/hooks/usePagination';
-import { mockArticles } from '@/data/articles';
 import LandingLayout from '@/components/layout/LandingLayout';
 import { Calendar, Clock, User, ArrowRight, BookOpen } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { supabase } from '@/lib/supabase';
+import type { Database } from '@/types/database';
 
-function NotasContent() {
+type Business = Database['public']['Tables']['comercios']['Row'];
+
+function ComerciosContent() {
+  const [comercios, setComercios] = useState<Business[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12; // Mostrar 12 notas por página
 
+  useEffect(() => {
+    const fetchComercios = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('comercios')
+          .select('*')
+          .not('slug', 'is', null)
+          .not('slug', 'eq', '')
+          .not('name', 'is', null)
+          .not('name', 'eq', '')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Error fetching comercios:', error);
+          return;
+        }
+        
+        setComercios(data || []);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchComercios();
+  }, []);
+
+
   const pagination = usePagination({
-    items: mockArticles,
+    items: comercios,
     currentPage,
     itemsPerPage
   });
@@ -42,6 +76,19 @@ function NotasContent() {
     return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
+  if (loading) {
+    return (
+      <LandingLayout>
+        <div className="min-h-screen bg-white flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Cargando comercios...</p>
+          </div>
+        </div>
+      </LandingLayout>
+    );
+  }
+
   return (
     <LandingLayout>
       <div className="min-h-screen bg-white">
@@ -56,10 +103,10 @@ function NotasContent() {
           <div className="relative z-10 container mx-auto px-4 h-full flex items-center justify-center text-center">
             <div className="max-w-4xl">
               <h1 className="text-4xl lg:text-5xl font-bold mb-4">
-                Notas de Matices
+                Comercios de Matices
               </h1>
               <p className="text-xl lg:text-2xl opacity-90 max-w-3xl mx-auto">
-                Todas las noticias, historias y acontecimientos del Cerro de las Rosas
+                Todos los comercios del Cerro de las Rosas
               </p>
             </div>
           </div>
@@ -71,17 +118,24 @@ function NotasContent() {
             {/* Header */}
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Últimas Notas
+                Últimos Comercios
               </h2>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                Mantente informado con todas las noticias, eventos y novedades del barrio Cerro de las Rosas
+                Encuentra todos los comercios del barrio Cerro de las Rosas
               </p>
             </div>
 
-            {/* Notes Grid */}
+            {/* Comercios Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto mb-12">
-              {pagination.items.map((nota) => (
-                <div key={nota.id} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
+              {pagination.items.map((comercio) => {
+                const createdAt = comercio.created_at ?? new Date().toISOString();
+                const owner = comercio.owner_id ?? 'Matices';
+                const slug = comercio.slug;
+                const category = comercio.category ?? 'SERVICIOS';
+                const isPremium = false; // Por defecto no es premium
+                if (!slug) return null;
+                return (
+                <div key={comercio.id} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
                   {/* Image Section */}
                   <div className="relative h-48 bg-gradient-to-r from-gray-100 to-gray-200 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 to-purple-600/10"></div>
@@ -90,12 +144,12 @@ function NotasContent() {
                         <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center">
                           <BookOpen className="w-8 h-8 text-white" />
                         </div>
-                        <p className="text-gray-700 font-medium text-sm">Nota Destacada</p>
+                        <p className="text-gray-700 font-medium text-sm">Comercio Destacado</p>
                       </div>
                     </div>
 
                     {/* Premium Badge */}
-                    {nota.isPremium && (
+                    {isPremium && (
                       <div className="absolute top-3 right-3 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                         PREMIUM
                       </div>
@@ -103,8 +157,8 @@ function NotasContent() {
 
                     {/* Category Badge */}
                     <div className="absolute top-3 left-3">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(nota.category)}`}>
-                        {nota.category}
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(category)}`}>
+                        {category}
                       </span>
                     </div>
                   </div>
@@ -112,11 +166,11 @@ function NotasContent() {
                   {/* Content Section */}
                   <div className="p-6">
                     <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2">
-                      {nota.title}
+                      {comercio.name}
                     </h3>
 
                     <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
-                      {nota.excerpt}
+                      {comercio.direction || 'Sin dirección disponible'}
                     </p>
 
                     {/* Meta Information */}
@@ -124,11 +178,11 @@ function NotasContent() {
                       <div className="flex items-center space-x-4">
                         <div className="flex items-center">
                           <Calendar className="w-4 h-4 mr-1" />
-                          <span>{formatDate(nota.publishedAt)}</span>
+                          <span>{formatDate(createdAt)}</span>
                         </div>
                         <div className="flex items-center">
                           <Clock className="w-4 h-4 mr-1" />
-                          <span>{nota.readTime} min</span>
+                          <span>Disponible</span>
                         </div>
                       </div>
                     </div>
@@ -137,21 +191,21 @@ function NotasContent() {
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center text-sm text-gray-600">
                         <User className="w-4 h-4 mr-1" />
-                        <span>{nota.author}</span>
+                        <span>{owner}</span>
                       </div>
                     </div>
 
                     {/* Read Full Note Button */}
-                    <Link href={`/notas/${nota.id}`}>
+                    <Link href={`/comercios/${slug}`}>
                       <Button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-3 rounded-lg transition-all duration-200 transform hover:scale-105 flex items-center justify-center space-x-2">
                         <BookOpen className="w-4 h-4" />
-                        <span>Leer Nota Completa</span>
+                        <span>Ver Comercio</span>
                         <ArrowRight className="w-4 h-4" />
                       </Button>
                     </Link>
                   </div>
                 </div>
-              ))}
+              );})}
             </div>
 
             {/* Pagination */}
@@ -197,21 +251,6 @@ function NotasContent() {
   );
 }
 
-export default function NotasPage() {
-  return (
-    <Suspense fallback={
-      <LandingLayout>
-        <div className="min-h-screen bg-white flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center">
-              <BookOpen className="w-8 h-8 text-white animate-pulse" />
-            </div>
-            <p className="text-gray-600">Cargando notas...</p>
-          </div>
-        </div>
-      </LandingLayout>
-    }>
-      <NotasContent />
-    </Suspense>
-  );
-}
+export default ComerciosContent;
+
+

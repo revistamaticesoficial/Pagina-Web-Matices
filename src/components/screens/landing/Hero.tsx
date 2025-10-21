@@ -61,7 +61,7 @@ export function HeroHome() {
   }
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative h-[80vh] lg:h-screen w-full overflow-hidden">
       {/* Background Images */}
       {slides.map((slide, index) => (
         <div

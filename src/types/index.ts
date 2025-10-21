@@ -20,23 +20,18 @@ export interface Business {
   name: string;
   description: string;
   category: string;
-  logo: string;
-  images: string[];
-  contact: {
-    phone?: string;
-    email?: string;
-    website?: string;
-    whatsapp?: string;
-  };
-  location: {
-    address: string;
-    neighborhood: string;
-    coordinates?: [number, number];
-  };
+  logo_url: string;
+  slug: string;
+  direction: string;
+  neighborhood: string;
+  phone: string;
+  whatsapp: string;
   plan: 'BASICO' | 'DESTACADO' | 'PREMIUM';
-  featured: boolean;
+  featured?: boolean;
   services?: string[];
   schedule?: string;
+  banners_url?: string[];
+  tags?: string[];
 }
 
 export type Category = 

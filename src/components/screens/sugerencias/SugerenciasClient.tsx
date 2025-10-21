@@ -1,6 +1,6 @@
  'use client';
 
- import { useState, useRef } from 'react';
+ import { useState, useRef, useEffect } from 'react';
  import { Button } from '@/components/ui/Button';
  import LandingLayout from '@/components/layout/LandingLayout';
  import { EventCard, BenefitCard, ComercioCard, Pagination, ModalPromo } from '@/components/screens/sugerencias';
@@ -13,6 +13,7 @@
    initialComercios: any[];
    initialEventos: any[];
    initialBeneficios: any[];
+   initialTab: TabType;
  }
 
  const categories: { name: TabType; label: string; color: string }[] = [
@@ -21,12 +22,16 @@
    { name: 'beneficios', label: 'PROMOCIONES', color: 'bg-[#3BA740] text-white bg-gradient-to-r from-[#1AA221] via-[#1D8422] to-[#1D8422] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 hover:cursor-pointer' }
  ];
 
- export default function SugerenciasClient({ initialComercios, initialEventos, initialBeneficios }: Props) {
-   const [currentTab, setCurrentTab] = useState<TabType>('comercios');
+ export default function SugerenciasClient({ initialComercios, initialEventos, initialBeneficios, initialTab }: Props) {
+   const [currentTab, setCurrentTab] = useState<TabType>(initialTab || 'comercios');
    const [currentPage, setCurrentPage] = useState(1);
    const [isRedeemOpen, setIsRedeemOpen] = useState(false);
    const [selectedBenefit, setSelectedBenefit] = useState<Benefit | null>(null);
    const sugerenciasRef = useRef<HTMLDivElement>(null);
+
+   useEffect(() => {
+    setCurrentTab(initialTab as TabType);
+   }, [initialTab]);
 
    const scrollToSugerencias = () => {
     if (sugerenciasRef.current) {

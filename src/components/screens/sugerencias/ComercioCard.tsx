@@ -117,7 +117,7 @@ export default function ComercioCard({ comercio }: ComercioCardProps) {
         <div className="flex-grow"></div>
 
         {/* Ver más botón */}
-        <Link href={`/comercios/${comercio.id}`}>
+        <Link href={`/comercios/${comercio.slug}`}>
           <Button
             variant="outline"
             size="sm"

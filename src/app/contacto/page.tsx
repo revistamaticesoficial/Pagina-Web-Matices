@@ -49,18 +49,16 @@ export default function ContactoPage() {
   };
   return (
     <LandingLayout>
-      <section className="relative overflow-hidden mb-10">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#F58220] via-white to-[#005B82] mb-10" />
-        <div className="relative container mx-auto max-w-6xl px-4 py-16 md:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="mt-4 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+        <div className=" bg-white" />
+        <section className="bg-gradient-to-r from-[#003c56] to-[#005B82] text-white py-16">
+        <div className="container mx-auto px-4 text-center">
+            <h1 className="text-4xl lg:text-5xl font-bold mb-4">
               Contacto
             </h1>
-            <p className="mt-3 text-[#111] text-pretty text-base text-muted-foreground md:text-lg">
+            <p className="mt-3 text-white text-pretty text-base text-muted-foreground md:text-lg">
               ¿Dónde estamos y cómo encontrarnos? Escribinos, llamanos o
               acercate a nuestras oficinas en el Cerro de las Rosas.
             </p>
-          </div>
         </div>
       </section>
       <section className="px-4 pb-16 md:pb-24">
