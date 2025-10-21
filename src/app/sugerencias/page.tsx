@@ -56,14 +56,15 @@ async function loadData() {
   };
 }
 
-export default async function SugerenciasPage({ searchParams }: { searchParams: { tab: string } }) {
+export default async function SugerenciasPage({ searchParams }: { searchParams: Promise<{ tab: string }> }) {
   const { comercios, eventos, beneficios } = await loadData();
+  const resolvedSearchParams = await searchParams;
   return (
     <SugerenciasClient
       initialComercios={comercios as any[]}
       initialEventos={eventos as any[]}
       initialBeneficios={beneficios as any[]}
-      initialTab={searchParams?.tab && (searchParams?.tab as 'comercios' | 'eventos' | 'promociones')}
+      initialTab={resolvedSearchParams?.tab && ['comercios', 'eventos', 'beneficios'].includes(resolvedSearchParams.tab) ? (resolvedSearchParams.tab as 'comercios' | 'eventos' | 'beneficios') : 'comercios'}
     />
   );
 }

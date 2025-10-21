@@ -80,21 +80,21 @@ export default function ComercioDetailPage() {
       try {
         setLoadingBenefits(true);
         // Primero intentar con campo comercio_id (usado en gestión)
-        let { data, error } = await supabase
+        const { data, error } = await supabase
           .from('benefits')
           .select('*')
           .eq('comercio_id' as any, (comercio as any).id)
           .order('created_at', { ascending: false });
 
         // Si no hay resultados, intentar con business_id (definición en types/database)
-        if ((!data || data.length === 0) && !error) {
-          const alt = await supabase
-            .from('benefits')
-            .select('*')
-            .eq('business_id' as any, (comercio as any).id)
-            .order('created_at', { ascending: false });
-          data = alt.data as any[] | null;
-        }
+        // if ((!data || data.length === 0) && !error) {
+        //   const alt = await supabase
+        //     .from('benefits')
+        //     .select('*')
+        //     .eq('business_id' as any, (comercio as any).id)
+        //     .order('created_at', { ascending: false });
+        //   data = alt.data as any[] | null;
+        // }
 
         setBenefits(data || []);
       } catch (e) {
