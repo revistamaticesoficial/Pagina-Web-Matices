@@ -368,7 +368,7 @@ export default function ComercioDetailPage() {
                               <Button 
                                 size="sm" 
                                 className="bg-indigo-600 hover:bg-indigo-700"
-                                onClick={() => router.push('/sugerencias?tab=beneficios')}
+                                onClick={() => router.push('/guianorte?tab=beneficios')}
                               >
                                 Ver detalle
                               </Button>

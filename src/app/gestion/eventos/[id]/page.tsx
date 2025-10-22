@@ -12,7 +12,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#005B82] via-red-50 to-pink-50 flex items-center justify-center">
+      <div className="bg-white flex ">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Evento no encontrado</h1>
           <Link href="/gestion/eventos" className="bg-[#005B82] text-white px-6 py-3 rounded-lg hover:bg-[#003C56] transition-colors">Volver a eventos</Link>
@@ -24,13 +24,13 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
   const dateObj = data.date ? new Date(data.date as any) : null
   const dateStr = dateObj ? dateObj.toISOString().split('T')[0] : ''
   const timeStr = (data as any).time || (dateObj ? dateObj.toTimeString().slice(0,5) : '')
-  const image = (data as any).image || '/images/logo.jpg'
+  const image = (data as any).image || (data as any).banner_url
   const category = (data as any).category || 'EVENTO'
   const neighborhood = (data as any).neighborhood || ''
   const capacity = typeof (data as any).capacity === 'number' ? (data as any).capacity : undefined
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#003C56] via-red-50 to-pink-50">
+    <div className="min-h-screen bg-white">
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
@@ -46,9 +46,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
         <div className="space-y-8">
             <div className="relative h-96 bg-gradient-to-r from-orange-400 to-red-400 rounded-2xl overflow-hidden">
               <img 
-                src={image} 
+                src={(data as any).banner_url}
                 alt={String((data as any).title || '')}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
               <div className="absolute inset-0 bg-black bg-opacity-20" />
               <div className="absolute bottom-4 left-4 right-4">

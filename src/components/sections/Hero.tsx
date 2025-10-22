@@ -38,7 +38,7 @@ export function Hero() {
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 Matices
               </span>
-              {' '}del Cerro
+              {' '}creciendo junto a vos
             </h1>
 
             <p className="text-xl lg:text-2xl text-white/90 leading-relaxed max-w-3xl mx-auto">

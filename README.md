@@ -19,7 +19,7 @@ Plataforma web para Revista Matices del Cerro de las Rosas, Córdoba, Argentina.
 
 ### ✅ Implementadas
 - 🏠 **Página de Inicio** con Hero section
-- 💡 **Sugerencias** con sistema de tabs (Comercios, Eventos, Beneficios)
+- 💡 **Guía Norte** con sistema de tabs (Comercios, Eventos, Beneficios)
 - 📄 **Paginación** funcional (10 items por página)
 - 📱 **Responsive Design** completo
 - 🎨 **UI Components** reutilizables
@@ -38,7 +38,7 @@ Plataforma web para Revista Matices del Cerro de las Rosas, Córdoba, Argentina.
 matices/
 ├── src/
 │   ├── app/                 # App Router (Next.js 15)
-│   │   ├── sugerencias/     # Página principal funcional
+│   │   ├── guianorte/       # Página principal funcional
 │   │   ├── articulos/       # Página de artículos
 │   │   ├── comercios/       # Directorio de negocios
 │   │   └── suscripciones/   # Planes de suscripción
@@ -82,7 +82,7 @@ npm run lint
 
 ## 🌟 Características Destacadas
 
-### Sistema de Sugerencias
+### Sistema de Guía Norte
 - **3 categorías**: Comercios, Eventos, Beneficios
 - **Navegación por tabs** con URL params
 - **Paginación inteligente** (10 items/página)
@@ -105,7 +105,7 @@ npm run lint
 ```
 Route (app)                    Size    First Load JS
 ┌ ○ /                         127 B        99.8 kB
-├ ○ /sugerencias            14.4 kB       128 kB
+├ ○ /guianorte              14.4 kB       128 kB
 ├ ○ /articulos               176 B        108 kB
 ├ ○ /comercios               176 B        108 kB
 ├ ○ /nosotros                162 B        105 kB

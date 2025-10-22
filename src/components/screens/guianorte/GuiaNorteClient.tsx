@@ -3,9 +3,9 @@
  import { useState, useRef, useEffect } from 'react';
  import { Button } from '@/components/ui/Button';
  import LandingLayout from '@/components/layout/LandingLayout';
- import { EventCard, BenefitCard, ComercioCard, Pagination, ModalPromo } from '@/components/screens/sugerencias';
+ import { EventCard, BenefitCard, ComercioCard, Pagination, ModalPromo } from '@/components/screens/guianorte';
  import { Benefit } from '@/types/sugerencias';
- import HeroSugerencias from './Hero';
+ import HeroGuiaNorte from './Hero';
 
  type TabType = 'comercios' | 'eventos' | 'beneficios';
 
@@ -22,22 +22,22 @@
    { name: 'beneficios', label: 'PROMOCIONES', color: 'bg-[#3BA740] text-white bg-gradient-to-r from-[#1AA221] via-[#1D8422] to-[#1D8422] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 hover:cursor-pointer' }
  ];
 
- export default function SugerenciasClient({ initialComercios, initialEventos, initialBeneficios, initialTab }: Props) {
+ export default function GuiaNorteClient({ initialComercios, initialEventos, initialBeneficios, initialTab }: Props) {
    const [currentTab, setCurrentTab] = useState<TabType>(initialTab || 'comercios');
    const [currentPage, setCurrentPage] = useState(1);
    const [isRedeemOpen, setIsRedeemOpen] = useState(false);
    const [selectedBenefit, setSelectedBenefit] = useState<Benefit | null>(null);
-   const sugerenciasRef = useRef<HTMLDivElement>(null);
+   const guianorteRef = useRef<HTMLDivElement>(null);
 
    useEffect(() => {
     setCurrentTab(initialTab as TabType);
    }, [initialTab]);
 
-   const scrollToSugerencias = () => {
-    if (sugerenciasRef.current) {
-      sugerenciasRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-   };
+  const scrollToGuiaNorte = () => {
+   if (guianorteRef.current) {
+     guianorteRef.current.scrollIntoView({ behavior: 'smooth' });
+   }
+  };
 
    const itemsPerPage = 10;
 
@@ -69,15 +69,15 @@
      <LandingLayout>
        <div className="min-h-screen bg-white">
          {/* Hero Section */}
-         <HeroSugerencias categories={categories} setCurrentTab={setCurrentTab} setCurrentPage={setCurrentPage} scrollToSugerencias={scrollToSugerencias} />
+         <HeroGuiaNorte categories={categories} setCurrentTab={setCurrentTab} setCurrentPage={setCurrentPage} scrollToGuiaNorte={scrollToGuiaNorte} />
 
          {/* Content Section */}
-         <section ref={sugerenciasRef} className="py-16 bg-white">
+         <section ref={guianorteRef} className="py-16 bg-white">
            <div className="container mx-auto px-4">
              {/* Results Info */}
              <div className="mb-8 text-center">
                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                 {currentTab === 'comercios' && 'Comercios Sugeridos'}
+                 {currentTab === 'comercios' && 'Comercios de Guía Norte'}
                  {currentTab === 'eventos' && 'Próximos Eventos'}
                  {currentTab === 'beneficios' && 'Beneficios Disponibles'}
                </h2>

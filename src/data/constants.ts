@@ -84,7 +84,7 @@ export const SOCIAL_LINKS = {
 
 export const NAVIGATION = [
   { name: "Inicio", href: "/", current: true },
-  { name: "Sugerencias", href: "/sugerencias", current: false },
+  { name: "Guía Norte", href: "/guianorte", current: false },
   { name: "Notas", href: "/notas", current: false },
   { name: 'Comercios', href: '/comercios', current: false },
   // { name: 'Suscripciones', href: '/suscripciones', current: false },
@@ -101,7 +101,7 @@ export const FOOTER_LINKS = {
   ],
   services: [
     { name: "Publicidad", href: "mailto:publicidadnuevosmatices@gmail.com" },
-    { name: "Sugerencias", href: "/sugerencias" },
+    { name: "Guía Norte", href: "/guianorte" },
     { name: "Notas", href: "/notas" },
   ],
   legal: [

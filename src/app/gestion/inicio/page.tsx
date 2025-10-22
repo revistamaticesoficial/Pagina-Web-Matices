@@ -343,7 +343,7 @@ export default function DashboardPage() {
                   className="w-full flex items-center justify-start"
                 >
                   <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-2 flex-shrink-0" />
-                  <span className="truncate">Crear nueva promo</span>
+                  <span className="truncate">Crear nuevo beneficio</span>
                 </Link>
               </Button>
               <Button
@@ -365,11 +365,11 @@ export default function DashboardPage() {
                 className="w-full justify-start text-sm sm:text-base py-2 sm:py-3"
               >
                 <Link
-                  href="/gestion/promociones"
+                  href="/gestion/beneficios"
                   className="w-full flex items-center justify-start"
                 >
                   <Target className="w-3 h-3 sm:w-4 sm:h-4 mr-2 flex-shrink-0" />
-                  <span className="truncate">Gestionar promociones</span>
+                  <span className="truncate">Gestionar beneficios</span>
                 </Link>
               </Button>
               <Button

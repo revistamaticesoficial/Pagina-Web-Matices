@@ -10,22 +10,21 @@ const slides = [
     image: "/images/banner/kempes.png",
     title: "Revista",
     highlight: "Matices",
-    subtitle: "del Cerro",
     description:
-      "Tu fuente confiable de noticias locales, comercios del barrio y contenido de interés para la comunidad de zona norte de Córdoba.",
+      "Creciendo junto a vos",
   },
   {
     image: "/images/banner/nunez.png",
-    title: "Conectando",
-    highlight: "Comercios",
-    subtitle: "y Vecinos",
-    description: "Descubrí los mejores comercios del barrio y aprovechá beneficios exclusivos para la comunidad.",
+    title: "Conectamos con los",
+    highlight: "vecinos",
+    subtitle: "y construimos comunidad",
+    description: "Aprovecha los beneficios exclusivos para la comunidad los 365 días del año",
   },
   {
     image: "/images/banner/mujer-urbana1.jpg",
-    title: "Historias",
-    highlight: "Locales",
-    subtitle: "que Importan",
+    title: "Contamos las ",
+    highlight: "historias",
+    subtitle: "que importan",
     description: "Las noticias y eventos que hacen de Cerro de las Rosas un lugar especial para vivir.",
   },
 ]
@@ -81,7 +80,7 @@ export function HeroHome() {
       {/* Content */}
       <div className="relative h-full container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-full">
-          <div className="max-w-3xl">
+          <div className="max-w-3xl xl:max-w-5xl">
             {slides.map((slide, index) => (
               <div
                 key={index}
@@ -89,7 +88,7 @@ export function HeroHome() {
                   index === currentSlide ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8 absolute"
                 }`}
               >
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-4 text-balance">
+                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-4 text-balance">
                   {slide.title} <span className="text-[#005B82]">{slide.highlight}</span>
                   <br />
                   {slide.subtitle}
@@ -100,7 +99,7 @@ export function HeroHome() {
                 <div className="flex flex-wrap gap-4">
                   <Button size="lg" className="bg-[#005B82] hover:bg-[#005B8290] text-white">
                     <Link href="/notas">
-                    Ver Últimas Notas
+                    Ver Últimos artículos
                     </Link>
                   </Button>
                   <Button
@@ -108,8 +107,8 @@ export function HeroHome() {
                     variant="outline"
                     className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
                   >
-                    <Link href="/sugerencias">
-                    Conocer Sugerencias
+                    <Link href="/guianorte">
+                    Conoce Guía Norte
                     </Link>
                   </Button>
                 </div>

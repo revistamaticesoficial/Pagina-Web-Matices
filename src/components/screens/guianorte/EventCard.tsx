@@ -123,12 +123,12 @@ export default function EventCard({ event }: EventCardProps) {
         <div className="flex-grow"></div>
 
         {/* Action Button */}
-        <Button 
+        {/* <Button 
           className="w-full" 
           variant={event.isFree ? "default" : "outline"}
         >
           {event.isFree ? 'Participar Gratis' : 'Ver Detalles'}
-        </Button>
+        </Button> */}
       </CardContent>
     </Card>
   );

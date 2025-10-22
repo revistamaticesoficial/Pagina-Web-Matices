@@ -15,7 +15,7 @@ function CTA() {
                   <div className="shrink-0 absolute bottom-0 left-0">
                     <Image
                       src="/images/mati-solo.png"
-                      alt="Mati - Ver Sugerencias"
+                      alt="Mati - Ver Guía Norte"
                       width={360}
                       height={360}
                       className="h-auto w-[200px] sm:w-[260px] object-contain"
@@ -25,12 +25,12 @@ function CTA() {
 
                   {/* Botón a la derecha del zorro */}
                   <div className="flex-1 flex items-center justify-center">
-                    <Link href="/sugerencias">
+                    <Link href="/guianorte">
                       <button
                         className="bg-[#F58220] hover:bg-[#E5750D] text-white font-bold text-xl sm:text-2xl px-8 sm:px-10 py-5 sm:py-6 rounded-[8px] shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95"
                         style={{ backgroundColor: '#F58220' }}
                       >
-                        VER SUGERENCIAS
+                        VER GUÍA NORTE
                       </button>
                     </Link>
                   </div>
