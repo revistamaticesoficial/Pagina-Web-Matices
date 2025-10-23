@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useRef} from 'react';
-import { Calendar, Clock, MapPin, Users, Camera, X, Plus, Edit, Eye, ChefHat, Star } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Camera, X, Plus, Edit, Eye, ChefHat } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { eventos as eventosData } from '@/data/eventos';
 import { Event } from '@/types/sugerencias';
-import { useParams } from 'next/navigation';
 
 // Usamos el tipo Event importado de tipos
 

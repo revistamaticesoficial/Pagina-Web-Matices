@@ -2,8 +2,7 @@
 import LandingLayout from "@/components/layout/LandingLayout";
 import { Button } from "@/components/ui/Button";
 import { CardContent } from "@/components/ui/Card";
-import Dialog, { DialogContent } from "@/components/ui/Dialog";
-import { MapPin, Phone, Mail, Megaphone, ArrowRight, Send } from "lucide-react";
+import { MapPin, Phone, Mail, Megaphone, ArrowRight } from "lucide-react";
 import {
   Card,
   CardHeader,

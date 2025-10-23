@@ -11,21 +11,16 @@ import { Comercio } from "@/types/sugerencias";
 import {
   MapPin,
   Phone,
-  Globe,
-  Mail,
-  Clock,
   Star,
   ArrowLeft,
   Share2,
   Heart,
   Camera,
-  ExternalLink,
   Navigation,
   Copy,
   MessageCircle,
   Facebook,
   Twitter,
-  Link as LinkIcon,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -80,7 +75,7 @@ export default function ComercioDetailPage() {
       try {
         setLoadingBenefits(true);
         // Primero intentar con campo comercio_id (usado en gestión)
-        let { data, error } = await supabase
+        const { data, error } = await supabase
           .from('benefits')
           .select('*')
           .eq('comercio_id' as any, (comercio as any).id)
@@ -368,7 +363,7 @@ export default function ComercioDetailPage() {
                               <Button 
                                 size="sm" 
                                 className="bg-indigo-600 hover:bg-indigo-700"
-                                onClick={() => router.push('/guianorte?tab=beneficios')}
+                                onClick={() => router.push('/sugerencias?tab=beneficios')}
                               >
                                 Ver detalle
                               </Button>

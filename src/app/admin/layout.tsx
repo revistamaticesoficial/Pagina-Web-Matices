@@ -3,12 +3,8 @@ import { ReactNode } from 'react'
 import { DashboardSidebar } from '@/components/layout/DashboardSidebar'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/Button'
-import { useAuth } from '@/providers/AuthProvider'
-import { useRouter } from 'next/navigation'
 
 export default function GestionLayout({ children }: { children: ReactNode }) {
-  const { authState } = useAuth()
-  const router = useRouter()
 
   // if (!authState.user) {
   //   router.push('/')

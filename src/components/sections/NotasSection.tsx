@@ -32,7 +32,7 @@ function NotasSection() {
     update()
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
-  }, [])
+  }, [notes.length])
 
   const maxIndex = Math.max(0, notes.length - perView)
 
@@ -47,7 +47,7 @@ function NotasSection() {
 
   return (
     <section className='py-16'>
-      <h1 className="text-3xl font-bold text-[#005B82] text-center mb-8">Notas Destacadas</h1>
+      <h1 className="text-3xl font-bold text-[#005B82] text-center mb-8">ARTICULOS DESTACADOS</h1>
       <div className="mt-8 w-full max-w-7xl mx-auto line-clamp-1">
         <div className="relative overflow-hidden h-[60vh] lg:h-full" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
           {/* Track con 5 tarjetas, ancho flexible y desplazamiento por tarjeta */}

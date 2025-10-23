@@ -2,7 +2,8 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
@@ -185,9 +186,11 @@ export default function CuentaPage() {
                   <div>
                     <Label>Foto de perfil</Label>
                     <div className="mt-2 flex items-center gap-4">
-                      <img
+                      <Image
                         src={userDraft.foto || "/imagenes/foto-perfil.jpg"}
                         alt="Vista previa"
+                        width={80}
+                        height={80}
                         className="w-20 h-20 rounded-full object-cover ring-2 ring-[#005B82]"
                       />
                       <div className="flex flex-col gap-2">

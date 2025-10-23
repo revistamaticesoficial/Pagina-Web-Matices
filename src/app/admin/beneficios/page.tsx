@@ -2,6 +2,7 @@
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 type Promo = {
   id: number;
@@ -196,7 +197,7 @@ export default function Page() {
               />
               {form.imagen && (
                 <div className="mt-2">
-                  <img src={form.imagen} alt="Preview" className="w-32 h-32 object-cover rounded border" />
+                  <Image src={form.imagen} alt="Preview" width={128} height={128} className="w-32 h-32 object-cover rounded border" />
                 </div>
               )}
 

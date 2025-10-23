@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer className="bg-background border-t">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
 
           <Image src="/images/logotipo.png" alt="Logo" width={100} height={60} />
 
@@ -32,6 +32,48 @@ export function Footer() {
             <h4 className="text-sm font-semibold">Servicios</h4>
             <ul className="space-y-2">
               {FOOTER_LINKS.services.map((link) => (
+                <li key={link.name}>
+                  {link.href.startsWith('mailto:') ? (
+                    <a
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal Links */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold">Legales</h4>
+            <ul className="space-y-2">
+              {FOOTER_LINKS.legal.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/* Social Links */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold">Redes sociales</h4>
+            <ul className="space-y-2">
+              {FOOTER_LINKS.social.map((link) => (
                 <li key={link.name}>
                   {link.href.startsWith('mailto:') ? (
                     <a

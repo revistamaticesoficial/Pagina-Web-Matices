@@ -131,3 +131,4 @@ export default function ComercioCard({ comercio }: ComercioCardProps) {
     </Card>
   );
 }
+

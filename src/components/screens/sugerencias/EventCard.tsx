@@ -2,7 +2,6 @@ import Image from 'next/image';
 import { Calendar, Clock, MapPin, Users, Tag } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
 import { Event } from '@/types/sugerencias';
 
 interface EventCardProps {

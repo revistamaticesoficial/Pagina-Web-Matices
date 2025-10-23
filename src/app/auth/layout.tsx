@@ -1,5 +1,3 @@
-import Image from 'next/image';
-import Link from 'next/link';
 import LandingLayout from '@/components/layout/LandingLayout';
 
 export default function AuthLayout({

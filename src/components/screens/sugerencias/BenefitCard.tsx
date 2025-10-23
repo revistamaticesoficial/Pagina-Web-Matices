@@ -1,11 +1,8 @@
-import Image from 'next/image';
-import { Gift, Calendar, Copy, Check } from 'lucide-react';
+import { Gift, Calendar } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Benefit } from '@/types/sugerencias';
-import { useState } from 'react';
-import { ModalPromo } from '@/components/screens/sugerencias';
 import { formatDateLabel } from '@/lib/utils';
 
 interface BenefitCardProps {
@@ -14,19 +11,7 @@ interface BenefitCardProps {
 }
 
 export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
-  const [copied, setCopied] = useState(false);
-
   const formatDate = (dateString: string) => formatDateLabel(dateString);
-
-  const copyCode = async () => {
-    try {
-      await navigator.clipboard.writeText(benefit.code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Error copying code:', err);
-    }
-  };
 
   const getDiscountColor = () => {
     if (benefit.discount === 'GRATIS') return 'bg-green-500';

@@ -15,13 +15,13 @@ export function useTabNavigation() {
     const params = new URLSearchParams(searchParams.toString());
     params.set('tab', tab);
     params.set('page', '1'); // Reset to page 1 when changing tabs
-    router.push(`/guianorte?${params.toString()}`);
+    router.push(`/sugerencias?${params.toString()}`);
   }, [router, searchParams]);
 
   const setPage = useCallback((page: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', page.toString());
-    router.push(`/guianorte?${params.toString()}`);
+    router.push(`/sugerencias?${params.toString()}`);
   }, [router, searchParams]);
 
   return {

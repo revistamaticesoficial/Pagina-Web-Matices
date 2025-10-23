@@ -1,6 +1,7 @@
-import GuiaNorteClient from '@/components/screens/guianorte/GuiaNorteClient';
+import SugerenciasClient from '@/components/screens/sugerencias/SugerenciasClient';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
+import type { Comercio, Event, Benefit } from '@/types/sugerencias';
 
 export const revalidate = 60;
 
@@ -56,14 +57,15 @@ async function loadData() {
   };
 }
 
-export default async function GuiaNortePage({ searchParams }: { searchParams: { tab: string } }) {
+export default async function SugerenciasPage({ searchParams }: { searchParams: Promise<{ tab: string }> }) {
   const { comercios, eventos, beneficios } = await loadData();
+  const resolvedSearchParams = await searchParams;
   return (
-    <GuiaNorteClient
-      initialComercios={comercios as any[]}
-      initialEventos={eventos as any[]}
-      initialBeneficios={beneficios as any[]}
-      initialTab={searchParams?.tab && (searchParams?.tab as 'comercios' | 'eventos' | 'promociones')}
+    <SugerenciasClient
+      initialComercios={comercios as Comercio[]}
+      initialEventos={eventos as Event[]}
+      initialBeneficios={beneficios as Benefit[]}
+      initialTab={resolvedSearchParams?.tab && (resolvedSearchParams?.tab as 'comercios' | 'eventos' | 'promociones')}
     />
   );
 }

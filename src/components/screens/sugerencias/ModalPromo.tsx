@@ -731,3 +731,4 @@ const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPro
 };
 
 export default ModalPromo;
+

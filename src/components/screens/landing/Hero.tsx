@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/Button"
 
 const slides = [
@@ -68,10 +69,11 @@ export function HeroHome() {
             index === currentSlide ? "opacity-100" : "opacity-0"
           }`}
         >
-          <img
+          <Image
             src={slide.image || "/placeholder.svg"}
             alt={`${slide.title} ${slide.highlight}`}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
         </div>
@@ -107,8 +109,8 @@ export function HeroHome() {
                     variant="outline"
                     className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
                   >
-                    <Link href="/guianorte">
-                    Conoce Guía Norte
+                    <Link href="/sugerencias">
+                    Conoce Sugerencias
                     </Link>
                   </Button>
                 </div>

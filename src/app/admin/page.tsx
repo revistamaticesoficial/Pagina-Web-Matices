@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 
 export default function Page() {
-  redirect('/gestion/inicio')
+  redirect('/admin/eventos')
 }
 
 

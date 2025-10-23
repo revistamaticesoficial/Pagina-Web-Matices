@@ -96,7 +96,7 @@ export default function NosotrosPage() {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [currentSlide]);
+  }, [currentSlide, nextSlide]);
 
   return (
     <LandingLayout>

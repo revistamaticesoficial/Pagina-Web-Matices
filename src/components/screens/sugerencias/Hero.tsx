@@ -27,11 +27,11 @@ interface Category {
   color: string;
 }
 
-export default function HeroGuiaNorte({ categories, setCurrentTab, setCurrentPage, scrollToGuiaNorte }: { 
+export default function HeroSugerencias({ categories, setCurrentTab, setCurrentPage, scrollToSugerencias }: { 
   categories: Category[], 
   setCurrentTab: (tab: 'comercios' | 'eventos' | 'beneficios') => void, 
   setCurrentPage: (page: number) => void,
-  scrollToGuiaNorte: () => void
+  scrollToSugerencias: () => void
 }) {
   return (
     <section className="relative h-[80vh] w-full overflow-hidden">
@@ -61,7 +61,7 @@ export default function HeroGuiaNorte({ categories, setCurrentTab, setCurrentPag
                 <Button
                   key={category.name}
                   size="lg"
-                  onClick={() => { setCurrentTab(category.name as 'comercios' | 'eventos' | 'beneficios'); setCurrentPage(1); scrollToGuiaNorte(); }}
+                  onClick={() => { setCurrentTab(category.name as 'comercios' | 'eventos' | 'beneficios'); setCurrentPage(1); scrollToSugerencias(); }}
                   className={`${category.color} text-white min-w-[200px] h-14 text-base font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105`}
                 >
                   {/* <Icon className="mr-2 h-5 w-5" /> */}
@@ -84,3 +84,4 @@ export default function HeroGuiaNorte({ categories, setCurrentTab, setCurrentPag
     </section>
   )
 }
+

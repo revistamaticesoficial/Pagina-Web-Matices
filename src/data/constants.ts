@@ -73,20 +73,18 @@ export const BUSINESS_PLANS = [
   { value: "PREMIUM", label: "Premium", color: "bg-yellow-500" },
 ];
 
-export const SOCIAL_LINKS = {
+export const REDES_SOCIALES = {
   facebook: "https://www.facebook.com/profile.php?id=61579318061468",
   instagram: "https://instagram.com/revistamaticesoficial",
-  twitter: "/",
-  youtube: "/",
-  whatsapp:
-    "https://api.whatsapp.com/send?phone=5493515141456&text=Hola%20te%20escribo%20desde%20la%20web%20de%20Revista%20Matices",
+  whatsapp: "https://api.whatsapp.com/send?phone=5493515141456&text=Hola%20te%20escribo%20desde%20la%20web%20de%20Revista%20Matices",
 };
 
 export const NAVIGATION = [
   { name: "Inicio", href: "/", current: true },
-  { name: "Guía Norte", href: "/guianorte", current: false },
+  { name: "Sugerencias", href: "/sugerencias", current: false },
   { name: "Notas", href: "/notas", current: false },
   { name: 'Comercios', href: '/comercios', current: false },
+  { name: "Ediciones", href: "/ediciones", current: false },
   // { name: 'Suscripciones', href: '/suscripciones', current: false },
   { name: "¿Quienes somos?", href: "/nosotros", current: false },
   // { name: 'Todos los números', href: '/todoslosnumeros', current: false }
@@ -101,7 +99,7 @@ export const FOOTER_LINKS = {
   ],
   services: [
     { name: "Publicidad", href: "mailto:publicidadnuevosmatices@gmail.com" },
-    { name: "Guía Norte", href: "/guianorte" },
+    { name: "Sugerencias", href: "/sugerencias" },
     { name: "Notas", href: "/notas" },
   ],
   legal: [
@@ -109,4 +107,8 @@ export const FOOTER_LINKS = {
     { name: "Política de privacidad", href: "/privacidad" },
     { name: "Política de cookies", href: "/cookies" },
   ],
+  social: [
+    { name: "Instagram", href: "https://instagram.com/revistamaticesoficial" },
+    { name: "Facebook", href: "https://www.facebook.com/profile.php?id=61579318061468" },
+  ]
 };

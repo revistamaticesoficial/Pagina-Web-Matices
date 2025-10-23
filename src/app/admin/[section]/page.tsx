@@ -7,6 +7,7 @@ const SECTION_MAP: Record<string, string> = {
   notas: '/admin/notas',
   cuenta: '/admin/cuenta',
   beneficios: '/admin/beneficios',
+  clientes: '/admin/clientes',
 }
 
 export default async function AdminSectionPage({ params }: { params: Promise<{ section: string }> }) {
