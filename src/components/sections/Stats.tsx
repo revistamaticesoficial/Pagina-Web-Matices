@@ -8,11 +8,11 @@ export function Stats() {
             <div className="text-sm lg:text-base text-gray-600">Artículos semanales</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl lg:text-4xl font-bold text-[#F58220] mb-2">20+</div>
-            <div className="text-sm lg:text-base text-gray-600">Comercios destacados</div>
+            <div className="text-3xl lg:text-4xl font-bold text-[#F58220] mb-2">140+</div>
+            <div className="text-sm lg:text-base text-gray-600">Comercios asociados</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl lg:text-4xl font-bold text-[#3BA740] mb-2">5K+</div>
+            <div className="text-3xl lg:text-4xl font-bold text-[#3BA740] mb-2">12K+</div>
             <div className="text-sm lg:text-base text-gray-600">Lectores mensuales</div>
           </div>
         </div>

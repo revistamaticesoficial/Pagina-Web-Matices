@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/Button"
 
 const slides = [
   {
-    image: "/images/banner/kempes.png",
+    image: "/images/banner/nunez.png",
     title: "Revista",
     highlight: "Matices",
     description:
       "Creciendo junto a vos",
   },
   {
-    image: "/images/banner/nunez.png",
+    image: "/images/banner/kempes.png",
     title: "Conectamos con los",
     highlight: "vecinos",
     subtitle: "y construimos comunidad",
@@ -39,6 +39,7 @@ export function HeroHome() {
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length)
+
     }, 5000)
 
     return () => clearInterval(interval)
@@ -90,8 +91,8 @@ export function HeroHome() {
                   index === currentSlide ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8 absolute"
                 }`}
               >
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-4 text-balance">
-                  {slide.title} <span className="text-[#005B82]">{slide.highlight}</span>
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-4 text-balance">
+                  {slide.title} <span className="text-white">{slide.highlight} </span>
                   <br />
                   {slide.subtitle}
                 </h1>

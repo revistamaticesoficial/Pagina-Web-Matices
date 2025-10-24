@@ -4,10 +4,11 @@ import { redirect, notFound } from 'next/navigation'
 const SECTION_MAP: Record<string, string> = {
   inicio: '/admin/inicio',
   eventos: '/admin/eventos',
-  notas: '/admin/notas',
+  articulos: '/admin/articulos',
   cuenta: '/admin/cuenta',
   beneficios: '/admin/beneficios',
-  clientes: '/admin/clientes',
+  comercios: '/admin/comercios',
+  ajustes: '/admin/ajustes',
 }
 
 export default async function AdminSectionPage({ params }: { params: Promise<{ section: string }> }) {

@@ -8,7 +8,7 @@ function CTA() {
               <div className="relative w-full rounded-2xl bg-gradient-to-br from-[#005B82] to-[#003C56] h-[420px]	 lg:h-[300px]  shadow-lg border border-gray-200 overflow-hidden">
                 {/* Título centrado */}
                 <div className="absolute top-6 left-1/2 -translate-x-1/2 w-full px-6 sm:px-10">
-                  <h1 className="font-bold text-white text-2xl sm:text-3xl text-center">Descubre todo lo que mati tiene para ofrecerte</h1>
+                  <h1 className="font-bold text-white text-2xl sm:text-3xl text-center">Descubre todo lo que Mati tiene para ofrecerte</h1>
                 </div>
                 <div className="flex items-center justify-between gap-6 px-6 sm:px-10 py-8 sm:py-12 min-h-[300px]">
                   {/* Zorro a la izquierda */}

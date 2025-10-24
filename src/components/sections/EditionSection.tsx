@@ -74,7 +74,7 @@ export default function EditionSection() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-4">
-            Ediciones
+            EDICIONES
           </h1>
           <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
             En esta sección agrupamos todos los números pasados de la Revista Matices, 
