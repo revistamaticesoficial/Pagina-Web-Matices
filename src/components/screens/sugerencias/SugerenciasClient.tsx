@@ -87,13 +87,13 @@ export default function SugerenciasClient({ initialComercios, initialEventos, in
 
             {/* Cards Grid */}
             <div className={`grid ${getGridCols()} gap-8 max-w-7xl mx-auto`}>
-              {currentTab === 'eventos' && pageItems.map((evento: Event) => (
+              {currentTab === 'eventos' && (pageItems as Event[]).map((evento: Event) => (
                 <EventCard key={evento.id} event={evento} />
               ))}
-              {currentTab === 'beneficios' && pageItems.map((beneficio: Benefit) => (
+              {currentTab === 'beneficios' && (pageItems as Benefit[]).map((beneficio: Benefit) => (
                 <BenefitCard key={beneficio.id} benefit={beneficio} onRedeem={(b) => { setSelectedBenefit(b); setIsRedeemOpen(true); }} />
               ))}
-              {currentTab === 'comercios' && pageItems.map((comercio: Comercio) => (
+              {currentTab === 'comercios' && (pageItems as Comercio[]).map((comercio: Comercio) => (
                 <ComercioCard key={comercio.id} comercio={comercio} />
               ))}
             </div>

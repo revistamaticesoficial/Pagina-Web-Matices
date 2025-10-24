@@ -12,44 +12,36 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 
 interface ComercioModalProps {
-  event: Event | null
+  comercio: Comercio | null
   open: boolean
   onClose: () => void
-  onSave: (event: Partial<Event>) => void
+  onSave: (comercio: Partial<Comercio>) => void
 }
 
-export function ComercioModal({ event, open, onClose, onSave }: ComercioModalProps) {
-  const [formData, setFormData] = useState<Partial<Event>>({
-    title: "",
+export function ComercioModal({ comercio, open, onClose, onSave }: ComercioModalProps) {
+  const [formData, setFormData] = useState<Partial<Comercio>>({
+    name: "",
     description: "",
-    date: new Date().toISOString().split("T")[0],
-    time: "18:00",
-    place: "",
     direction: "",
-    inscription_link: "",
-    open_time: "",
-    close_time: "",
+    phone: "",
+    category: "SERVICIOS",
     isActive: true,
   })
 
   useEffect(() => {
-    if (event) {
-      setFormData(event)
+    if (comercio) {
+      setFormData(comercio)
     } else {
       setFormData({
-        title: "",
+        name: "",
         description: "",
-        date: new Date().toISOString().split("T")[0],
-        time: "18:00",
-        place: "",
         direction: "",
-        inscription_link: "",
-        open_time: "",
-        close_time: "",
+        phone: "",
+        category: "SERVICIOS",
         isActive: true,
       })
     }
-  }, [event, open])
+  }, [comercio, open])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -61,15 +53,15 @@ export function ComercioModal({ event, open, onClose, onSave }: ComercioModalPro
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{event ? "Editar Evento" : "Agregar Evento"}</DialogTitle>
+          <DialogTitle>{comercio ? "Editar Comercio" : "Agregar Comercio"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Título *</Label>
+            <Label htmlFor="name">Nombre *</Label>
             <Input
-              id="title"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              id="name"
+              value={formData.name || ""}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
             />
           </div>
@@ -86,91 +78,59 @@ export function ComercioModal({ event, open, onClose, onSave }: ComercioModalPro
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="date">Fecha *</Label>
+              <Label htmlFor="direction">Dirección *</Label>
               <Input
-                id="date"
-                type="date"
-                value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                id="direction"
+                value={formData.direction || ""}
+                onChange={(e) => setFormData({ ...formData, direction: e.target.value })}
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="time">Hora *</Label>
-              <Input
-                id="time"
-                type="time"
-                value={formData.time}
-                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                required
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="open_time">Hora de apertura</Label>
+              <Label htmlFor="phone">Teléfono</Label>
               <Input
-                id="open_time"
-                type="time"
-                value={formData.open_time || ""}
-                onChange={(e) => setFormData({ ...formData, open_time: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="close_time">Hora de cierre</Label>
-              <Input
-                id="close_time"
-                type="time"
-                value={formData.close_time || ""}
-                onChange={(e) => setFormData({ ...formData, close_time: e.target.value })}
+                id="phone"
+                value={formData.phone || ""}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="place">Lugar</Label>
-            <Input
-              id="place"
-              value={formData.place || ""}
-              onChange={(e) => setFormData({ ...formData, place: e.target.value })}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="direction">Dirección</Label>
-            <Input
-              id="direction"
-              value={formData.direction || ""}
-              onChange={(e) => setFormData({ ...formData, direction: e.target.value })}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="inscription_link">Link de inscripción</Label>
-            <Input
-              id="inscription_link"
-              type="url"
-              value={formData.inscription_link || ""}
-              onChange={(e) => setFormData({ ...formData, inscription_link: e.target.value })}
-              placeholder="https://..."
-            />
+            <Label htmlFor="category">Categoría *</Label>
+            <select
+              id="category"
+              value={formData.category || "SERVICIOS"}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="SERVICIOS">Servicios</option>
+              <option value="RESTAURANTES">Restaurantes</option>
+              <option value="COMERCIOS">Comercios</option>
+              <option value="SALUD">Salud</option>
+              <option value="EDUCACION">Educación</option>
+              <option value="ENTRETENIMIENTO">Entretenimiento</option>
+            </select>
           </div>
 
           <div className="flex items-center space-x-2">
             <Switch
               id="isActive"
-              checked={formData.isActive}
+              checked={formData.isActive || false}
               onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
             />
-            <Label htmlFor="isActive">Evento activo</Label>
+            <Label htmlFor="isActive">Comercio activo</Label>
           </div>
 
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit">{event ? "Guardar cambios" : "Crear evento"}</Button>
+            <Button type="submit">
+              {comercio ? "Actualizar" : "Crear"}
+            </Button>
           </div>
         </form>
       </DialogContent>

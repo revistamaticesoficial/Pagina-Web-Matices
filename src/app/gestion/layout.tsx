@@ -1,6 +1,6 @@
 'use client'
 import { ReactNode, useEffect, useCallback, useState } from 'react'
-import { DashboardSidebar } from '@/components/layout/DashboardSidebar'
+import { DashboardGestionSidebar } from '@/components/layout/DashboardGestionSidebar'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/providers/AuthProvider'
@@ -70,7 +70,7 @@ export default function GestionLayout({ children }: { children: ReactNode }) {
       <div className="flex">
         {/* Sidebar para desktop */}
         <div className="hidden md:block fixed left-0 top-0 z-10 w-[280px] h-screen">
-          <DashboardSidebar />
+          <DashboardGestionSidebar />
         </div>
 
         <div className="flex-1 w-full">
@@ -102,7 +102,7 @@ export default function GestionLayout({ children }: { children: ReactNode }) {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="p-0 w-[280px] bg-black text-white border-r-0">
-                <DashboardSidebar />
+                <DashboardGestionSidebar />
               </SheetContent>
             </Sheet>
           </div>

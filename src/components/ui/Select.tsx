@@ -9,10 +9,18 @@ type SelectContextValue = {
 
 const SelectContext = createContext<SelectContextValue | null>(null);
 
-export function Select({ defaultValue, children }: PropsWithChildren<{ defaultValue?: string }>) {
+export function Select({ defaultValue, onValueChange, children }: PropsWithChildren<{ defaultValue?: string; onValueChange?: (value: string) => void }>) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<string | undefined>(defaultValue);
-  const ctx = useMemo(() => ({ open, setOpen, value, setValue }), [open, value]);
+  
+  const handleValueChange = (newValue: string | undefined) => {
+    setValue(newValue);
+    if (newValue !== undefined) {
+      onValueChange?.(newValue);
+    }
+  };
+  
+  const ctx = useMemo(() => ({ open, setOpen, value, setValue: handleValueChange }), [open, value]);
   return <SelectContext.Provider value={ctx}>{children}</SelectContext.Provider>;
 }
 

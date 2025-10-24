@@ -87,7 +87,7 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="category">Categoría</Label>
-          <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+          <Select defaultValue={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>

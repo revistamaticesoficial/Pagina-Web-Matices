@@ -20,76 +20,119 @@ export default function Page() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [unauth, setUnauth] = useState<boolean>(false);
-console.log('rows:', rows);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const { data: userRes } = await supabase.auth.getUser();
+      const user = userRes?.user || null;
+      if (!user) {
+        setUnauth(true);
+        setRows([]);
+        return;
+      }
+
+      const { data: business } = await supabase
+        .from('comercios')
+        .select('*')
+        .eq('owner_id', user.id)
+        .single();
+
+      if (!business) {
+        setRows([]);
+        return;
+      }
+
+      const { data: benefits } = await supabase
+        .from('benefits')
+        .select('*')
+        .eq('comercio_id', (business as any).id as string)
+        .order('created_at', { ascending: false });
+
+      const ids = (benefits || []).map((b: any) => b.id as string);
+      const countsEntries = await Promise.all(
+        ids.map(async (id) => {
+          const { count } = await (supabase as any)
+            .from('benefit_redemptions')
+            .select('id', { count: 'exact', head: true })
+            .eq('benefit_id', id)
+            .eq('status', 'redeemed');
+          return [id, count ?? 0] as const;
+        })
+      );
+      const countsMap = Object.fromEntries(countsEntries) as Record<string, number>;
+
+      const mapped: Row[] = (benefits || []).map((b: any) => {
+        const dateRaw: string | null = b.valid_to ?? b.expires_at ?? null;
+        const validUntil = dateRaw ? (/^\d{4}-\d{2}-\d{2}$/.test(dateRaw) ? dateRaw : new Date(dateRaw).toISOString().slice(0,10)) : '';
+        const y = validUntil ? Number(validUntil.slice(0,4)) : 0;
+        const m = validUntil ? Number(validUntil.slice(5,7)) : 1;
+        const d = validUntil ? Number(validUntil.slice(8,10)) : 1;
+        const endOfDay = validUntil ? new Date(y, m - 1, d, 23, 59, 59, 999) : null;
+        const estado: Estado = b.isActive ? (endOfDay && endOfDay.getTime() < Date.now() ? 'Finalizada' : 'Activa' ) : 'No disponible';
+
+        return {
+          id: b.id as string,
+          titulo: b.title as string,
+          cantidad: typeof b.quantity === 'number' ? b.quantity : 0,
+          canjeados: countsMap[b.id] ?? 0,
+          estado,
+          desde: b.valid_from || '-',
+          hasta: b.valid_to || '-',
+        };
+      });
+
+      setRows(mapped);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      try {
-        const { data: userRes } = await supabase.auth.getUser();
-        const user = userRes?.user || null;
-        if (!user) {
-          setUnauth(true);
-          setRows([]);
-          return;
-        }
+    loadData();
+  }, []);
 
-        const { data: business } = await supabase
-          .from('comercios')
-          .select('*')
-          .eq('owner_id', user.id)
-          .single();
+  // Configurar real-time subscription para beneficios
+  useEffect(() => {
+    const setupSubscription = async () => {
+      const { data: userRes } = await supabase.auth.getUser();
+      const user = userRes?.user;
+      if (!user) return;
 
-        if (!business) {
-          setRows([]);
-          return;
-        }
+      // Obtener el comercio del usuario
+      const { data: business } = await supabase
+        .from('comercios')
+        .select('id')
+        .eq('owner_id', user.id)
+        .single();
 
-        const { data: benefits } = await supabase
-          .from('benefits')
-          .select('*')
-          .eq('comercio_id', (business as any).id as string)
-          .order('created_at', { ascending: false });
+      if (!business) return;
 
-        const ids = (benefits || []).map((b: any) => b.id as string);
-        const countsEntries = await Promise.all(
-          ids.map(async (id) => {
-            const { count } = await (supabase as any)
-              .from('benefit_redemptions')
-              .select('id', { count: 'exact', head: true })
-              .eq('benefit_id', id)
-              .eq('status', 'redeemed');
-            return [id, count ?? 0] as const;
-          })
-        );
-        const countsMap = Object.fromEntries(countsEntries) as Record<string, number>;
+      // Suscribirse a cambios en la tabla de beneficios
+      const subscription = supabase
+        .channel('benefits-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'benefits',
+            filter: `comercio_id=eq.${business.id}`
+          },
+          (payload) => {
+            console.log('Beneficio actualizado:', payload);
+            // Recargar datos cuando hay cambios
+            loadData();
+          }
+        )
+        .subscribe();
 
-        const mapped: Row[] = (benefits || []).map((b: any) => {
-          const dateRaw: string | null = b.valid_to ?? b.expires_at ?? null;
-          const validUntil = dateRaw ? (/^\d{4}-\d{2}-\d{2}$/.test(dateRaw) ? dateRaw : new Date(dateRaw).toISOString().slice(0,10)) : '';
-          const y = validUntil ? Number(validUntil.slice(0,4)) : 0;
-          const m = validUntil ? Number(validUntil.slice(5,7)) : 1;
-          const d = validUntil ? Number(validUntil.slice(8,10)) : 1;
-          const endOfDay = validUntil ? new Date(y, m - 1, d, 23, 59, 59, 999) : null;
-          const estado: Estado = b.isActive ? (endOfDay && endOfDay.getTime() < Date.now() ? 'Finalizada' : 'Activa' ) : 'No disponible';
-
-          return {
-            id: b.id as string,
-            titulo: b.title as string,
-            cantidad: typeof b.quantity === 'number' ? b.quantity : 0,
-            canjeados: countsMap[b.id] ?? 0,
-            estado,
-            desde: b.valid_from || '-',
-            hasta: b.valid_to || '-',
-          };
-        });
-
-        setRows(mapped);
-      } finally {
-        setLoading(false);
-      }
+      return () => {
+        subscription.unsubscribe();
+      };
     };
-    load();
+
+    setupSubscription();
   }, []);
 
   if (loading) {
@@ -132,7 +175,6 @@ console.log('rows:', rows);
               <th className="px-4 py-2 text-left">Desde</th>
               <th className="px-4 py-2 text-left">Hasta</th>
               <th className="px-4 py-2 text-right">Acciones</th>
-              
             </tr>
           </thead>
           <tbody>

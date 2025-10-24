@@ -1,0 +1,11 @@
+export { ComerciosGrid } from './ComerciosGrid';
+export { ComerciosPagination } from './ComerciosPagination';
+export { ComercioDetailContent } from './ComercioDetailContent';
+export { default as ComerciosSection } from './ComerciosSection';
+export { default as Contact } from './Contact';
+export { default as CTA } from './CTA';
+export { default as EditionSection } from './EditionSection';
+export { FeaturedArticles } from './FeaturedArticles';
+export { default as NotasSection } from './NotasSection';
+export { Stats } from './Stats';
+export { TeamCarrousel } from './TeamCarrousel';

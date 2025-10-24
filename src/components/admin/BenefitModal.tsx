@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import type { Benefit } from "@/data/mock-data"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/Dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Label } from "@/components/ui/Label"
@@ -85,7 +85,7 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
             <div className="space-y-2">
               <Label htmlFor="type">Tipo de beneficio</Label>
               <Select
-                value={formData.type || "discount"}
+                defaultValue={formData.type || "discount"}
                 onValueChange={(value) => setFormData({ ...formData, type: value as any })}
               >
                 <SelectTrigger>

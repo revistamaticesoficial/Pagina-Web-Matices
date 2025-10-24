@@ -62,10 +62,10 @@ export default async function SugerenciasPage({ searchParams }: { searchParams: 
   const resolvedSearchParams = await searchParams;
   return (
     <SugerenciasClient
-      initialComercios={comercios as Comercio[]}
-      initialEventos={eventos as Event[]}
-      initialBeneficios={beneficios as Benefit[]}
-      initialTab={resolvedSearchParams?.tab && (resolvedSearchParams?.tab as 'comercios' | 'eventos' | 'promociones')}
+      initialComercios={comercios as unknown as Comercio[]}
+      initialEventos={eventos as unknown as Event[]}
+      initialBeneficios={beneficios as unknown as Benefit[]}
+      initialTab={resolvedSearchParams?.tab && ['comercios', 'eventos', 'beneficios'].includes(resolvedSearchParams.tab) ? (resolvedSearchParams.tab as 'comercios' | 'eventos' | 'beneficios') : 'comercios'}
     />
   );
 }
