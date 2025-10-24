@@ -50,7 +50,7 @@ export const businessService = {
   /**
    * Obtener comercio por ID con todos sus datos
    */
-  async getBusinessById(businessId: string): Promise<BusinessWithDetails> {
+  async getBusinessById(businessId: string): Promise<BusinessWithDetails | null> {
     const { data, error } = await supabase
       .from('businesses')
       .select(`
@@ -61,7 +61,7 @@ export const businessService = {
         events(*)
       `)
       .eq('id', businessId)
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
     return data;
@@ -81,22 +81,22 @@ export const businessService = {
         events(*)
       `)
       .eq('owner_id', userId)
-      .single();
+      .maybeSingle();
 
-    if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
+    if (error) throw error;
     return data;
   },
 
   /**
    * Actualizar información básica del comercio
    */
-  async updateBusiness(businessId: string, updates: Partial<BusinessInsert>): Promise<BusinessWithDetails> {
+  async updateBusiness(businessId: string, updates: Partial<BusinessInsert>): Promise<BusinessWithDetails | null> {
     const { data, error } = await supabase
       .from('businesses')
       .update(updates)
       .eq('id', businessId)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
     return await this.getBusinessById(businessId);

@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/Button';
 interface ComerciosPaginationProps {
   totalItems: number;
   itemsPerPage: number;
+  hasMore?: boolean;
 }
 
-export function ComerciosPagination({ totalItems, itemsPerPage }: ComerciosPaginationProps) {
+export function ComerciosPagination({ totalItems, itemsPerPage, hasMore = false }: ComerciosPaginationProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 

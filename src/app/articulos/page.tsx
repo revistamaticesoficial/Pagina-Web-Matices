@@ -56,7 +56,7 @@ function NotasContent() {
           <div className="relative z-10 container mx-auto px-4 h-full flex items-center justify-center text-center">
             <div className="max-w-4xl">
               <h1 className="text-4xl lg:text-5xl font-bold mb-4">
-                Notas de Matices
+                Articulos de Matices
               </h1>
               <p className="text-xl lg:text-2xl opacity-90 max-w-3xl mx-auto">
                 Todas las noticias, historias y acontecimientos del Cerro de las Rosas
@@ -71,7 +71,7 @@ function NotasContent() {
             {/* Header */}
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Últimas Notas
+                Últimos Notas
               </h2>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
                 Mantente informado con todas las noticias, eventos y novedades del barrio Cerro de las Rosas
@@ -84,15 +84,22 @@ function NotasContent() {
                 <div key={nota.id} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
                   {/* Image Section */}
                   <div className="relative h-48 bg-gradient-to-r from-gray-100 to-gray-200 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 to-purple-600/10"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center">
-                          <BookOpen className="w-8 h-8 text-white" />
+                    {nota.image ? (
+                      <Image src={nota.image} alt={nota.title} width={300} height={200} className="object-cover" />
+                    ) : (
+                      <>
+                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 to-purple-600/10"></div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="text-center">
+                            <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center">
+                              <BookOpen className="w-8 h-8 text-white" />
+                            </div>
+                            <p className="text-gray-700 font-medium text-sm">Nota Destacada</p>
+                          </div>
                         </div>
-                        <p className="text-gray-700 font-medium text-sm">Nota Destacada</p>
-                      </div>
-                    </div>
+                      </>
+                    )}
+
 
                     {/* Premium Badge */}
                     {nota.isPremium && (

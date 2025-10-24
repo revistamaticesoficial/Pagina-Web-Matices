@@ -1,53 +1,85 @@
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from '@/types/database';
 import LandingLayout from '@/components/layout/LandingLayout';
 import { ComercioDetailContent } from '@/components/sections/ComercioDetailContent';
+import { comercioService } from '@/lib/comercio-service';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { notFound } from 'next/navigation';
-
-type Business = Database['public']['Tables']['comercios']['Row'];
-type Benefit = Database['public']['Tables']['benefits']['Row'];
+import { Metadata } from 'next';
 
 // Configuración de revalidación
 export const revalidate = 60; // Revalidar cada 60 segundos
 
-async function loadComercio(slug: string): Promise<Business | null> {
-  const supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+// Generar metadatos dinámicos
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: Promise<{ slug: string }> 
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+  
+  try {
+    const { comercio } = await comercioService.getComercioBySlug(resolvedParams.slug);
+    
+    if (!comercio) {
+      return {
+        title: 'Comercio no encontrado - Matices',
+        description: 'El comercio que buscas no está disponible.',
+      };
+    }
 
-  const { data, error } = await supabase
-    .from('comercios')
-    .select('*')
-    .eq('slug', slug)
-    .maybeSingle();
-
-  if (error) {
-    console.error('Error cargando comercio:', error);
-    return null;
+    return {
+      title: `${comercio.name} - Comercios de Matices`,
+      description: `Descubre ${comercio.name} en el barrio Cerro de las Rosas. ${comercio.direction ? `Ubicado en ${comercio.direction}.` : ''}`,
+      keywords: `${comercio.name}, ${comercio.category}, cerro de las rosas, córdoba, comercio local`,
+      openGraph: {
+        title: `${comercio.name} - Comercios de Matices`,
+        description: `Descubre ${comercio.name} en el barrio Cerro de las Rosas.`,
+        type: 'website',
+      },
+    };
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return {
+      title: 'Comercio - Matices',
+      description: 'Descubre este comercio en el barrio Cerro de las Rosas.',
+    };
   }
-
-  return data;
 }
 
-async function loadBenefits(comercioId: string): Promise<Benefit[]> {
-  const supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Componente de loading para el detalle
+function ComercioDetailSkeleton() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white shadow-sm border-b">
+        <div className="container mx-auto px-4 py-4">
+          <div className="h-10 bg-gray-200 rounded w-24 animate-pulse"></div>
+        </div>
+      </div>
+      
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-lg overflow-hidden">
+              <div className="h-64 bg-gray-200 animate-pulse"></div>
+            </div>
+            <div className="bg-white rounded-lg p-6">
+              <div className="h-8 bg-gray-200 rounded mb-4 animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+            </div>
+          </div>
+          
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg p-6">
+              <div className="h-6 bg-gray-200 rounded mb-4 animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded w-2/3 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
-
-  const { data, error } = await supabase
-    .from('benefits')
-    .select('*')
-    .eq('comercio_id', comercioId)
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error cargando beneficios:', error);
-    return [];
-  }
-
-  return data || [];
 }
 
 export default async function ComercioDetailPage({ 
@@ -56,17 +88,28 @@ export default async function ComercioDetailPage({
   params: Promise<{ slug: string }> 
 }) {
   const resolvedParams = await params;
-  const comercio = await loadComercio(resolvedParams.slug);
   
-  if (!comercio) {
+  // Validación de slug
+  if (!resolvedParams.slug || resolvedParams.slug.trim() === '') {
     notFound();
   }
 
-  const benefits = await loadBenefits(comercio.id);
+  try {
+    const { comercio, benefits } = await comercioService.getComercioBySlug(resolvedParams.slug);
+    
+    if (!comercio) {
+      notFound();
+    }
 
-  return (
-    <LandingLayout>
-      <ComercioDetailContent comercio={comercio} benefits={benefits} />
-    </LandingLayout>
-  );
+    return (
+      <LandingLayout>
+        <ErrorBoundary>
+          <ComercioDetailContent comercio={comercio} benefits={benefits} />
+        </ErrorBoundary>
+      </LandingLayout>
+    );
+  } catch (error) {
+    console.error('Error loading comercio detail:', error);
+    notFound();
+  }
 }

@@ -82,7 +82,7 @@ export const REDES_SOCIALES = {
 export const NAVIGATION = [
   { name: "Inicio", href: "/", current: true },
   { name: "Sugerencias", href: "/sugerencias", current: false },
-  { name: "Notas", href: "/notas", current: false },
+  { name: "Articulos", href: "/articulos", current: false },
   { name: 'Comercios', href: '/comercios', current: false },
   { name: "Ediciones", href: "/ediciones", current: false },
   // { name: 'Suscripciones', href: '/suscripciones', current: false },
