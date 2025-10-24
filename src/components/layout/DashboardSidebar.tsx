@@ -46,7 +46,7 @@ export function DashboardSidebar() {
       </div>
 
       {/* User Profile */}
-      <div className="p-6 border-b border-white/10">
+      <div className="p-6 border-b border-white/20">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10 ">
             <AvatarImage src="/placeholder.svg?height=40&width=40" />
