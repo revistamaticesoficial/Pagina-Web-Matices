@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Badge } from "@/components/ui/Badge"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card"
-import { Edit, Trash2, Search, Calendar, Ticket } from "lucide-react"
+import { Edit, Trash2, Search, Calendar, Ticket, BookOpen } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
+import Image from "next/image"
 
 interface BenefitsGridProps {
   benefits: Benefit[]
@@ -51,11 +52,17 @@ export function BenefitsGrid({ benefits, onEdit, onDelete }: BenefitsGridProps) 
             <Card key={benefit.id} className="overflow-hidden">
               <CardHeader className="p-0">
                 <div className="relative h-40 w-full">
-                  <img
-                    src={benefit.banner_url || "/placeholder.svg?height=160&width=400&query=benefit"}
-                    alt={benefit.title}
-                    className="h-full w-full object-cover"
-                  />
+                  {
+                    benefit.banner_url ? (
+                      <video src={benefit.banner_url} className="h-full w-full object-cover" >
+                        <source src={benefit.banner_url} type="video/mp4" />
+                      </video>
+                  ) : (
+                    <div className="h-full w-full bg-gray-200 flex items-center justify-center">
+                      <BookOpen className="h-8 w-8 text-gray-500" />
+                    </div>
+                  )
+                }
                   <Badge variant={benefit.isActive ? "default" : "secondary"} className="absolute right-2 top-2">
                     {benefit.isActive ? "Activo" : "Inactivo"}
                   </Badge>

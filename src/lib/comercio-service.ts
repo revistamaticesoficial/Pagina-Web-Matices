@@ -31,19 +31,7 @@ export const comercioService = {
 
     let query = supabase
       .from('comercios')
-      .select(`
-        id,
-        name,
-        slug,
-        category,
-        direction,
-        phone,
-        created_at,
-        logo_url,
-        banners_url,
-        tags,
-        description
-      `, { count: 'exact' })
+      .select('*', { count: 'exact' })
       .not('slug', 'is', null)
       .not('slug', 'eq', '')
       .not('name', 'is', null)
@@ -89,21 +77,30 @@ export const comercioService = {
     // Consulta optimizada con JOIN para obtener comercio y beneficios
     const { data: comercio, error: comercioError } = await supabase
       .from('comercios')
-      .select(`
-        *,
-        benefits(*)
-      `)
+      .select(`id`)
       .eq('slug', slug)
       .maybeSingle();
 
-    if (comercioError) {
-      console.error('Error cargando comercio:', comercioError);
+      if (comercioError) {
+        console.error('Error cargando comercio:', comercioError);
+        return { comercio: null, benefits: [] };
+      }
+
+    const { data: benefits, error: benefitsError } = await supabase
+      .from('benefits')
+      .select('*')
+      .eq('comercio_id', comercio?.id)
+      .eq('is_active', true);
+      
+    if (benefitsError) {
+      console.error('Error cargando beneficios:', benefitsError);
       return { comercio: null, benefits: [] };
     }
 
+
     return {
       comercio,
-      benefits: comercio?.benefits || []
+      benefits,
     };
   },
 

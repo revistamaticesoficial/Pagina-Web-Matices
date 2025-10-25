@@ -1,44 +1,66 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/Button"
 import { Plus, LayoutGrid, TableIcon } from "lucide-react"
-import { mockBenefits, type Benefit } from "@/data/mock-data"
+import { adminService, type AdminBenefit } from "@/lib/admin-service"
 import { BenefitsTable } from "@/components/admin/BenefitsTable"
 import { BenefitsGrid } from "@/components/admin/BenefitsGrid"
 import { BenefitModal } from "@/components/admin/BenefitModal"
 
 export default function BeneficiosPage() {
-  const [benefits, setBenefits] = useState<Benefit[]>(mockBenefits)
+  const [benefits, setBenefits] = useState<AdminBenefit[]>([])
+  const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<"table" | "grid">("table")
-  const [selectedBenefit, setSelectedBenefit] = useState<Benefit | null>(null)
+  const [selectedBenefit, setSelectedBenefit] = useState<AdminBenefit | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleEdit = (benefit: Benefit) => {
+  useEffect(() => {
+    loadBenefits()
+  }, [])
+
+  const loadBenefits = async () => {
+    try {
+      setLoading(true)
+      const data = await adminService.getBenefits()
+      setBenefits(data)
+    } catch (error) {
+      console.error('Error loading benefits:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleEdit = (benefit: AdminBenefit) => {
     setSelectedBenefit(benefit)
     setIsModalOpen(true)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("¿Estás seguro de que deseas eliminar este beneficio?")) {
-      setBenefits(benefits.filter((b) => b.id !== id))
+      try {
+        await adminService.deleteBenefit(id)
+        setBenefits(benefits.filter((b) => b.id !== id))
+      } catch (error) {
+        console.error('Error deleting benefit:', error)
+        alert('Error al eliminar el beneficio')
+      }
     }
   }
 
-  const handleSave = (benefitData: Partial<Benefit>) => {
-    if (selectedBenefit) {
-      setBenefits(benefits.map((b) => (b.id === selectedBenefit.id ? { ...b, ...benefitData } : b)))
-    } else {
-      const newBenefit: Benefit = {
-        id: String(Date.now()),
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        comercio_id: null,
-        quantity_redeemed: 0,
-        banner_url: null,
-        ...benefitData,
-      } as Benefit
-      setBenefits([...benefits, newBenefit])
+  const handleSave = async (benefitData: Partial<AdminBenefit>) => {
+    try {
+      if (selectedBenefit) {
+        const updated = await adminService.updateBenefit(selectedBenefit.id, benefitData)
+        setBenefits(benefits.map((b) => (b.id === selectedBenefit.id ? updated : b)))
+      } else {
+        const newBenefit = await adminService.createBenefit(benefitData)
+        setBenefits([newBenefit, ...benefits])
+      }
+      setIsModalOpen(false)
+    } catch (error) {
+      console.error('Error saving benefit:', error)
+      alert('Error al guardar el beneficio')
     }
   }
 
@@ -77,10 +99,18 @@ export default function BeneficiosPage() {
           </div>
         </div>
 
-        {viewMode === "table" ? (
-          <BenefitsTable benefits={benefits} onEdit={handleEdit} onDelete={handleDelete} />
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="text-gray-500">Cargando beneficios...</div>
+          </div>
         ) : (
-          <BenefitsGrid benefits={benefits} onEdit={handleEdit} onDelete={handleDelete} />
+          <>
+            {viewMode === "table" ? (
+              <BenefitsTable benefits={benefits} onEdit={handleEdit} onDelete={handleDelete} />
+            ) : (
+              <BenefitsGrid benefits={benefits} onEdit={handleEdit} onDelete={handleDelete} />
+            )}
+          </>
         )}
 
         <BenefitModal

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Users, Zap, Calendar, FileText, User, Settings, ChevronLeft, ChevronRight } from "lucide-react"
+import { Home, Users, Zap, Calendar, FileText, User, Settings, ChevronLeft, ChevronRight, BookOpen } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
@@ -14,6 +14,7 @@ const menuItems = [
   { href: "/admin/beneficios", label: "Beneficios", icon: Zap },
   { href: "/admin/eventos", label: "Eventos", icon: Calendar },
   { href: "/admin/articulos", label: "Articulos", icon: FileText },
+  { href: "/admin/ediciones", label: "Ediciones", icon: BookOpen },
   { href: "/admin/cuenta", label: "Cuenta", icon: User },
   { href: "/admin/ajustes", label: "Ajustes", icon: Settings },
 ]

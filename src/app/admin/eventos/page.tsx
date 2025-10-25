@@ -1,42 +1,66 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/Button"
 import { Plus, LayoutGrid, TableIcon } from "lucide-react"
-import { mockEvents, type Event } from "@/data/mock-data"
+import { adminService, type AdminEvent } from "@/lib/admin-service"
 import { EventsTable } from "@/components/admin/EventsTable"
 import { EventsGrid } from "@/components/admin/EventsGrid"
 import { EventModal } from "@/components/admin/EventModal"
 
 export default function EventosPage() {
-  const [events, setEvents] = useState<Event[]>(mockEvents)
+  const [events, setEvents] = useState<AdminEvent[]>([])
+  const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<"table" | "grid">("table")
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<AdminEvent | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleEdit = (event: Event) => {
+  useEffect(() => {
+    loadEvents()
+  }, [])
+
+  const loadEvents = async () => {
+    try {
+      setLoading(true)
+      const data = await adminService.getEvents()
+      setEvents(data)
+    } catch (error) {
+      console.error('Error loading events:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleEdit = (event: AdminEvent) => {
     setSelectedEvent(event)
     setIsModalOpen(true)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("¿Estás seguro de que deseas eliminar este evento?")) {
-      setEvents(events.filter((e) => e.id !== id))
+      try {
+        await adminService.deleteEvent(id)
+        setEvents(events.filter((e) => e.id !== id))
+      } catch (error) {
+        console.error('Error deleting event:', error)
+        alert('Error al eliminar el evento')
+      }
     }
   }
 
-  const handleSave = (eventData: Partial<Event>) => {
-    if (selectedEvent) {
-      setEvents(events.map((e) => (e.id === selectedEvent.id ? { ...e, ...eventData } : e)))
-    } else {
-      const newEvent: Event = {
-        id: String(Date.now()),
-        created_at: new Date().toISOString(),
-        comercio_id: null,
-        banner_url: null,
-        ...eventData,
-      } as Event
-      setEvents([...events, newEvent])
+  const handleSave = async (eventData: Partial<AdminEvent>) => {
+    try {
+      if (selectedEvent) {
+        const updated = await adminService.updateEvent(selectedEvent.id, eventData)
+        setEvents(events.map((e) => (e.id === selectedEvent.id ? updated : e)))
+      } else {
+        const newEvent = await adminService.createEvent(eventData)
+        setEvents([newEvent, ...events])
+      }
+      setIsModalOpen(false)
+    } catch (error) {
+      console.error('Error saving event:', error)
+      alert('Error al guardar el evento')
     }
   }
 
@@ -75,10 +99,18 @@ export default function EventosPage() {
           </div>
         </div>
 
-        {viewMode === "table" ? (
-          <EventsTable events={events} onEdit={handleEdit} onDelete={handleDelete} />
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="text-gray-500">Cargando eventos...</div>
+          </div>
         ) : (
-          <EventsGrid events={events} onEdit={handleEdit} onDelete={handleDelete} />
+          <>
+            {viewMode === "table" ? (
+              <EventsTable events={events} onEdit={handleEdit} onDelete={handleDelete} />
+            ) : (
+              <EventsGrid events={events} onEdit={handleEdit} onDelete={handleDelete} />
+            )}
+          </>
         )}
 
         <EventModal
