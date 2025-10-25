@@ -1,13 +1,12 @@
-'use client';
-
+'use client'
 import { Suspense, useState } from 'react';
-import { Button } from '@/components/ui/Button';
-import { usePagination } from '@/hooks/usePagination';
-import { mockArticles } from '@/data/articles';
-import LandingLayout from '@/components/layout/LandingLayout';
 import { Calendar, Clock, User, ArrowRight, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Button } from '@/components/ui/Button';
+import LandingLayout from '@/components/layout/LandingLayout';
+import { usePagination } from '@/hooks/usePagination';
+import { mockArticles } from '@/data/articles';
 
 function NotasContent() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -99,7 +98,6 @@ function NotasContent() {
                         </div>
                       </>
                     )}
-
 
                     {/* Premium Badge */}
                     {nota.isPremium && (

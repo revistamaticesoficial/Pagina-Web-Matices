@@ -1,13 +1,16 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import { List, MapPin } from 'lucide-react'
 import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import { Comercio } from '@/types/sugerencias'
+import { motion, useInView } from 'framer-motion'
 
 function ComerciosSection() {
   const [comercios, setComercios] = useState<Comercio[]>([]);
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: false, margin: "-100px" })
   useEffect(() => {
     const fetchComercios = async () => {
       const { data, error } = await supabase
@@ -64,10 +67,22 @@ function ComerciosSection() {
   }, [isHovered, perView, maxIndex, comercios.length])
 
   return (
-    <section className='py-16'>
-      <h1 className="text-3xl font-bold text-[#005B82] text-center mb-8">COMERCIOS DESTACADOS</h1>
-      <div className="mt-8 w-full max-w-7xl mx-auto line-clamp-1 ">
-        <div className="relative overflow-hidden h-[60vh] lg:h-full" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+    <section className='py-16' ref={ref}>
+      <motion.h1 
+        className="text-3xl font-bold text-[#005B82] text-center mb-8"
+        initial={{ opacity: 0, y: 30 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        COMERCIOS DESTACADOS
+      </motion.h1>
+      <motion.div 
+        className="mt-8 w-full max-w-7xl mx-auto line-clamp-1"
+        initial={{ opacity: 0, y: 40 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+      >
+        <div className="relative my-16 h-full" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
           {/* Track con 5 tarjetas, ancho flexible y desplazamiento por tarjeta */}
           <div
             className="flex transition-transform duration-500"
@@ -132,7 +147,7 @@ function ComerciosSection() {
             <>
               <button
                 onClick={() => setIndex((i) => (i === 0 ? maxIndex : i - 1))}
-                className="absolute right-16 bottom-0 -translate-y-1/2  bg-white/90 hover:bg-white border rounded-full p-2 shadow"
+                className="absolute right-16 bottom-0 translate-y-1/2  bg-white/90 hover:bg-white border rounded-full p-2 shadow"
                 aria-label="Anterior"
               >
                 {/* simple chevron */}
@@ -140,7 +155,7 @@ function ComerciosSection() {
               </button>
               <button
                 onClick={() => setIndex((i) => (i >= maxIndex ? 0 : i + 1))}
-                className="absolute right-4 bottom-0 -translate-y-1/2 bg-white/90 hover:bg-white border rounded-full p-2 shadow"
+                className="absolute right-4 bottom-0 translate-y-1/2 bg-white/90 hover:bg-white border rounded-full p-2 shadow"
                 aria-label="Siguiente"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
@@ -162,7 +177,7 @@ function ComerciosSection() {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </section>
   )
 }

@@ -97,9 +97,9 @@ export default async function ComercioDetailPage({
   try {
     const { comercio, benefits } = await comercioService.getComercioBySlug(resolvedParams.slug);
     
-    if (!comercio) {
-      notFound();
-    }
+    // if (!comercio) {
+    //   return notFound();
+    // }
 
     return (
       <LandingLayout>

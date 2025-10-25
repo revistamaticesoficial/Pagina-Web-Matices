@@ -15,11 +15,6 @@ export function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { authState, logout } = useAuth();
 
-  // const handleLogout = async () => {
-  //   await logout();
-  //   setIsUserMenuOpen(false);
-  // };
-
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white border-border shandow-sm">
       <div className="container mx-auto px-4">

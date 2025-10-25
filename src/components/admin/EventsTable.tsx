@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import type { Event } from "@/data/mock-data"
+import type { AdminEvent } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -9,8 +9,8 @@ import { Badge } from "@/components/ui/Badge"
 import { Edit, Trash2, Search } from "lucide-react"
 
 interface EventsTableProps {
-  events: Event[]
-  onEdit: (event: Event) => void
+  events: AdminEvent[]
+  onEdit: (event: AdminEvent) => void
   onDelete: (id: string) => void
 }
 
@@ -39,8 +39,7 @@ export function EventsTable({ events, onEdit, onDelete }: EventsTableProps) {
             <TableRow>
               <TableHead>Título</TableHead>
               <TableHead>Fecha</TableHead>
-              <TableHead>Hora</TableHead>
-              <TableHead>Lugar</TableHead>
+              <TableHead>Ubicación</TableHead>
               <TableHead>Estado</TableHead>
               <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
@@ -50,11 +49,10 @@ export function EventsTable({ events, onEdit, onDelete }: EventsTableProps) {
               <TableRow key={event.id}>
                 <TableCell className="font-medium">{event.title}</TableCell>
                 <TableCell>{new Date(event.date).toLocaleDateString()}</TableCell>
-                <TableCell>{event.time}</TableCell>
-                <TableCell className="max-w-[200px] truncate">{event.place || "-"}</TableCell>
+                <TableCell className="max-w-[200px] truncate">{event.location || "-"}</TableCell>
                 <TableCell>
-                  <Badge variant={event.isActive ? "default" : "secondary"}>
-                    {event.isActive ? "Activo" : "Cancelado"}
+                  <Badge variant="default">
+                    Activo
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">

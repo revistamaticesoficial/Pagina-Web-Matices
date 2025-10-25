@@ -267,7 +267,19 @@ export const adminService = {
       .single();
 
     if (error) throw error;
-    return result;
+    
+    // Transformar el resultado para que coincida con AdminComercio
+    return {
+      ...result,
+      isActive: true, // Por ahora todos están activos
+      owner: undefined, // Por ahora no incluimos la información del propietario
+      description: null,
+      logo_url: null,
+      banners_url: null,
+      contact_email: null,
+      web_url: null,
+      schedules: null
+    } as AdminComercio;
   },
 
   async updateComercio(id: string, data: Partial<AdminComercio>) {
@@ -289,7 +301,19 @@ export const adminService = {
       .single();
 
     if (error) throw error;
-    return result;
+    
+    // Transformar el resultado para que coincida con AdminComercio
+    return {
+      ...result,
+      isActive: true, // Por ahora todos están activos
+      owner: undefined, // Por ahora no incluimos la información del propietario
+      description: null,
+      logo_url: null,
+      banners_url: null,
+      contact_email: null,
+      web_url: null,
+      schedules: null
+    } as AdminComercio;
   },
 
   async deleteComercio(id: string) {
@@ -509,31 +533,24 @@ export const adminService = {
     if (error) throw error;
   },
 
-  // Artículos (temporalmente deshabilitado hasta que se cree la tabla)
-  async getArticles(filters?: {
-    search?: string;
-    category?: string;
-    isPublished?: boolean;
-    limit?: number;
-    offset?: number;
-  }) {
-    // Mock data hasta que se implemente la tabla articles
-    return [] as AdminArticle[];
-  },
-
-  async createArticle(data: Partial<AdminArticle>) {
+  // Artículos (usando datos mock por ahora)
+  async getArticles() {
     throw new Error('Función no implementada - tabla articles no existe');
   },
 
-  async updateArticle(id: string, data: Partial<AdminArticle>) {
+  async createArticle() {
     throw new Error('Función no implementada - tabla articles no existe');
   },
 
-  async deleteArticle(id: string) {
+  async updateArticle() {
     throw new Error('Función no implementada - tabla articles no existe');
   },
 
-  async publishArticle(id: string) {
+  async deleteArticle() {
+    throw new Error('Función no implementada - tabla articles no existe');
+  },
+
+  async publishArticle() {
     throw new Error('Función no implementada - tabla articles no existe');
   }
 };

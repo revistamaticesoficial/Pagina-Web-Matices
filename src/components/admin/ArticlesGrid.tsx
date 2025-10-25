@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import type { Article } from "@/data/mock-data"
+import type { AdminArticle } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Badge } from "@/components/ui/Badge"
@@ -9,7 +9,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card"
 import { Edit, Trash2, Search, Eye, Calendar, User } from "lucide-react"
 
 interface ArticlesGridProps {
-  articles: Article[]
+  articles: AdminArticle[]
   onEdit: (id: string) => void
   onDelete: (id: string) => void
 }
@@ -43,12 +43,12 @@ export function ArticlesGrid({ articles, onEdit, onDelete }: ArticlesGridProps) 
             <CardHeader className="p-0">
               <div className="relative h-48 w-full">
                 <img
-                  src={article.featured_image || "/placeholder.svg?height=200&width=400"}
+                  src={article.featured_image_url || "/placeholder.svg?height=200&width=400"}
                   alt={article.title}
                   className="h-full w-full object-cover"
                 />
-                <Badge variant={article.isPublished ? "default" : "secondary"} className="absolute right-2 top-2">
-                  {article.isPublished ? "Publicado" : "Borrador"}
+                <Badge variant={article.is_published ? "default" : "secondary"} className="absolute right-2 top-2">
+                  {article.is_published ? "Publicado" : "Borrador"}
                 </Badge>
               </div>
             </CardHeader>
@@ -61,11 +61,11 @@ export function ArticlesGrid({ articles, onEdit, onDelete }: ArticlesGridProps) 
               <div className="space-y-1 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <User className="h-3 w-3" />
-                  <span>{article.author}</span>
+                  <span>{article.author_name || "Sin autor"}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-3 w-3" />
-                  <span>{new Date(article.published_at).toLocaleDateString()}</span>
+                  <span>{article.published_at ? new Date(article.published_at).toLocaleDateString() : "Sin fecha"}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Eye className="h-3 w-3" />

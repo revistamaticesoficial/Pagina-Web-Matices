@@ -74,34 +74,46 @@ export const comercioService = {
   }> {
     const supabase = createSupabaseClient();
 
-    // Consulta optimizada con JOIN para obtener comercio y beneficios
-    const { data: comercio, error: comercioError } = await supabase
-      .from('comercios')
-      .select(`id`)
-      .eq('slug', slug)
-      .maybeSingle();
+    try {
+      // Primero obtener el comercio completo
+      const { data: comercio, error: comercioError } = await supabase
+        .from('comercios')
+        .select('*')
+        .eq('slug', slug)
+        .eq('isActive', true)
+        .maybeSingle();
 
       if (comercioError) {
         console.error('Error cargando comercio:', comercioError);
         return { comercio: null, benefits: [] };
       }
 
-    const { data: benefits, error: benefitsError } = await supabase
-      .from('benefits')
-      .select('*')
-      .eq('comercio_id', comercio?.id)
-      .eq('is_active', true);
-      
-    if (benefitsError) {
-      console.error('Error cargando beneficios:', benefitsError);
+      if (!comercio) {
+        console.log('Comercio no encontrado para slug:', slug);
+        return { comercio: null, benefits: [] };
+      }
+
+      // Luego obtener los beneficios del comercio
+      const { data: benefits, error: benefitsError } = await supabase
+        .from('benefits')
+        .select('*')
+        .eq('comercio_id', comercio.id)
+        .eq('isActive', true);
+        
+      if (benefitsError) {
+        console.error('Error cargando beneficios:', benefitsError);
+        // No retornar null comercio si solo fallan los beneficios
+        return { comercio, benefits: [] };
+      }
+
+      return {
+        comercio,
+        benefits: benefits || [],
+      };
+    } catch (error) {
+      console.error('Error general en getComercioBySlug:', error);
       return { comercio: null, benefits: [] };
     }
-
-
-    return {
-      comercio,
-      benefits,
-    };
   },
 
   /**
@@ -114,7 +126,7 @@ export const comercioService = {
       .from('comercios')
       .select('*')
       .eq('id', id)
-      .eq('is_active', true)
+      .eq('isActive', true)
       .maybeSingle();
 
     if (error) {
@@ -147,7 +159,7 @@ export const comercioService = {
         description
       `)
       .or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,category.ilike.%${searchTerm}%`)
-      .eq('is_active', true)
+      .eq('isActive', true)
       .not('slug', 'is', null)
       .not('slug', 'eq', '')
       .order('created_at', { ascending: false })
@@ -183,7 +195,7 @@ export const comercioService = {
         description
       `)
       .eq('category', category)
-      .eq('is_active', true)
+      .eq('isActive', true)
       .not('slug', 'is', null)
       .not('slug', 'eq', '')
       .order('created_at', { ascending: false })
@@ -218,7 +230,7 @@ export const comercioService = {
         tags,
         description
       `)
-      .eq('is_active', true)
+      .eq('isActive', true)
       .eq('is_featured', true)
       .not('slug', 'is', null)
       .not('slug', 'eq', '')
@@ -242,7 +254,7 @@ export const comercioService = {
     const { data, error } = await supabase
       .from('comercios')
       .select('category')
-      .eq('is_active', true)
+      .eq('isActive', true)
       .not('category', 'is', null);
 
     if (error) {
@@ -251,7 +263,7 @@ export const comercioService = {
     }
 
     // Obtener categorías únicas
-    const categories = [...new Set(data?.map(item => item.category).filter(Boolean))];
+    const categories = [...new Set(data?.map(item => item.category).filter(Boolean))] as string[];
     return categories.sort();
   }
 };

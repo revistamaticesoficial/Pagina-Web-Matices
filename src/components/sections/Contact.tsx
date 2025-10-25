@@ -12,9 +12,13 @@ import {
   Mail,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 
 export function Contact() {
   const router = useRouter();
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: false, margin: "-100px" })
 
   const handleCardClick = (cardType: string) => {
     if (cardType === "whatsapp") {
@@ -29,9 +33,14 @@ export function Contact() {
 
 
   return (
-    <section className="py-16 px-4 bg-gradient-to-br from-slate-50 to-blue-50">
+    <section className="py-16 px-4 bg-gradient-to-br from-slate-50 to-blue-50" ref={ref}>
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
+        <motion.div 
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+        >
           <h2 className="text-3xl font-bold text-foreground mb-4 text-balance">
             {"Contactanos"}
           </h2>
@@ -40,65 +49,56 @@ export function Contact() {
               "Comunicate con nosotros y te responderemos lo antes posible."
             }
           </p>
-        </div>
+        </motion.div>
 
-        <div className="flex justify-center gap-6 mb-8 max-w-2xl mx-auto">
-          <Card
-            className="cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg border-2 hover:border-[#E6020220]"
-            onClick={() => handleCardClick("form")}
+        <motion.div 
+            className="flex flex-col md:flex-row justify-center gap-6 mb-8 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 40 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+        >
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
           >
-            <CardHeader className="text-center mx-auto max-w-sm gap-4">
-              <div className="w-12 h-12 bg-[#E6020220] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-6 h-6 text-[#E60202]" />
-              </div>
-              <CardTitle>{"Formulario"}</CardTitle>
-              <CardDescription>
-                {"Envíanos un mensaje detallado"}
-              </CardDescription>
-            </CardHeader>
-          </Card>
+            <Card
+              className="cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg border-2 hover:border-[#E6020220]"
+              onClick={() => handleCardClick("form")}
+            >
+              <CardHeader className="text-center mx-auto max-w-sm gap-4">
+                <div className="w-12 h-12 bg-[#E6020220] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Mail className="w-6 h-6 text-[#E60202]" />
+                </div>
+                <CardTitle>{"Formulario"}</CardTitle>
+                <CardDescription>
+                  {"Envíanos un mensaje detallado"}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </motion.div>
 
-          <Card
-            className="cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg border-2 hover:border-green-200"
-            onClick={() => handleCardClick("whatsapp")}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
           >
-            <CardHeader className="text-center mx-auto max-w-sm gap-4">
-              <div className="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="w-6 h-6 text-green-500" />
-              </div>
-              <CardTitle>{"WhatsApp"}</CardTitle>
-              <CardDescription>
-                {"Chatea con nosotros directamente"}
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-        
-        {/* <div className="mt-12 text-center">
-          <h3 className="text-lg font-semibold text-foreground mb-6">
-            {"También puedes encontrarnos en:"}
-          </h3>
-          <div className="flex justify-center gap-4">
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => handleSocialClick("instagram")}
-              className="flex items-center gap-2 hover:bg-pink-50 hover:border-pink-200"
+            <Card
+              className="cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg border-2 hover:border-green-200"
+              onClick={() => handleCardClick("whatsapp")}
             >
-              <Instagram className="w-5 h-5" />
-              {"Instagram"}
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => handleSocialClick("facebook")}
-              className="flex items-center gap-2 hover:bg-blue-50 hover:border-blue-200"
-            >
-              <Facebook className="w-5 h-5" />
-              {"Facebook"}
-            </Button>
-          </div>
-        </div> */}
+              <CardHeader className="text-center mx-auto max-w-sm gap-4">
+                <div className="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <MessageCircle className="w-6 h-6 text-green-500" />
+                </div>
+                <CardTitle>{"WhatsApp"}</CardTitle>
+                <CardDescription>
+                  {"Chatea con nosotros directamente"}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

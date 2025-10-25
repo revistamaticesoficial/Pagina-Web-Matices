@@ -79,7 +79,7 @@ export function ComerciosGrid({ comercios, itemsPerPage = 12 }: ComerciosGridPro
         if (!slug) return null;
         
         return (
-          <ComercioCard key={comercio.id} comercio={comercio as Comercio} />
+          <ComercioCard key={comercio.id} comercio={comercio as any} />
         );
       })}
     </div>

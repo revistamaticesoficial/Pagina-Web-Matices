@@ -6,6 +6,6 @@ export { default as Contact } from './Contact';
 export { default as CTA } from './CTA';
 export { default as EditionSection } from './EditionSection';
 export { FeaturedArticles } from './FeaturedArticles';
-export { default as NotasSection } from './NotasSection';
+export { default as ArticulosSection } from './ArticulosSection';
 export { Stats } from './Stats';
 export { TeamCarrousel } from './TeamCarrousel';

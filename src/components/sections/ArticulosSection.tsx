@@ -1,15 +1,18 @@
 "use client"
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useRef } from 'react'
 import Link from 'next/link'
 import { mockArticles } from '@/data/articles'
 import { Calendar, Clock, User, BookOpen } from 'lucide-react'
 import Image from 'next/image'
+import { motion, useInView } from 'framer-motion'
 
-function NotasSection() {
+function ArticulosSection() {
   const notes = useMemo(() => mockArticles.slice(0, 5), [])
   const [perView, setPerView] = useState(1)
   const [index, setIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: false, margin: "-100px" })
 
   useEffect(() => {
     const computePerView = () => {
@@ -46,10 +49,22 @@ function NotasSection() {
   }, [isHovered, perView, maxIndex, notes.length])
 
   return (
-    <section className='py-16'>
-      <h1 className="text-3xl font-bold text-[#005B82] text-center mb-8">ARTICULOS DESTACADOS</h1>
-      <div className="mt-8 w-full max-w-7xl mx-auto line-clamp-1">
-        <div className="relative overflow-hidden h-[60vh] lg:h-full" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+    <section className='py-16 min-h-screen' ref={ref}>
+      <motion.h1 
+        className="text-3xl font-bold text-[#005B82] text-center mb-8"
+        initial={{ opacity: 0, y: 30 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        ARTICULOS DESTACADOS
+      </motion.h1>
+      <motion.div 
+        className="mt-8 w-full max-w-7xl mx-auto line-clamp-1"
+        initial={{ opacity: 0, y: 40 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+      >
+        <div className="relative my-16 h-full" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
           {/* Track con 5 tarjetas, ancho flexible y desplazamiento por tarjeta */}
           <div
             className="flex transition-transform duration-500"
@@ -68,7 +83,7 @@ function NotasSection() {
                             <div className="w-14 h-14 mx-auto mb-2 bg-[#005B82] rounded-full flex items-center justify-center">
                               <BookOpen className="w-7 h-7 text-white" />
                             </div>
-                            <p className="text-gray-700 font-medium text-xs">Nota Destacada</p>
+                            <p className="text-gray-700 font-medium text-xs">Articulo Destacada</p>
                           </div>
                         </div>
                       )
@@ -115,7 +130,7 @@ function NotasSection() {
             <>
               <button
                 onClick={() => setIndex((i) => (i === 0 ? maxIndex : i - 1))}
-                className="absolute right-16 bottom-0 -translate-y-1/2  bg-white/90 hover:bg-white border rounded-full p-2 shadow"
+                className="absolute right-16 bottom-0 translate-y-1/2  bg-white/90 hover:bg-white border rounded-full p-2 shadow"
                 aria-label="Anterior"
               >
                 {/* simple chevron */}
@@ -123,7 +138,7 @@ function NotasSection() {
               </button>
               <button
                 onClick={() => setIndex((i) => (i >= maxIndex ? 0 : i + 1))}
-                className="absolute right-4 bottom-0 -translate-y-1/2 bg-white/90 hover:bg-white border rounded-full p-2 shadow"
+                className="absolute right-4 bottom-0 translate-y-1/2 bg-white/90 hover:bg-white border rounded-full p-2 shadow"
                 aria-label="Siguiente"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
@@ -145,9 +160,9 @@ function NotasSection() {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </section>
   )
 }
 
-export default NotasSection
+export default ArticulosSection

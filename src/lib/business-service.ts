@@ -44,7 +44,11 @@ export const businessService = {
     }
 
     // Obtener el comercio completo con horarios
-    return await this.getBusinessById(business.id);
+    const businessWithDetails = await this.getBusinessById(business.id);
+    if (!businessWithDetails) {
+      throw new Error('Business not found');
+    }
+    return businessWithDetails;
   },
 
   /**

@@ -7,6 +7,7 @@ import { Benefit } from '@/types/sugerencias';
 import { BenefitService } from '@/lib/benefit-service';
 import { Gift, Calendar, X, CheckCircle, Loader2, AlertTriangle, Copy, Check, Download, QrCode, Printer } from 'lucide-react';
 import { formatDateLabel } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ModalPromoProps {
   isRedeemOpen: boolean;
@@ -520,30 +521,45 @@ const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPro
         )}
       </div>
 
-      <div className="flex items-center justify-end gap-3 pt-4 border-t">
-            <Button
-              type="button"
-          variant="outline"
-              onClick={() => setIsRedeemOpen(false)}
-          className="px-6"
+      <motion.div 
+        className="flex items-center justify-end gap-3 pt-4 border-t"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-          disabled={isLoading || !formData.aceptaTerminos}
-          className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Procesando...
-            </>
-          ) : (
-            'Canjear Beneficio'
-          )}
-            </Button>
-          </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsRedeemOpen(false)}
+                className="px-6"
+              >
+                Cancelar
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button
+                type="submit"
+                disabled={isLoading || !formData.aceptaTerminos}
+                className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Procesando...
+                  </>
+                ) : (
+                  'Canjear Beneficio'
+                )}
+              </Button>
+            </motion.div>
+          </motion.div>
         </form>
   );
 
@@ -677,56 +693,132 @@ const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPro
   if (!isRedeemOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      aria-modal="true"
-      role="dialog"
-    >
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={() => !isLoading && setIsRedeemOpen(false)}
-      />
-
-      {/* Modal */}
-      <div
-        className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        aria-modal="true"
+        role="dialog"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">
-            {step === 'form' && 'Canjear Beneficio'}
-            {step === 'success' && '¡Beneficio Canjeado!'}
-            {step === 'error' && 'Error'}
-          </h2>
-          {!isLoading && (
-            <button
-              onClick={() => setIsRedeemOpen(false)}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-              aria-label="Cerrar modal"
+        {/* Backdrop */}
+        <motion.div
+          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+          onClick={() => !isLoading && setIsRedeemOpen(false)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        />
+
+        {/* Modal */}
+        <motion.div
+          className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 300, 
+            damping: 30,
+            duration: 0.4 
+          }}
+        >
+          {/* Header */}
+          <motion.div 
+            className="flex items-center justify-between px-6 py-4 border-b border-gray-200"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <motion.h2 
+              className="text-xl font-bold text-gray-900"
+              key={step}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
             >
-              <X className="w-6 h-6" />
-            </button>
+              {step === 'form' && 'Canjear Beneficio'}
+              {step === 'success' && '¡Beneficio Canjeado!'}
+              {step === 'error' && 'Error'}
+            </motion.h2>
+            {!isLoading && (
+              <motion.button
+                onClick={() => setIsRedeemOpen(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+                aria-label="Cerrar modal"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <X className="w-6 h-6" />
+              </motion.button>
+            )}
+          </motion.div>
+
+          {/* Content */}
+          <motion.div 
+            className="px-6 py-6 overflow-y-auto max-h-[calc(90vh-120px)]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <AnimatePresence mode="wait">
+              {step === 'form' && (
+                <motion.div
+                  key="form"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {renderForm()}
+                </motion.div>
+              )}
+              {step === 'success' && (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.4, type: "spring", stiffness: 200 }}
+                >
+                  {renderSuccess()}
+                </motion.div>
+              )}
+              {step === 'error' && (
+                <motion.div
+                  key="error"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {renderError()}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </motion.div>
+
+        {/* Toast Notification */}
+        <AnimatePresence>
+          {showToast && (
+            <motion.div 
+              className="fixed bottom-4 right-4 z-50 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2"
+              initial={{ opacity: 0, x: 100, scale: 0.8 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 100, scale: 0.8 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <Check className="w-5 h-5" />
+              <span className="text-sm font-medium">{toastMessage}</span>
+            </motion.div>
           )}
-        </div>
-
-        {/* Content */}
-        <div className="px-6 py-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-          {step === 'form' && renderForm()}
-          {step === 'success' && renderSuccess()}
-          {step === 'error' && renderError()}
-      </div>
-      </div>
-
-      {/* Toast Notification */}
-      {showToast && (
-        <div className="fixed bottom-4 right-4 z-50 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-right">
-          <Check className="w-5 h-5" />
-          <span className="text-sm font-medium">{toastMessage}</span>
-    </div>
-  )}
-    </div>
+        </AnimatePresence>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

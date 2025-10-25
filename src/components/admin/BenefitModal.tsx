@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import type { Benefit } from "@/data/mock-data"
+import type { AdminBenefit } from "@/lib/admin-service"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -14,22 +14,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Gift, Hash, Calendar, Users, User } from "lucide-react"
 
 interface BenefitModalProps {
-  benefit: Benefit | null
+  benefit: AdminBenefit | null
   open: boolean
   onClose: () => void
-  onSave: (benefit: Partial<Benefit>) => void
+  onSave: (benefit: Partial<AdminBenefit>) => void
 }
 
 export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalProps) {
-  const [formData, setFormData] = useState<Partial<Benefit>>({
+  const [formData, setFormData] = useState<Partial<AdminBenefit>>({
     title: "",
     description: "",
-    code: "",
     quantity: 1,
     valid_from: new Date().toISOString().split("T")[0],
     valid_to: "",
     type: "discount",
-    isActive: true,
   })
 
   useEffect(() => {
@@ -39,12 +37,10 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
       setFormData({
         title: "",
         description: "",
-        code: "",
         quantity: 1,
         valid_from: new Date().toISOString().split("T")[0],
         valid_to: "",
         type: "discount",
-        isActive: true,
       })
     }
   }, [benefit, open])
@@ -64,13 +60,17 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
   [&::-webkit-scrollbar-thumb]:bg-gray-300
   dark:[&::-webkit-scrollbar-track]:bg-neutral-700
   dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
-        <DialogHeader className="pb-6">
-          <DialogTitle className="text-2xl font-light text-slate-900">
-            {benefit ? "Editar Beneficio" : "Agregar Beneficio"}
-          </DialogTitle>
-          <p className="text-slate-600 mt-2">
-            {benefit ? "Modifica la información del beneficio" : "Completa la información del nuevo beneficio"}
-          </p>
+        <DialogHeader>
+          <div className="pb-6">
+            <DialogTitle>
+              <h2 className="text-2xl font-light text-slate-900">
+                {benefit ? "Editar Beneficio" : "Agregar Beneficio"}
+              </h2>
+            </DialogTitle>
+            <p className="text-slate-600 mt-2">
+              {benefit ? "Modifica la información del beneficio" : "Completa la información del nuevo beneficio"}
+            </p>
+          </div>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -137,16 +137,6 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="code" className="text-sm font-medium text-slate-700">Código de Descuento</Label>
-                <Input
-                  id="code"
-                  value={formData.code || ""}
-                  onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                  placeholder="CODIGO2024"
-                  className="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
-                />
-              </div>
             </div>
           </div>
 
@@ -174,18 +164,6 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="quantity_redeemed" className="text-sm font-medium text-slate-700">Cantidad Canjeada</Label>
-                <Input
-                  id="quantity_redeemed"
-                  type="number"
-                  min="0"
-                  value={formData.quantity_redeemed || 0}
-                  onChange={(e) => setFormData({ ...formData, quantity_redeemed: Number.parseInt(e.target.value) })}
-                  placeholder="0"
-                  className="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
-                />
-              </div>
             </div>
           </div>
 
@@ -206,7 +184,7 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
                   <Input
                     id="valid_from"
                     type="date"
-                    value={formData.valid_from}
+                    value={formData.valid_from || ""}
                     onChange={(e) => setFormData({ ...formData, valid_from: e.target.value })}
                     className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
                     required
@@ -240,17 +218,6 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
               Configuración
             </h3>
             
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-              <div className="space-y-1">
-                <Label htmlFor="isActive" className="text-sm font-medium text-slate-700">Estado del Beneficio</Label>
-                <p className="text-xs text-slate-500">Activar o desactivar la visibilidad del beneficio</p>
-              </div>
-              <Switch
-                id="isActive"
-                checked={formData.isActive}
-                onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
-              />
-            </div>
           </div>
 
           {/* Botones */}

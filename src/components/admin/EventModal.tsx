@@ -3,34 +3,27 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import type { Event } from "@/data/mock-data"
+import type { AdminEvent } from "@/lib/admin-service"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Label } from "@/components/ui/Label"
 import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import { Calendar, Clock, MapPin, Link as LinkIcon, User } from "lucide-react"
+import { Calendar, Clock, MapPin } from "lucide-react"
 
 interface EventModalProps {
-  event: Event | null
+  event: AdminEvent | null
   open: boolean
   onClose: () => void
-  onSave: (event: Partial<Event>) => void
+  onSave: (event: Partial<AdminEvent>) => void
 }
 
 export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
-  const [formData, setFormData] = useState<Partial<Event>>({
+  const [formData, setFormData] = useState<Partial<AdminEvent>>({
     title: "",
     description: "",
     date: new Date().toISOString().split("T")[0],
-    time: "18:00",
-    place: "",
-    direction: "",
-    inscription_link: "",
-    open_time: "",
-    close_time: "",
-    isActive: true,
+    location: "",
   })
 
   useEffect(() => {
@@ -41,13 +34,7 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
         title: "",
         description: "",
         date: new Date().toISOString().split("T")[0],
-        time: "18:00",
-        place: "",
-        direction: "",
-        inscription_link: "",
-        open_time: "",
-        close_time: "",
-        isActive: true,
+        location: "",
       })
     }
   }, [event, open])
@@ -115,74 +102,27 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
             </div>
           </div>
 
-          {/* Fecha y Hora */}
+          {/* Fecha */}
           <div className="space-y-6">
             <h3 className="text-lg font-medium text-slate-900 flex items-center">
               <div className="p-2 bg-slate-100 rounded-lg mr-3">
                 <Clock className="h-4 w-4 text-slate-600" />
               </div>
-              Fecha y Hora
+              Fecha
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="date" className="text-sm font-medium text-slate-700">Fecha del Evento *</Label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Input
-                    id="date"
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="time" className="text-sm font-medium text-slate-700">Hora de Inicio *</Label>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Input
-                    id="time"
-                    type="time"
-                    value={formData.time}
-                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                    className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="open_time" className="text-sm font-medium text-slate-700">Hora de Apertura</Label>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Input
-                    id="open_time"
-                    type="time"
-                    value={formData.open_time || ""}
-                    onChange={(e) => setFormData({ ...formData, open_time: e.target.value })}
-                    placeholder="Hora de apertura de puertas"
-                    className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="close_time" className="text-sm font-medium text-slate-700">Hora de Cierre</Label>
-                <div className="relative">
-                  <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Input
-                    id="close_time"
-                    type="time"
-                    value={formData.close_time || ""}
-                    onChange={(e) => setFormData({ ...formData, close_time: e.target.value })}
-                    placeholder="Hora de cierre del evento"
-                    className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
-                  />
-                </div>
+            <div className="space-y-2">
+              <Label htmlFor="date" className="text-sm font-medium text-slate-700">Fecha del Evento *</Label>
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input
+                  id="date"
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
+                  required
+                />
               </div>
             </div>
           </div>
@@ -196,81 +136,18 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
               Ubicación
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="place" className="text-sm font-medium text-slate-700">Lugar</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Input
-                    id="place"
-                    value={formData.place || ""}
-                    onChange={(e) => setFormData({ ...formData, place: e.target.value })}
-                    placeholder="Ej: Centro de Convenciones"
-                    className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="direction" className="text-sm font-medium text-slate-700">Dirección</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Input
-                    id="direction"
-                    value={formData.direction || ""}
-                    onChange={(e) => setFormData({ ...formData, direction: e.target.value })}
-                    placeholder="Av. Principal 123, Córdoba"
-                    className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Inscripción */}
-          <div className="space-y-6">
-            <h3 className="text-lg font-medium text-slate-900 flex items-center">
-              <div className="p-2 bg-slate-100 rounded-lg mr-3">
-                <LinkIcon className="h-4 w-4 text-slate-600" />
-              </div>
-              Inscripción
-            </h3>
-            
             <div className="space-y-2">
-              <Label htmlFor="inscription_link" className="text-sm font-medium text-slate-700">Link de Inscripción</Label>
+              <Label htmlFor="location" className="text-sm font-medium text-slate-700">Ubicación</Label>
               <div className="relative">
-                <LinkIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
-                  id="inscription_link"
-                  type="url"
-                  value={formData.inscription_link || ""}
-                  onChange={(e) => setFormData({ ...formData, inscription_link: e.target.value })}
-                  placeholder="https://eventbrite.com/evento..."
+                  id="location"
+                  value={formData.location || ""}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  placeholder="Ej: Centro de Convenciones, Av. Principal 123, Córdoba"
                   className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
                 />
               </div>
-            </div>
-          </div>
-
-          {/* Configuración */}
-          <div className="space-y-6">
-            <h3 className="text-lg font-medium text-slate-900 flex items-center">
-              <div className="p-2 bg-slate-100 rounded-lg mr-3">
-                <User className="h-4 w-4 text-slate-600" />
-              </div>
-              Configuración
-            </h3>
-            
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-              <div className="space-y-1">
-                <Label htmlFor="isActive" className="text-sm font-medium text-slate-700">Estado del Evento</Label>
-                <p className="text-xs text-slate-500">Activar o desactivar la visibilidad del evento</p>
-              </div>
-              <Switch
-                id="isActive"
-                checked={formData.isActive}
-                onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
-              />
             </div>
           </div>
 
