@@ -145,20 +145,8 @@ export const comercioService = {
 
     const { data, error } = await supabase
       .from('comercios')
-      .select(`
-        id,
-        name,
-        slug,
-        category,
-        direction,
-        phone,
-        created_at,
-        logo_url,
-        banners_url,
-        tags,
-        description
-      `)
-      .or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,category.ilike.%${searchTerm}%`)
+      .select('*')
+      .or(`name.ilike.%${searchTerm}%,category.ilike.%${searchTerm}%`)
       .eq('isActive', true)
       .not('slug', 'is', null)
       .not('slug', 'eq', '')
@@ -181,19 +169,7 @@ export const comercioService = {
 
     const { data, error } = await supabase
       .from('comercios')
-      .select(`
-        id,
-        name,
-        slug,
-        category,
-        direction,
-        phone,
-        created_at,
-        logo_url,
-        banners_url,
-        tags,
-        description
-      `)
+      .select('*')
       .eq('category', category)
       .eq('isActive', true)
       .not('slug', 'is', null)
@@ -217,19 +193,7 @@ export const comercioService = {
 
     const { data, error } = await supabase
       .from('comercios')
-      .select(`
-        id,
-        name,
-        slug,
-        category,
-        direction,
-        phone,
-        created_at,
-        logo_url,
-        banners_url,
-        tags,
-        description
-      `)
+      .select('*')
       .eq('isActive', true)
       .eq('is_featured', true)
       .not('slug', 'is', null)

@@ -36,6 +36,20 @@ interface ComercioDetailContentProps {
 export function ComercioDetailContent({ comercio, benefits }: ComercioDetailContentProps) {
   const router = useRouter();
   
+  // Hooks deben declararse antes de cualquier return
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
+  const benefitsScrollRef = useRef<HTMLDivElement | null>(null);
+
+  // Establecer URL de compartir
+  if (typeof window !== "undefined" && comercio) {
+    if (!shareUrl) {
+      setShareUrl(`${window.location.origin}/comercios/${comercio.slug}`);
+    }
+  }
+  
   // Validar que el comercio existe
   if (!comercio) {
     return (
@@ -51,19 +65,6 @@ export function ComercioDetailContent({ comercio, benefits }: ComercioDetailCont
       </div>
     );
   }
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [isFavorited, setIsFavorited] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [shareUrl, setShareUrl] = useState("");
-  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
-  const benefitsScrollRef = useRef<HTMLDivElement | null>(null);
-
-  // Establecer URL de compartir
-  useState(() => {
-    if (typeof window !== "undefined") {
-      setShareUrl(`${window.location.origin}/comercios/${comercio.slug}`);
-    }
-  });
 
   // Función para abrir Google Maps con la dirección
   const openInMaps = (comercio: Business) => {
@@ -169,7 +170,7 @@ export function ComercioDetailContent({ comercio, benefits }: ComercioDetailCont
                   <div className="relative">
                     {/* Imagen principal */}
                     <div className="aspect-video bg-gray-200 rounded-t-lg overflow-hidden">
-                      {comercio?.banners_url && (
+                      {comercio && (comercio as any).banners_url && (
                       <video
                         className="w-full h-full object-cover"
                         autoPlay
@@ -340,7 +341,7 @@ export function ComercioDetailContent({ comercio, benefits }: ComercioDetailCont
             <Card>
               <CardContent className="p-6 flex flex-col flex-grow">
                 <h3 className="flex items-center gap-3 mb-4">
-                <Image src={comercio?.logo_url || '/images/logo.jpg'} alt={comercio?.name || 'Comercio'} width={80} height={80} className="flex-shrink-0 rounded" />
+                <Image src={(comercio as any)?.logo_url || '/images/logo.jpg'} alt={comercio?.name || 'Comercio'} width={80} height={80} className="flex-shrink-0 rounded" />
                 <span className="font-semibold text-gray-900">Sobre este comercio</span>
                 </h3>
 

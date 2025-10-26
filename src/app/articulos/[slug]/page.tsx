@@ -8,6 +8,8 @@ import LandingLayout from '@/components/layout/LandingLayout';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Calendar, Clock, User, BookOpen, ArrowLeft, Share2, Facebook, Twitter, Linkedin, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 type Article = Database['public']['Tables']['articles']['Row'];
 
@@ -83,9 +85,9 @@ export default async function ArticleDetailPage({
   try {
     const article = await articleService.getArticleBySlug(resolvedParams.slug);
     
-    // if (!article) {
-    //   notFound();
-    // }
+    if (!article) {
+      notFound();
+    }
 
     // Obtener artículos relacionados
     const relatedArticles = await articleService.getRelatedArticles(
@@ -170,10 +172,53 @@ export default async function ArticleDetailPage({
                 )}
 
                 {/* Contenido del artículo */}
-                <div 
-                  className="article-content text-gray-700 leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: article.content }}
-                />
+                <div className="prose prose-lg prose-slate max-w-none">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      img: ({ node, ...props }) => (
+                        <div className="my-8">
+                          <img
+                            {...props}
+                            className="rounded-lg w-full h-auto shadow-lg"
+                            loading="lazy"
+                          />
+                        </div>
+                      ),
+                      h1: ({ node, ...props }) => (
+                        <h1 className="text-4xl font-bold mt-8 mb-4 text-gray-900" {...props} />
+                      ),
+                      h2: ({ node, ...props }) => (
+                        <h2 className="text-3xl font-bold mt-6 mb-3 text-gray-900" {...props} />
+                      ),
+                      h3: ({ node, ...props }) => (
+                        <h3 className="text-2xl font-semibold mt-5 mb-2 text-gray-900" {...props} />
+                      ),
+                      p: ({ node, ...props }) => (
+                        <p className="mb-4 text-gray-700 leading-relaxed" {...props} />
+                      ),
+                      ul: ({ node, ...props }) => (
+                        <ul className="list-disc pl-6 mb-4 space-y-2" {...props} />
+                      ),
+                      ol: ({ node, ...props }) => (
+                        <ol className="list-decimal pl-6 mb-4 space-y-2" {...props} />
+                      ),
+                      blockquote: ({ node, ...props }) => (
+                        <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 text-gray-600" {...props} />
+                      ),
+                      code: ({ node, ...props }: any) => {
+                        const isInline = !props.className;
+                        return isInline ? (
+                          <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono" {...props} />
+                        ) : (
+                          <code className="block bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto" {...props} />
+                        );
+                      },
+                    }}
+                  >
+                    {article.content}
+                  </ReactMarkdown>
+                </div>
 
                 {/* Tags */}
                 {article.tags && article.tags.length > 0 && (

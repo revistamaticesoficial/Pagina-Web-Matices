@@ -14,14 +14,13 @@ export default function ArticulosAdminPage() {
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<"table" | "grid">("table")
 
-  useEffect(() => {
-    loadArticles()
-  }, [])
-
   const loadArticles = async () => {
     try {
+      console.log('articles previusly start load ');
       setLoading(true)
       const data = await adminService.getArticles()
+      console.log('articles: ', data);
+      
       setArticles(data)
     } catch (error) {
       console.error('Error loading articles:', error)
@@ -29,6 +28,10 @@ export default function ArticulosAdminPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    loadArticles()
+  }, [])
 
   const handleEdit = (id: string) => {
     router.push(`/admin/articulos/editar/${id}`)

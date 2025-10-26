@@ -533,24 +533,189 @@ export const adminService = {
     if (error) throw error;
   },
 
-  // Artículos (usando datos mock por ahora)
-  async getArticles() {
-    throw new Error('Función no implementada - tabla articles no existe');
+  // Artículos
+  async getArticles(filters?: {
+    search?: string;
+    category?: string;
+    isPublished?: boolean;
+    isFeatured?: boolean;
+    limit?: number;
+    offset?: number;
+  }) {
+    const supabase = createSupabaseClient();
+    
+    let query = supabase
+      .from('articles')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (filters?.search) {
+      query = query.or(`title.ilike.%${filters.search}%,content.ilike.%${filters.search}%,excerpt.ilike.%${filters.search}%`);
+    }
+
+    if (filters?.category) {
+      query = query.eq('category', filters.category);
+    }
+
+    if (filters?.isPublished !== undefined) {
+      query = query.eq('is_published', filters.isPublished);
+    }
+
+    if (filters?.isFeatured !== undefined) {
+      query = query.eq('is_featured', filters.isFeatured);
+    }
+
+    if (filters?.limit) {
+      query = query.limit(filters.limit);
+    }
+
+    if (filters?.offset) {
+      query = query.range(filters.offset, (filters.offset + (filters.limit || 10)) - 1);
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    return (data || []) as AdminArticle[];
   },
 
-  async createArticle() {
-    throw new Error('Función no implementada - tabla articles no existe');
+  async getArticleById(id: string): Promise<AdminArticle | null> {
+    const supabase = createSupabaseClient();
+    
+    const { data, error } = await supabase
+      .from('articles')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    return data as AdminArticle | null;
   },
 
-  async updateArticle() {
-    throw new Error('Función no implementada - tabla articles no existe');
+  async createArticle(data: Partial<AdminArticle>) {
+    const supabase = createSupabaseClient();
+    
+    console.log('[createArticle] Starting article creation...')
+    console.log('[createArticle] Data received:', data)
+    
+    const insertData = {
+      title: data.title!,
+      slug: data.slug!,
+      content: data.content!,
+      excerpt: data.excerpt || null,
+      author_name: data.author_name || null,
+      category: data.category!,
+      tags: data.tags || null,
+      featured_image_url: data.featured_image_url || null,
+      video_url: data.video_url || null,
+      is_premium: data.is_premium || false,
+      is_published: data.is_published || false,
+      is_featured: data.is_featured || false,
+      read_time: data.read_time || null,
+      published_at: data.published_at || null,
+    }
+    
+    console.log('[createArticle] Insert data:', insertData)
+    
+    try {
+      const { data: result, error } = await supabase
+        .from('articles')
+        .insert(insertData)
+        .select()
+
+      console.log('[createArticle] Supabase response:', { data: result, error })
+
+      if (error) {
+        console.error('[createArticle] Error details:', error)
+        throw error
+      }
+
+      if (!result || result.length === 0) {
+        throw new Error('No data returned from insert')
+      }
+
+      return result[0] as AdminArticle
+    } catch (error) {
+      console.error('[createArticle] Exception caught:', error)
+      throw error
+    }
   },
 
-  async deleteArticle() {
-    throw new Error('Función no implementada - tabla articles no existe');
+  async updateArticle(id: string, data: Partial<AdminArticle>) {
+    const supabase = createSupabaseClient();
+    
+    const { data: result, error } = await supabase
+      .from('articles')
+      .update({
+        title: data.title,
+        slug: data.slug,
+        content: data.content,
+        excerpt: data.excerpt,
+        author_name: data.author_name,
+        category: data.category,
+        tags: data.tags,
+        featured_image_url: data.featured_image_url,
+        video_url: data.video_url,
+        is_premium: data.is_premium,
+        is_published: data.is_published,
+        is_featured: data.is_featured,
+        read_time: data.read_time,
+        published_at: data.published_at,
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return result as AdminArticle;
   },
 
-  async publishArticle() {
-    throw new Error('Función no implementada - tabla articles no existe');
+  async deleteArticle(id: string) {
+    const supabase = createSupabaseClient();
+    
+    const { error } = await supabase
+      .from('articles')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  },
+
+  async publishArticle(id: string) {
+    const supabase = createSupabaseClient();
+    
+    const { data, error } = await supabase
+      .from('articles')
+      .update({
+        is_published: true,
+        published_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return data as AdminArticle;
+  },
+
+  async unpublishArticle(id: string) {
+    const supabase = createSupabaseClient();
+    
+    const { data, error } = await supabase
+      .from('articles')
+      .update({
+        is_published: false
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return data as AdminArticle;
   }
 };

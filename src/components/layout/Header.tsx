@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
-import { Menu, X, User, LogOut, Settings } from "lucide-react";
+import { Menu, X, User, LogOut, Settings, UserRound } from "lucide-react";
 import { NAVIGATION } from "@/data/constants";
 import { useAuth } from "@/hooks/useAuth";
 import Image from "next/image";
@@ -14,6 +14,12 @@ export function Header() {
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { authState, logout } = useAuth();
+
+  const handleAccess = () => {
+    authState.isAuthenticated 
+    ? router.push("/validation")
+    : router.push("/auth/login")
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white border-border shandow-sm">
@@ -47,119 +53,10 @@ export function Header() {
             >
               Contacto
             </Link>
-            {/* Desktop Actions (comentadas por ahora) */}
-            <div className="hidden md:flex items-center space-x-4">
-              {/*  {authState.isAuthenticated ? (
-                <div className="relative">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-2"
-                  >
-                    <User className="h-4 w-4" />
-                    <span>{authState.user?.firstName}</span>
-                  </Button>
-
-                  {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
-                      <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                        <p className="font-medium">{authState.user?.firstName} {authState.user?.lastName}</p>
-                        <p className="text-gray-500 text-xs">{authState.user?.email}</p>
-                      </div>
-
-                      <Link
-                        href="/gestion/inicio"
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <Settings className="h-4 w-4 mr-2" />
-                        Gestión
-                      </Link>
-
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                      >
-                        <LogOut className="h-4 w-4 mr-2" />
-                        Cerrar Sesión
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <>
-                  {/* <Link href="/auth/login">
-                    <Button variant="outline" size="sm">
-                      <User className="h-4 w-4 mr-2" />
-                      Iniciar Sesión
-                    </Button>
-                  </Link>
-                  <Link href="/auth/register">
-                    <Button size="sm">
-                      Crear Cuenta
-                    </Button>
-                  </Link> 
-                </>
-              )}
-            
-            <div className="hidden md:flex items-center space-x-4">
-            {authState.isAuthenticated ? (
-              <div className="relative">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center space-x-2"
-                >
-                  <User className="h-4 w-4" />
-                  <span>{authState.user?.firstName}</span>
-                </Button>
-                
-                {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
-                    <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                      <p className="font-medium">{authState.user?.firstName} {authState.user?.lastName}</p>
-                      <p className="text-gray-500 text-xs">{authState.user?.email}</p>
-                    </div>
-                    
-                    <Link
-                      href="/profile"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      <Settings className="h-4 w-4 mr-2" />
-                      Mi Perfil
-                    </Link>
-                    
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Cerrar Sesión
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <>
-                <Link href="/auth/login">
-                  <Button variant="outline" size="sm">
-                    <User className="h-4 w-4 mr-2" />
-                    Iniciar Sesión
-                  </Button>
-                </Link>
-                <Link href="/auth/register">
-                  <Button size="sm">
-                    Crear Cuenta
-                  </Button>
-                </Link>
-              </>
-            )}
-          </div>
-          </nav>*/}
-            </div>
+            <button onClick={handleAccess} className="text-sm text-gray-700 py-2 border flex gap-2 rounded-md border-gray-200 hover:shadow-lg px-4">
+              <UserRound className="h-4 w-4" />
+              <span>Acceder</span>
+            </button>
           </nav>
           <div className="block md:hidden border-b">
             <Button
@@ -196,51 +93,12 @@ export function Header() {
                   >
                     Contacto
                   </Link>
-
-                  {/* <div className="px-4 py-2 space-y-2">
-                {authState.isAuthenticated ? (
-                  <div className="space-y-2">
-                    <div className="text-sm text-gray-700 py-2 border-b">
-                      <p className="font-medium">{authState.user?.firstName} {authState.user?.lastName}</p>
-                      <p className="text-gray-500 text-xs">{authState.user?.email}</p>
+                  {/* <div className="px-4 py-2 space-y-2 ">
+                    <div className="text-sm text-gray-700 py-2 border-b flex gap-2 rounded-2">
+                        <UserRound className="h-4 w-4" />
+                        <span>Acceder</span>
                     </div>
-
-                    <Link href="/profile" onClick={() => setIsMenuOpen(false)}>
-                      <Button variant="outline" size="sm" className="w-full justify-start">
-                        <Settings className="h-4 w-4 mr-2" />
-                        Mi Perfil
-                      </Button>
-                    </Link>
-
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
-                      onClick={async () => {
-                        await logout();
-                        setIsMenuOpen(false);
-                      }}
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Cerrar Sesión
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
-                      <Button variant="outline" size="sm" className="w-full">
-                        <User className="h-4 w-4 mr-2" />
-                        Iniciar Sesión
-                      </Button>
-                    </Link>
-                    <Link href="/auth/register" onClick={() => setIsMenuOpen(false)}>
-                      <Button size="sm" className="w-full">
-                        Crear Cuenta
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </div>  */}
+                  </div> */}
                 </nav>
               </div>
             </div>
