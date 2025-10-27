@@ -29,25 +29,42 @@ type Business = Database['public']['Tables']['comercios']['Row'];
 type Benefit = Database['public']['Tables']['benefits']['Row'];
 
 interface ComercioDetailContentProps {
-  comercio: Business;
+  comercio: Business | null;
   benefits: Benefit[];
 }
 
 export function ComercioDetailContent({ comercio, benefits }: ComercioDetailContentProps) {
   const router = useRouter();
+  
+  // Hooks deben declararse antes de cualquier return
   const [selectedImage, setSelectedImage] = useState(0);
-  const [isFavorited, setIsFavorited] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const benefitsScrollRef = useRef<HTMLDivElement | null>(null);
 
   // Establecer URL de compartir
-  useState(() => {
-    if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" && comercio) {
+    if (!shareUrl) {
       setShareUrl(`${window.location.origin}/comercios/${comercio.slug}`);
     }
-  });
+  }
+  
+  // Validar que el comercio existe
+  if (!comercio) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Comercio no encontrado</h1>
+          <p className="text-gray-600 mb-6">El comercio que buscas no está disponible.</p>
+          <Button onClick={() => router.push('/comercios')}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Volver a Comercios
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   // Función para abrir Google Maps con la dirección
   const openInMaps = (comercio: Business) => {
@@ -131,16 +148,6 @@ export function ComercioDetailContent({ comercio, benefits }: ComercioDetailCont
             </Button>
 
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsFavorited(!isFavorited)}
-                className={isFavorited ? "text-red-500 border-red-200" : ""}
-              >
-                <Heart
-                  className={`w-4 h-4 ${isFavorited ? "fill-current" : ""}`}
-                />
-              </Button>
               <Button 
                 variant="outline" 
                 size="sm"
@@ -159,18 +166,66 @@ export function ComercioDetailContent({ comercio, benefits }: ComercioDetailCont
           <div className="lg:col-span-2 space-y-6">
             {/* Galería de fotos */}
             <Card>
-              <CardContent className="p-0">
-                <div className="relative">
-                  {/* Imagen principal */}
-                  <div className="aspect-video bg-gray-200 rounded-t-lg overflow-hidden">
-                    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-                      <Camera className="w-12 h-12 text-gray-400" />
+                <CardContent className="p-0">
+                  <div className="relative">
+                    {/* Imagen principal */}
+                    <div className="aspect-video bg-gray-200 rounded-t-lg overflow-hidden">
+                      {comercio && (comercio as any).banners_url && (
+                      <video
+                        className="w-full h-full object-cover"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        key={selectedImage}
+                      >
+                        <source
+                          src={(comercio as any)?.banners_url?.[selectedImage || 0]}
+                          type="video/mp4"
+                        />
+                        <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                          <Camera className="w-12 h-12 text-gray-400" />
+                        </div>
+                      </video>
+                      )}
+                    </div>
+
+                    {/* Indicador de posición */}
+                    <div className="absolute top-4 right-4 bg-black/70 text-white px-2 py-1 rounded text-sm">
+                      {selectedImage + 1} / {((comercio as any)?.banners_url?.length || 0)}
+                    </div>
+
+                    {/* Miniaturas */}
+                    <div className="p-4 bg-gray-50">
+                      <div className="flex gap-2 overflow-x-auto">
+                        {(comercio as any)?.banners_url?.map((image: string, index: number) => (
+                          <button
+                            key={index}
+                            onClick={() => setSelectedImage(index)}
+                            className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 ${
+                              selectedImage === index
+                                ? "border-blue-500"
+                                : "border-gray-200"
+                            }`}
+                          >
+                            <video
+                              className="w-full h-full object-cover"
+                              muted
+                              preload="metadata"
+                            >
+                              <source src={image} type="video/mp4" />
+                              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                                <Camera className="w-6 h-6 text-gray-500" />
+                              </div>
+                            </video>
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
-
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
             <Card>
               <CardContent className="p-6">
@@ -265,7 +320,7 @@ export function ComercioDetailContent({ comercio, benefits }: ComercioDetailCont
                             <span className="text-xs text-gray-500">Válido hasta {b.valid_to || b.expires_at || '—'}</span>
                             <Button 
                               size="sm" 
-                              className="bg-indigo-600 hover:bg-indigo-700"
+                              className="bg-[#005B82] hover:bg-[#003C56]"
                               onClick={() => router.push('/sugerencias?tab=beneficios')}
                             >
                               Ver detalle
@@ -286,14 +341,8 @@ export function ComercioDetailContent({ comercio, benefits }: ComercioDetailCont
             <Card>
               <CardContent className="p-6 flex flex-col flex-grow">
                 <h3 className="flex items-center gap-3 mb-4">
-                  <Image 
-                    src="/images/logo.jpg" 
-                    alt={comercio.name || 'Comercio'} 
-                    width={80} 
-                    height={80} 
-                    className="flex-shrink-0 rounded" 
-                  />
-                  <span className="font-semibold text-gray-900">Sobre este comercio</span>
+                <Image src={(comercio as any)?.logo_url || '/images/logo.jpg'} alt={comercio?.name || 'Comercio'} width={80} height={80} className="flex-shrink-0 rounded" />
+                <span className="font-semibold text-gray-900">Sobre este comercio</span>
                 </h3>
 
                 <div className="p-6 space-y-4">

@@ -1,25 +1,51 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/Button"
 import { Plus, LayoutGrid, TableIcon } from "lucide-react"
-import { mockArticles, type Article } from "@/data/mock-data"
+import { adminService, type AdminArticle } from "@/lib/admin-service"
 import { ArticlesTable } from "@/components/admin/ArticlesTable"
 import { ArticlesGrid } from "@/components/admin/ArticlesGrid"
 
 export default function ArticulosAdminPage() {
   const router = useRouter()
-  const [articles, setArticles] = useState<Article[]>(mockArticles)
+  const [articles, setArticles] = useState<AdminArticle[]>([])
+  const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<"table" | "grid">("table")
+
+  const loadArticles = async () => {
+    try {
+      console.log('articles previusly start load ');
+      setLoading(true)
+      const data = await adminService.getArticles()
+      console.log('articles: ', data);
+      
+      setArticles(data)
+    } catch (error) {
+      console.error('Error loading articles:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadArticles()
+  }, [])
 
   const handleEdit = (id: string) => {
     router.push(`/admin/articulos/editar/${id}`)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("¿Estás seguro de que deseas eliminar este artículo?")) {
-      setArticles(articles.filter((a) => a.id !== id))
+      try {
+        await adminService.deleteArticle(id)
+        setArticles(articles.filter((a) => a.id !== id))
+      } catch (error) {
+        console.error('Error deleting article:', error)
+        alert('Error al eliminar el artículo')
+      }
     }
   }
 
@@ -57,10 +83,18 @@ export default function ArticulosAdminPage() {
           </div>
         </div>
 
-        {viewMode === "table" ? (
-          <ArticlesTable articles={articles} onEdit={handleEdit} onDelete={handleDelete} />
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="text-gray-500">Cargando artículos...</div>
+          </div>
         ) : (
-          <ArticlesGrid articles={articles} onEdit={handleEdit} onDelete={handleDelete} />
+          <>
+            {viewMode === "table" ? (
+              <ArticlesTable articles={articles} onEdit={handleEdit} onDelete={handleDelete} />
+            ) : (
+              <ArticlesGrid articles={articles} onEdit={handleEdit} onDelete={handleDelete} />
+            )}
+          </>
         )}
       </div>
     </>

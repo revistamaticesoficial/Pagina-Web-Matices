@@ -1,16 +1,16 @@
 "use client"
 
 import { useState } from "react"
-import type { Comercio } from "@/data/mock-data"
+import type { AdminComercio } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Badge } from "@/components/ui/Badge"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card"
-import { Edit, Trash2, Search, Phone, Mail, Globe } from "lucide-react"
+import { Edit, Trash2, Search, Phone, Mail, Globe, User, CheckCircle, XCircle, Calendar } from "lucide-react"
 
 interface ComerciosGridProps {
-  comercios: Comercio[]
-  onEdit: (comercio: Comercio) => void
+  comercios: AdminComercio[]
+  onEdit: (comercio: AdminComercio) => void
   onDelete: (id: string) => void
 }
 
@@ -20,8 +20,18 @@ export function ComerciosGrid({ comercios, onEdit, onDelete }: ComerciosGridProp
   const filteredComercios = comercios.filter(
     (comercio) =>
       comercio.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      comercio.category?.toLowerCase().includes(searchTerm.toLowerCase()),
+      comercio.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      comercio.owner?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      comercio.owner?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()),
   )
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -29,7 +39,7 @@ export function ComerciosGrid({ comercios, onEdit, onDelete }: ComerciosGridProp
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Buscar por nombre o categoría..."
+            placeholder="Buscar por nombre, categoría, email o propietario..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-9"
@@ -47,9 +57,16 @@ export function ComerciosGrid({ comercios, onEdit, onDelete }: ComerciosGridProp
                   alt={comercio.name}
                   className="h-full w-full object-cover"
                 />
-                <Badge variant={comercio.isActive ? "default" : "secondary"} className="absolute right-2 top-2">
-                  {comercio.isActive ? "Activo" : "Inactivo"}
-                </Badge>
+                <div className="absolute right-2 top-2 flex gap-2">
+                  <Badge variant={comercio.isActive ? "default" : "secondary"}>
+                    {comercio.isActive ? "Activo" : "Inactivo"}
+                  </Badge>
+                  {comercio.owner?.is_onboarding_complete !== undefined && (
+                    <Badge variant={comercio.owner.is_onboarding_complete ? "default" : "outline"}>
+                      {comercio.owner.is_onboarding_complete ? "Completado" : "Pendiente"}
+                    </Badge>
+                  )}
+                </div>
               </div>
             </CardHeader>
             <CardContent className="p-4">
@@ -68,9 +85,35 @@ export function ComerciosGrid({ comercios, onEdit, onDelete }: ComerciosGridProp
                   )}
                 </div>
               </div>
+              
+              {/* Información del propietario */}
+              {comercio.owner && (
+                <div className="mb-3 p-3 bg-slate-50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <User className="h-4 w-4 text-slate-500" />
+                    <span className="font-medium text-sm">Propietario</span>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div className="font-medium">{comercio.owner.full_name || "Sin nombre"}</div>
+                    <div className="text-slate-500">{comercio.owner.email}</div>
+                    <div className="flex items-center gap-2">
+                      {comercio.owner.is_onboarding_complete ? (
+                        <CheckCircle className="h-3 w-3 text-green-500" />
+                      ) : (
+                        <XCircle className="h-3 w-3 text-orange-500" />
+                      )}
+                      <span className="text-xs text-slate-500">
+                        {comercio.owner.is_onboarding_complete ? "Onboarding completado" : "Onboarding pendiente"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                 {comercio.description || "Sin descripción"}
               </p>
+              
               <div className="space-y-1 text-sm">
                 {comercio.phone && (
                   <div className="flex items-center gap-2 text-muted-foreground">
@@ -90,6 +133,10 @@ export function ComerciosGrid({ comercios, onEdit, onDelete }: ComerciosGridProp
                     <span className="truncate">{comercio.web_url}</span>
                   </div>
                 )}
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Calendar className="h-3 w-3" />
+                  <span>Registrado: {formatDate(comercio.created_at)}</span>
+                </div>
               </div>
             </CardContent>
             <CardFooter className="flex gap-2 border-t p-4">

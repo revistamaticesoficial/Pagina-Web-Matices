@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import type { Benefit } from "@/data/mock-data"
+import type { AdminBenefit } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -9,8 +9,8 @@ import { Badge } from "@/components/ui/Badge"
 import { Edit, Trash2, Search } from "lucide-react"
 
 interface BenefitsTableProps {
-  benefits: Benefit[]
-  onEdit: (benefit: Benefit) => void
+  benefits: AdminBenefit[]
+  onEdit: (benefit: AdminBenefit) => void
   onDelete: (id: string) => void
 }
 
@@ -63,18 +63,18 @@ export function BenefitsTable({ benefits, onEdit, onDelete }: BenefitsTableProps
                   <Badge variant="outline">{getBenefitTypeLabel(benefit.type)}</Badge>
                 </TableCell>
                 <TableCell>
-                  <code className="rounded bg-muted px-2 py-1 text-sm">{benefit.code || "-"}</code>
+                  <span className="text-muted-foreground">-</span>
                 </TableCell>
                 <TableCell>
-                  {benefit.quantity_redeemed} / {benefit.quantity}
+                  {(benefit.redemptions_count || 0)} / {benefit.quantity}
                 </TableCell>
                 <TableCell className="text-sm">
-                  {new Date(benefit.valid_from).toLocaleDateString()} -{" "}
+                  {benefit.valid_from ? new Date(benefit.valid_from).toLocaleDateString() : "Sin fecha"} -{" "}
                   {benefit.valid_to ? new Date(benefit.valid_to).toLocaleDateString() : "∞"}
                 </TableCell>
                 <TableCell>
-                  <Badge variant={benefit.isActive ? "default" : "secondary"}>
-                    {benefit.isActive ? "Activo" : "Inactivo"}
+                  <Badge variant="default">
+                    Activo
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">

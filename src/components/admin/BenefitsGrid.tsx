@@ -1,17 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import type { Benefit } from "@/data/mock-data"
+import type { AdminBenefit } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Badge } from "@/components/ui/Badge"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card"
-import { Edit, Trash2, Search, Calendar, Ticket } from "lucide-react"
+import { Edit, Trash2, Search, Calendar, Ticket, BookOpen } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
+import Image from "next/image"
 
 interface BenefitsGridProps {
-  benefits: Benefit[]
-  onEdit: (benefit: Benefit) => void
+  benefits: AdminBenefit[]
+  onEdit: (benefit: AdminBenefit) => void
   onDelete: (id: string) => void
 }
 
@@ -45,19 +46,17 @@ export function BenefitsGrid({ benefits, onEdit, onDelete }: BenefitsGridProps) 
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredBenefits.map((benefit) => {
-          const progress = (benefit.quantity_redeemed / benefit.quantity) * 100
+          const progress = ((benefit.redemptions_count || 0) / benefit.quantity) * 100
 
           return (
             <Card key={benefit.id} className="overflow-hidden">
               <CardHeader className="p-0">
                 <div className="relative h-40 w-full">
-                  <img
-                    src={benefit.banner_url || "/placeholder.svg?height=160&width=400&query=benefit"}
-                    alt={benefit.title}
-                    className="h-full w-full object-cover"
-                  />
-                  <Badge variant={benefit.isActive ? "default" : "secondary"} className="absolute right-2 top-2">
-                    {benefit.isActive ? "Activo" : "Inactivo"}
+                  <div className="h-full w-full bg-gray-200 flex items-center justify-center">
+                    <BookOpen className="h-8 w-8 text-gray-500" />
+                  </div>
+                  <Badge variant="default" className="absolute right-2 top-2">
+                    Activo
                   </Badge>
                 </div>
               </CardHeader>
@@ -69,17 +68,11 @@ export function BenefitsGrid({ benefits, onEdit, onDelete }: BenefitsGridProps) 
                 <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                   {benefit.description || "Sin descripción"}
                 </p>
-                {benefit.code && (
-                  <div className="mb-3 flex items-center gap-2">
-                    <Ticket className="h-4 w-4 text-muted-foreground" />
-                    <code className="rounded bg-muted px-2 py-1 text-sm font-mono">{benefit.code}</code>
-                  </div>
-                )}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Canjeados</span>
                     <span className="font-medium">
-                      {benefit.quantity_redeemed} / {benefit.quantity}
+                      {benefit.redemptions_count || 0} / {benefit.quantity}
                     </span>
                   </div>
                   <Progress value={progress} className="h-2" />

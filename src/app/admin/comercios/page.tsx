@@ -1,48 +1,68 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/Button"
 import { Plus, LayoutGrid, TableIcon } from "lucide-react"
-import { mockComercios, type Comercio } from "@/data/mock-data"
+import { adminService, type AdminComercio } from "@/lib/admin-service"
 import { ComerciosTable } from "@/components/admin/ComerciosTable"
 import { ComerciosGrid } from "@/components/admin/ComerciosGrid"
 import { ComercioModal } from "@/components/admin/ComercioModal"
 
 export default function ComerciosPage() {
-  const [comercios, setComercios] = useState<Comercio[]>(mockComercios)
+  const [comercios, setComercios] = useState<AdminComercio[]>([])
+  const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<"table" | "grid">("table")
-  const [selectedComercio, setSelectedComercio] = useState<Comercio | null>(null)
+  const [selectedComercio, setSelectedComercio] = useState<AdminComercio | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleEdit = (comercio: Comercio) => {
+  useEffect(() => {
+    loadComercios()
+  }, [])
+
+  const loadComercios = async () => {
+    try {
+      setLoading(true)
+      const data = await adminService.getComercios()
+      setComercios(data)
+    } catch (error) {
+      console.error('Error loading comercios:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleEdit = (comercio: AdminComercio) => {
     setSelectedComercio(comercio)
     setIsModalOpen(true)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("¿Estás seguro de que deseas eliminar este comercio?")) {
-      setComercios(comercios.filter((c) => c.id !== id))
+      try {
+        await adminService.deleteComercio(id)
+        setComercios(comercios.filter((c) => c.id !== id))
+      } catch (error) {
+        console.error('Error deleting comercio:', error)
+        alert('Error al eliminar el comercio')
+      }
     }
   }
 
-  const handleSave = (comercioData: Partial<Comercio>) => {
-    if (selectedComercio) {
-      // Edit existing
-      setComercios(comercios.map((c) => (c.id === selectedComercio.id ? { ...c, ...comercioData } : c)))
-    } else {
-      // Create new
-      const newComercio: Comercio = {
-        id: String(Date.now()),
-        created_at: new Date().toISOString(),
-        owner_id: null,
-        social_media: {},
-        tags: null,
-        logo_url: null,
-        banners_url: null,
-        schedules: null,
-        ...comercioData,
-      } as Comercio
-      setComercios([...comercios, newComercio])
+  const handleSave = async (comercioData: Partial<AdminComercio>) => {
+    try {
+      if (selectedComercio) {
+        // Edit existing
+        const updated = await adminService.updateComercio(selectedComercio.id, comercioData)
+        setComercios(comercios.map((c) => (c.id === selectedComercio.id ? updated : c)))
+      } else {
+        // Create new
+        const newComercio = await adminService.createComercio(comercioData)
+        setComercios([newComercio, ...comercios])
+      }
+      setIsModalOpen(false)
+    } catch (error) {
+      console.error('Error saving comercio:', error)
+      alert('Error al guardar el comercio')
     }
   }
 
@@ -81,10 +101,18 @@ export default function ComerciosPage() {
           </div>
         </div>
 
-        {viewMode === "table" ? (
-          <ComerciosTable comercios={comercios} onEdit={handleEdit} onDelete={handleDelete} />
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="text-gray-500">Cargando comercios...</div>
+          </div>
         ) : (
-          <ComerciosGrid comercios={comercios} onEdit={handleEdit} onDelete={handleDelete} />
+          <>
+            {viewMode === "table" ? (
+              <ComerciosTable comercios={comercios} onEdit={handleEdit} onDelete={handleDelete} />
+            ) : (
+              <ComerciosGrid comercios={comercios} onEdit={handleEdit} onDelete={handleDelete} />
+            )}
+          </>
         )}
 
         <ComercioModal

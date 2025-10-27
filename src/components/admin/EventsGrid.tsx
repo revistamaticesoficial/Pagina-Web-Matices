@@ -1,16 +1,16 @@
 "use client"
 
 import { useState } from "react"
-import type { Event } from "@/data/mock-data"
+import type { AdminEvent } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Badge } from "@/components/ui/Badge"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card"
-import { Edit, Trash2, Search, Calendar, Clock, MapPin, ExternalLink } from "lucide-react"
+import { Edit, Trash2, Search, Calendar, MapPin } from "lucide-react"
 
 interface EventsGridProps {
-  events: Event[]
-  onEdit: (event: Event) => void
+  events: AdminEvent[]
+  onEdit: (event: AdminEvent) => void
   onDelete: (id: string) => void
 }
 
@@ -37,14 +37,12 @@ export function EventsGrid({ events, onEdit, onDelete }: EventsGridProps) {
         {filteredEvents.map((event) => (
           <Card key={event.id} className="overflow-hidden">
             <CardHeader className="p-0">
-              <div className="relative h-48 w-full">
-                <img
-                  src={event.banner_url || "/placeholder.svg?height=200&width=400&query=event"}
-                  alt={event.title}
-                  className="h-full w-full object-cover"
-                />
-                <Badge variant={event.isActive ? "default" : "secondary"} className="absolute right-2 top-2">
-                  {event.isActive ? "Activo" : "Cancelado"}
+              <div className="relative h-48 w-full bg-slate-100 flex items-center justify-center">
+                <div className="text-slate-400">
+                  <Calendar className="h-12 w-12" />
+                </div>
+                <Badge variant="default" className="absolute right-2 top-2">
+                  Activo
                 </Badge>
               </div>
             </CardHeader>
@@ -58,27 +56,10 @@ export function EventsGrid({ events, onEdit, onDelete }: EventsGridProps) {
                   <Calendar className="h-4 w-4" />
                   <span>{new Date(event.date).toLocaleDateString()}</span>
                 </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>{event.time}</span>
-                </div>
-                {event.place && (
+                {event.location && (
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <MapPin className="h-4 w-4" />
-                    <span className="truncate">{event.place}</span>
-                  </div>
-                )}
-                {event.inscription_link && (
-                  <div className="flex items-center gap-2 text-primary">
-                    <ExternalLink className="h-4 w-4" />
-                    <a
-                      href={event.inscription_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="truncate hover:underline"
-                    >
-                      Link de inscripción
-                    </a>
+                    <span className="truncate">{event.location}</span>
                   </div>
                 )}
               </div>

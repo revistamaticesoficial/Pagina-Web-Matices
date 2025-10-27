@@ -9,7 +9,12 @@ import { Label } from "@/components/ui/Label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select"
-import { Bold, Italic, Heading1, Heading2, List, ListOrdered, ImageIcon, LinkIcon, Quote } from "lucide-react"
+import { Bold, Italic, Heading1, Heading2, List, ListOrdered, ImageIcon, LinkIcon, Quote, Eye, Edit } from "lucide-react"
+import { ImageUpload } from "./ImageUpload"
+import { MarkdownImageUpload } from "./MarkdownImageUpload"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 interface ArticleEditorProps {
   initialData?: {
@@ -19,26 +24,46 @@ interface ArticleEditorProps {
     category: string
     tags: string[]
     isPublished: boolean
+    featuredImage?: string
   }
   onSave: (data: any) => void
   onCancel: () => void
 }
 
 export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorProps) {
+  const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'split'>('edit')
+  const isEditing = !!initialData
   const [formData, setFormData] = useState({
     title: initialData?.title || "",
     excerpt: initialData?.excerpt || "",
     content: initialData?.content || "",
-    category: initialData?.category || "General",
+    category: initialData?.category || "NOTICIAS",
     tags: initialData?.tags?.join(", ") || "",
     isPublished: initialData?.isPublished || false,
+    featuredImage: initialData?.featuredImage || "",
   })
+
+  const handleImageChange = (url: string | null) => {
+    setFormData({ ...formData, featuredImage: url || "" })
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Convertir tags a array
+    const tagsArray = formData.tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0)
+
     onSave({
-      ...formData,
-      tags: formData.tags.split(",").map((tag) => tag.trim()),
+      title: formData.title,
+      excerpt: formData.excerpt,
+      content: formData.content,
+      category: formData.category,
+      tags: tagsArray,
+      isPublished: formData.isPublished,
+      featured_image_url: formData.featuredImage,
     })
   }
 
@@ -56,6 +81,21 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
     setTimeout(() => {
       textarea.focus()
       textarea.setSelectionRange(start + before.length, start + before.length + selectedText.length)
+    }, 0)
+  }
+
+  const handleImageInsert = (markdownText: string) => {
+    const textarea = document.getElementById("content") as HTMLTextAreaElement
+    if (!textarea) return
+
+    const start = textarea.selectionStart
+    const newText =
+      formData.content.substring(0, start) + '\n' + markdownText + '\n' + formData.content.substring(start)
+
+    setFormData({ ...formData, content: newText })
+    setTimeout(() => {
+      textarea.focus()
+      textarea.setSelectionRange(start + markdownText.length + 2, start + markdownText.length + 2)
     }, 0)
   }
 
@@ -84,6 +124,15 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
         />
       </div>
 
+      <div className="space-y-2">
+        <Label>Imagen Destacada</Label>
+        <ImageUpload
+          currentImage={formData.featuredImage}
+          onImageChange={handleImageChange}
+          bucket="articles"
+        />
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="category">Categoría</Label>
@@ -92,13 +141,16 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="General">General</SelectItem>
-              <SelectItem value="Comercio">Comercio</SelectItem>
-              <SelectItem value="Salud">Salud</SelectItem>
-              <SelectItem value="Educación">Educación</SelectItem>
-              <SelectItem value="Cultura">Cultura</SelectItem>
-              <SelectItem value="Infraestructura">Infraestructura</SelectItem>
-              <SelectItem value="Deportes">Deportes</SelectItem>
+              <SelectItem value="NOTICIAS">Noticias</SelectItem>
+              <SelectItem value="GASTRONOMIA">Gastronomía</SelectItem>
+              <SelectItem value="SERVICIOS">Servicios</SelectItem>
+              <SelectItem value="ENTRETENIMIENTO">Entretenimiento</SelectItem>
+              <SelectItem value="DEPORTES">Deportes</SelectItem>
+              <SelectItem value="INMOBILIARIA">Inmobiliaria</SelectItem>
+              <SelectItem value="SALUD">Salud</SelectItem>
+              <SelectItem value="EDUCACION">Educación</SelectItem>
+              <SelectItem value="CULTURA">Cultura</SelectItem>
+              <SelectItem value="INFRAESTRUCTURA">Infraestructura</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -114,8 +166,40 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="content">Contenido</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="content">Contenido</Label>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant={viewMode === 'edit' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('edit')}
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Editar
+            </Button>
+            <Button
+              type="button"
+              variant={viewMode === 'preview' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('preview')}
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              Vista
+            </Button>
+            <Button
+              type="button"
+              variant={viewMode === 'split' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('split')}
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Dividido
+            </Button>
+          </div>
+        </div>
         <div className="rounded-lg border bg-white">
+          {/* Toolbar */}
           <div className="flex flex-wrap gap-1 border-b p-2">
             <Button type="button" variant="ghost" size="sm" onClick={() => insertMarkdown("# ", "")} title="Título 1">
               <Heading1 className="h-4 w-4" />
@@ -156,24 +240,95 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
             >
               <LinkIcon className="h-4 w-4" />
             </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => insertMarkdown("![alt](", ")")}
-              title="Imagen"
-            >
-              <ImageIcon className="h-4 w-4" />
-            </Button>
+            <MarkdownImageUpload onImageInsert={handleImageInsert} />
           </div>
-          <Textarea
-            id="content"
-            value={formData.content}
-            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-            placeholder="Escribe tu artículo aquí... Puedes usar Markdown para dar formato."
-            rows={20}
-            className="border-0 focus-visible:ring-0 font-mono text-sm"
-          />
+
+          {/* Content area based on view mode */}
+          {viewMode === 'edit' && (
+            <Textarea
+              id="content"
+              value={formData.content}
+              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              placeholder="Escribe tu artículo aquí... Puedes usar Markdown para dar formato."
+              rows={20}
+              className="border-0 focus-visible:ring-0 font-mono text-sm"
+            />
+          )}
+
+          {viewMode === 'preview' && (
+            <div className="p-6 prose prose-slate max-w-none min-h-[400px] overflow-auto">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  p: ({ node, children, ...props }) => {
+                    // Detectar si contiene solo imagen
+                    const hasImage = children && typeof children === 'object' && 
+                      Array.isArray(children) && 
+                      children.some((child: any) => child?.type === 'img')
+                    
+                    if (hasImage) {
+                      // Si contiene imagen, renderizar como div
+                      return <div className="mb-4">{children}</div>
+                    }
+                    return <p className="whitespace-pre-wrap mb-4" {...props}>{children}</p>
+                  },
+                  blockquote: ({ node, ...props }) => (
+                    <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 whitespace-pre-wrap" {...props} />
+                  ),
+                  img: ({ node, ...props }) => (
+                    <div className="my-6">
+                      <img {...props} className="rounded-lg w-full h-auto shadow-lg" loading="lazy" />
+                    </div>
+                  ),
+                }}
+              >
+                {formData.content}
+              </ReactMarkdown>
+            </div>
+          )}
+
+          {viewMode === 'split' && (
+            <div className="grid grid-cols-2 h-[500px] overflow-hidden">
+              <div className="border-r">
+                <Textarea
+                  id="content"
+                  value={formData.content}
+                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  placeholder="Escribe tu artículo aquí..."
+                  className="border-0 focus-visible:ring-0 font-mono text-sm h-full resize-none"
+                />
+              </div>
+              <div className="p-4 prose prose-slate max-w-none overflow-auto h-full">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    p: ({ node, children, ...props }) => {
+                      // Detectar si contiene solo imagen
+                      const hasImage = children && typeof children === 'object' && 
+                        Array.isArray(children) && 
+                        children.some((child: any) => child?.type === 'img')
+                      
+                      if (hasImage) {
+                        // Si contiene imagen, renderizar como div
+                        return <div className="mb-4">{children}</div>
+                      }
+                      return <p className="whitespace-pre-wrap mb-4" {...props}>{children}</p>
+                    },
+                    blockquote: ({ node, ...props }) => (
+                      <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 whitespace-pre-wrap" {...props} />
+                    ),
+                    img: ({ node, ...props }) => (
+                      <div className="my-6">
+                        <img {...props} className="rounded-lg w-full h-auto shadow-lg" loading="lazy" />
+                      </div>
+                    ),
+                  }}
+                >
+                  {formData.content}
+                </ReactMarkdown>
+              </div>
+            </div>
+          )}
         </div>
         <p className="text-xs text-muted-foreground">
           Usa Markdown para dar formato: **negrita**, *cursiva*, # Título, - Lista, etc.
@@ -196,7 +351,10 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
 
       <div className="flex gap-4">
         <Button type="submit" size="lg">
-          {formData.isPublished ? "Publicar artículo" : "Guardar borrador"}
+          {isEditing 
+            ? (formData.isPublished ? "Actualizar artículo publicado" : "Guardar cambios")
+            : (formData.isPublished ? "Publicar artículo" : "Guardar borrador")
+          }
         </Button>
         <Button type="button" variant="outline" size="lg" onClick={onCancel}>
           Cancelar

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import type { Article } from "@/data/mock-data"
+import type { AdminArticle } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/Badge"
 import { Edit, Trash2, Search, Eye } from "lucide-react"
 
 interface ArticlesTableProps {
-  articles: Article[]
+  articles: AdminArticle[]
   onEdit: (id: string) => void
   onDelete: (id: string) => void
 }
@@ -56,7 +56,7 @@ export function ArticlesTable({ articles, onEdit, onDelete }: ArticlesTableProps
                 <TableCell className="font-medium max-w-[300px]">
                   <div className="flex items-center gap-3">
                     <img
-                      src={article.featured_image || "/placeholder.svg?height=40&width=60"}
+                      src={article.featured_image_url || "/placeholder.svg?height=40&width=60"}
                       alt={article.title}
                       className="h-10 w-16 rounded object-cover"
                     />
@@ -66,17 +66,17 @@ export function ArticlesTable({ articles, onEdit, onDelete }: ArticlesTableProps
                 <TableCell>
                   <Badge variant="outline">{article.category}</Badge>
                 </TableCell>
-                <TableCell>{article.author}</TableCell>
+                <TableCell>{article.author_name || "Sin autor"}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1">
                     <Eye className="h-4 w-4 text-muted-foreground" />
                     <span>{article.views}</span>
                   </div>
                 </TableCell>
-                <TableCell className="text-sm">{new Date(article.published_at).toLocaleDateString()}</TableCell>
+                <TableCell className="text-sm">{article.published_at ? new Date(article.published_at).toLocaleDateString() : "Sin fecha"}</TableCell>
                 <TableCell>
-                  <Badge variant={article.isPublished ? "default" : "secondary"}>
-                    {article.isPublished ? "Publicado" : "Borrador"}
+                  <Badge variant={article.is_published ? "default" : "secondary"}>
+                    {article.is_published ? "Publicado" : "Borrador"}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">

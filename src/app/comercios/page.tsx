@@ -1,38 +1,68 @@
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from '@/types/database';
 import LandingLayout from '@/components/layout/LandingLayout';
 import { ComerciosGrid, ComerciosPagination } from '@/components/sections';
-
-type Business = Database['public']['Tables']['comercios']['Row'];
+import { comercioService } from '@/lib/comercio-service';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { Suspense } from 'react';
 
 // Configuración de revalidación
 export const revalidate = 60; // Revalidar cada 60 segundos
 
-async function loadComercios(): Promise<Business[]> {
-  const supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+// Generar metadatos estáticos
+export async function generateMetadata() {
+  return {
+    title: 'Comercios de Matices - Cerro de las Rosas',
+    description: 'Descubre todos los comercios del barrio Cerro de las Rosas en Córdoba. Gastronomía, servicios, entretenimiento y más.',
+    keywords: 'comercios, cerro de las rosas, córdoba, gastronomía, servicios, barrio',
+    openGraph: {
+      title: 'Comercios de Matices - Cerro de las Rosas',
+      description: 'Descubre todos los comercios del barrio Cerro de las Rosas en Córdoba.',
+      type: 'website',
+    },
+  };
+}
 
-  const { data, error } = await supabase
-    .from('comercios')
-    .select('*')
-    .not('slug', 'is', null)
-    .not('slug', 'eq', '')
-    .not('name', 'is', null)
-    .not('name', 'eq', '')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching comercios:', error);
-    return [];
+async function loadComercios() {
+  try {
+    const result = await comercioService.getAllComercios({
+      limit: 24,
+      offset: 0
+    });
+    
+    return {
+      comercios: result.comercios,
+      total: result.total,
+      hasMore: result.hasMore
+    };
+  } catch (error) {
+    console.error('Error loading comercios:', error);
+    return {
+      comercios: [],
+      total: 0,
+      hasMore: false
+    };
   }
+}
 
-  return data || [];
+// Componente de loading para el grid
+function ComerciosGridSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto mb-12">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div key={i} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 animate-pulse">
+          <div className="h-48 bg-gray-200"></div>
+          <div className="p-6">
+            <div className="h-6 bg-gray-200 rounded mb-3"></div>
+            <div className="h-4 bg-gray-200 rounded mb-4"></div>
+            <div className="h-10 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default async function ComerciosPage() {
-  const comercios = await loadComercios();
+  const { comercios, total, hasMore } = await loadComercios();
 
   return (
     <LandingLayout>
@@ -47,6 +77,9 @@ export default async function ComerciosPage() {
               <p className="text-xl lg:text-2xl opacity-90 max-w-3xl mx-auto">
                 Todos los comercios del Cerro de las Rosas
               </p>
+              <div className="mt-6 text-lg opacity-80">
+                {total} comercios disponibles
+              </div>
             </div>
           </div>
         </section>
@@ -64,11 +97,21 @@ export default async function ComerciosPage() {
               </p>
             </div>
 
-            {/* Comercios Grid - Server Component */}
-            <ComerciosGrid comercios={comercios} />
+            {/* Comercios Grid con Suspense y ErrorBoundary */}
+            <ErrorBoundary>
+              <Suspense fallback={<ComerciosGridSkeleton />}>
+                <ComerciosGrid comercios={comercios} />
+              </Suspense>
+            </ErrorBoundary>
 
             {/* Pagination - Client Component */}
-            <ComerciosPagination totalItems={comercios.length} itemsPerPage={12} />
+            <ErrorBoundary>
+              <ComerciosPagination 
+                totalItems={total} 
+                itemsPerPage={24}
+                hasMore={hasMore}
+              />
+            </ErrorBoundary>
           </div>
         </section>
       </div>
