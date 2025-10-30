@@ -19,7 +19,7 @@ function ComerciosSection() {
         .order('created_at',{ ascending:false })
         .limit(5);
 
-        setComercios((data as unknown as Comercio[]) || []);
+        setComercios(Array.isArray(data) ? (data as unknown as Comercio[]) : []);
 
       if (error) {
         console.error('Error fetching comercios:', error);
@@ -44,7 +44,8 @@ function ComerciosSection() {
         const updated = newPerView
         if (prev !== updated) {
           // clamp current index so we don't overflow
-          const maxIndex = Math.max(0, comercios.length - updated)
+          const safeLength = Array.isArray(comercios) ? comercios.length : 0;
+          const maxIndex = Math.max(0, safeLength - updated)
           setIndex((i) => (i > maxIndex ? maxIndex : i))
         }
         return updated
@@ -53,18 +54,20 @@ function ComerciosSection() {
     update()
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
-  }, [comercios.length])
+  }, [Array.isArray(comercios) ? comercios.length : 0])
 
-  const maxIndex = Math.max(0, comercios.length - perView)
+  const safeComerciosLength = Array.isArray(comercios) ? comercios.length : 0;
+  const maxIndex = Math.max(0, safeComerciosLength - perView)
 
   // autoplay: every ~5.5s move one card, pause on hover
   useEffect(() => {
-    if (isHovered || comercios.length <= perView) return
+    const safeComerciosLength = Array.isArray(comercios) ? comercios.length : 0;
+    if (isHovered || safeComerciosLength <= perView) return
     const id = setInterval(() => {
       setIndex((i) => (i >= maxIndex ? 0 : i + 1))
     }, 5500)
     return () => clearInterval(id)
-  }, [isHovered, perView, maxIndex, comercios.length])
+  }, [isHovered, perView, maxIndex, Array.isArray(comercios) ? comercios.length : 0])
 
   return (
     <section className='py-16' ref={ref}>
@@ -88,13 +91,13 @@ function ComerciosSection() {
             className="flex transition-transform duration-500"
             style={{ transform: `translateX(-${index * (100 / perView)}%)` }}
           >
-            {comercios.map((comercio) => (
+            {(Array.isArray(comercios) ? comercios : []).map((comercio) => (
               <div key={comercio.id} className="px-2" style={{ flex: `0 0 ${100 / perView}%` }}>
                 <div className=" bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300 h-full">
                   <div className="relative h-44 bg-[#000]">
                     {
                       comercio.logo_url ? (
-                        <Image src={comercio.logo_url} alt={comercio.name} fill className={`object-contain`} />
+                        <Image src={comercio.logo_url} alt={comercio.name || 'Logo'} fill className={`object-contain`} />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="text-center">
@@ -111,14 +114,18 @@ function ComerciosSection() {
                   </div>
 
                   <div className="p-5 flex flex-col justify-between h-64">
-                    <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2">{comercio.name}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-3">{comercio.description.length > 50 ? comercio.description.slice(0, 50) + '...' : comercio.description}</p>
+                    <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2">{comercio.name || 'Sin nombre'}</h3>
+                    <p className="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-3">
+                      {(comercio.description?.length ?? 0) > 50
+                        ? (comercio.description || '').slice(0, 50) + '...'
+                        : (comercio.description || '—')}
+                    </p>
 
                     <div className="flex items-center justify-between text-[11px] text-gray-500 mb-3">
                       <div className="flex items-center space-x-4">
                       <div className="flex items-center text-xs text-gray-600 bg-[#F5822060] text-white rounded-lg px-2 py-1">
                         <List className="w-4 h-4 mr-1" />
-                        <span>{comercio.category}</span>
+                          <span>{comercio.category || 'Sin categoría'}</span>
                       </div>
                         
                       </div>
@@ -127,11 +134,11 @@ function ComerciosSection() {
                     <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
                           <MapPin className="w-3.5 h-3.5 mr-1" />
-                          <span>{comercio.direction}</span>
+                          <span>{comercio.direction || 'Sin dirección'}</span>
                         </div>
                     </div>
 
-                    <Link href={`/comercios/${comercio.slug}`}>
+                    <Link href={`/comercios/${comercio.slug || 'sin-slug'}`}>
                       <button className="w-full bg-[#005B82] hover:bg-[#004D6E] text-white font-medium py-2.5 rounded-lg transition-all duration-200">
                         Ver Comercio
                       </button>
@@ -143,7 +150,7 @@ function ComerciosSection() {
           </div>
 
           {/* Arrows */}
-          {comercios.length > perView && (
+          {(Array.isArray(comercios) ? comercios.length : 0) > perView && (
             <>
               <button
                 onClick={() => setIndex((i) => (i === 0 ? maxIndex : i - 1))}
@@ -164,7 +171,7 @@ function ComerciosSection() {
           )}
 
           {/* Dots (por posición de inicio del viewport) */}
-          {comercios.length > perView && (
+          {(Array.isArray(comercios) ? comercios.length : 0) > perView && (
             <div className="flex items-center justify-center space-x-2 mt-6">
               {Array.from({ length: maxIndex + 1 }).map((_, i) => (
                 <button
