@@ -96,7 +96,6 @@ export const articleService = {
         return null;
       }
 
-      // Incrementar contador de vistas
       if (data) {
         await supabase
           .from('articles')
