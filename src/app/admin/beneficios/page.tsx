@@ -58,9 +58,13 @@ export default function BeneficiosPage() {
         setBenefits([newBenefit, ...benefits])
       }
       setIsModalOpen(false)
+      setSelectedBenefit(null)
+      // Recargar beneficios para asegurar que todo está sincronizado
+      await loadBenefits()
     } catch (error) {
       console.error('Error saving benefit:', error)
-      alert('Error al guardar el beneficio')
+      const errorMessage = error instanceof Error ? error.message : 'Error al guardar el beneficio'
+      alert(errorMessage)
     }
   }
 

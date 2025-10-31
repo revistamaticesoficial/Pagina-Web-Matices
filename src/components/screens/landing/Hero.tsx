@@ -102,8 +102,12 @@ export function HeroHome() {
                   transition={{ delay: 0.2, duration: 0.6 }}
                 >
                   {slides[currentSlide].title} <span className="text-white">{slides[currentSlide].highlight} </span>
-                  <br />
-                  {slides[currentSlide].subtitle}
+                  {slides[currentSlide].subtitle && (
+                    <>
+                      <br />
+                      {slides[currentSlide].subtitle}
+                    </>
+                  )}
                 </motion.h1>
                 <motion.p 
                   className="text-base sm:text-lg md:text-xl text-white/90 mb-6 md:mb-8 max-w-2xl text-pretty leading-relaxed"

@@ -58,9 +58,13 @@ export default function EventosPage() {
         setEvents([newEvent, ...events])
       }
       setIsModalOpen(false)
+      setSelectedEvent(null)
+      // Recargar eventos para asegurar que todo está sincronizado
+      await loadEvents()
     } catch (error) {
       console.error('Error saving event:', error)
-      alert('Error al guardar el evento')
+      const errorMessage = error instanceof Error ? error.message : 'Error al guardar el evento'
+      alert(errorMessage)
     }
   }
 

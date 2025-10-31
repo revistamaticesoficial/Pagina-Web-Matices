@@ -23,6 +23,15 @@ const DIAS = [
   "domingo",
 ] as const;
 
+const CATEGORY_OPTIONS = [
+  { value: 'GASTRONOMIA', label: 'Gastronomía' },
+  { value: 'SERVICIOS', label: 'Servicios' },
+  { value: 'SALUD', label: 'Salud' },
+  { value: 'EDUCACION', label: 'Educación' },
+  { value: 'DEPORTES', label: 'Deportes' },
+  { value: 'INMOBILIARIA', label: 'Inmobiliaria' },
+] as const;
+
 type Dia = typeof DIAS[number];
 
 type Horario = { apertura: string; cierre: string } | { apertura: "Cerrado"; cierre: "Cerrado" };
@@ -38,6 +47,7 @@ type ComercioState = {
   horarios: Record<Dia, Horario>;
   redes: { instagram: string; facebook: string; tiktok: string };
   tags: string[];
+  logo?: string;
 };
 
 type UserState = {
@@ -107,6 +117,10 @@ export default function CuentaPage() {
 
   // Errores de foto
   const [photoError, setPhotoError] = useState<string>("");
+  const [logoError, setLogoError] = useState<string>("");
+  // Modal de éxito
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string>("");
 
   // Cargar datos reales desde Supabase
   useEffect(() => {
@@ -125,14 +139,16 @@ export default function CuentaPage() {
       setUser(loadedUser); setUserDraft(loadedUser);
 
       // Comercio
-      const { data: biz } = await supabase
+      const { data: bizRows, error: bizErr } = await supabase
         .from('comercios')
-        .select('name, slug, direction, phone, category, tags, social_media')
+        .select('id, name, slug, direction, phone, category, tags, social_media, logo_url, created_at')
         .eq('owner_id', userId)
-        .maybeSingle();
-      if (biz) {
+        .order('created_at', { ascending: false });
+
+      if (!bizErr && Array.isArray(bizRows) && bizRows.length > 0) {
+        const biz = bizRows[0] as any;
         const redes = { instagram: biz.social_media?.instagram || '', facebook: biz.social_media?.facebook || '', tiktok: biz.social_media?.tiktok || '' };
-        const loadedBiz: ComercioState = { name: biz.name||'', slug: biz.slug||'', cargo: '', categoria: biz.category||'', direccion: biz.direction||'', telefono: biz.phone||'', horarios: comercio.horarios, redes, tags: Array.isArray(biz.tags)? biz.tags: [] };
+        const loadedBiz: ComercioState = { name: biz.name||'', slug: biz.slug||'', cargo: '', categoria: biz.category||'', direccion: biz.direction||'', telefono: biz.phone||'', horarios: comercio.horarios, redes, tags: Array.isArray(biz.tags)? biz.tags: [], logo: biz.logo_url || '' };
         setComercio(loadedBiz); setComercioDraft(loadedBiz);
       }
     }
@@ -140,29 +156,126 @@ export default function CuentaPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId])
 
+  const getEffectiveUserId = async (): Promise<string | null> => {
+    if (userId) return userId;
+    const { data } = await supabase.auth.getUser();
+    return data?.user?.id || null;
+  };
+
   const saveProfile = async () => {
-    if (!userId) return
+    const uid = await getEffectiveUserId();
+    if (!uid) { alert('No hay usuario autenticado'); return; }
     const full_name = [userDraft.nombre, userDraft.apellido].filter(Boolean).join(' ').trim()
-    await supabase.from('profiles').upsert({ id: userId, full_name, avatar_url: userDraft.foto || null })
-    setUser(userDraft)
-    if (full_name && (comercio.name||'').trim()) await supabase.from('profiles').update({ isOnboardingComplete: true }).eq('id', userId)
+    console.log('log prev upload data SB');
+    
+    try {
+      const { error } = await supabase.from('profiles').upsert({ id: uid, full_name, avatar_url: userDraft.foto || null });
+      if (error) throw error;
+      setUser(userDraft)
+      console.log('log after upload data SB');
+      if (full_name && (comercio.name||'').trim()) {
+        await supabase.from('profiles').update({ isOnboardingComplete: true }).eq('id', uid)
+      }
+      setSuccessMessage('Cambios guardados exitosamente');
+      setSuccessOpen(true);
+    } catch (e) {
+      console.error('Error guardando perfil', e);
+      alert('No se pudo guardar el perfil. Revisa los datos e intenta nuevamente.');
+    }
   }
 
   const saveBusiness = async () => {
-    if (!userId) return
-    await supabase.from('comercios').upsert({
-      owner_id: userId,
-      name: (comercioDraft.name||'').trim() || null,
-      slug: (comercioDraft.slug|| slugify(comercioDraft.name)).trim() || null,
-      direction: comercioDraft.direccion || null,
-      phone: comercioDraft.telefono || null,
-      category: comercioDraft.categoria || null,
-      tags: comercioDraft.tags || [],
-      social_media: { instagram: comercioDraft.redes.instagram || '', facebook: comercioDraft.redes.facebook || '', tiktok: comercioDraft.redes.tiktok || '' }
-    } as any, { onConflict: 'owner_id' })
-    setComercio(comercioDraft)
-    const full_name = [userDraft.nombre, userDraft.apellido].filter(Boolean).join(' ').trim()
-    if (full_name && (comercioDraft.name||'').trim()) await supabase.from('profiles').update({ isOnboardingComplete: true }).eq('id', userId)
+    const uid = await getEffectiveUserId();
+    if (!uid) { alert('No hay usuario autenticado'); return; }
+    const safeName = (comercioDraft.name||'').trim();
+    const safeSlug = (comercioDraft.slug || slugify(comercioDraft.name)).trim();
+    if (!safeName || !safeSlug) {
+      alert('Nombre y slug del comercio son obligatorios');
+      return;
+    }
+    try {
+      // Buscar comercio existente del usuario
+      const { data: existingRows, error: findErr } = await supabase
+        .from('comercios')
+        .select('id')
+        .eq('owner_id', uid);
+      if (findErr) throw findErr;
+
+      // Normalizar categoría a formato constante (ej.: GASTRONOMIA)
+      const normalizedCategory = (comercioDraft.categoria || '')
+        .toUpperCase()
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '');
+
+      const payload = {
+        owner_id: uid,
+        name: safeName,
+        slug: safeSlug,
+        direction: comercioDraft.direccion || null,
+        phone: comercioDraft.telefono || null,
+        category: normalizedCategory || null,
+        tags: comercioDraft.tags || [],
+        social_media: { instagram: comercioDraft.redes.instagram || '', facebook: comercioDraft.redes.facebook || '', tiktok: comercioDraft.redes.tiktok || '' },
+        logo_url: comercioDraft.logo || null
+      } as any;
+
+      const attemptInsert = async () => {
+        // Intentar insertar y, si hay conflicto de slug, ajustar y reintentar una vez
+        const { error: insErr } = await supabase.from('comercios').insert(payload);
+        if (insErr) {
+          const msg = String((insErr as any)?.message || insErr);
+          const isSlugConflict = msg.toLowerCase().includes('slug') && msg.toLowerCase().includes('duplicate');
+          if (isSlugConflict) {
+            const altSlug = `${safeSlug}-${Math.random().toString(36).slice(2, 6)}`;
+            const { error: insErr2 } = await supabase.from('comercios').insert({ ...payload, slug: altSlug });
+            if (insErr2) throw insErr2;
+          } else {
+            throw insErr;
+          }
+        }
+      };
+
+      if (existingRows && existingRows.length > 0) {
+        const id = existingRows[0].id as string;
+        const { error: updErr } = await supabase
+          .from('comercios')
+          .update(payload)
+          .eq('id', id);
+        if (updErr) {
+          // Si falla el update (p.ej., por políticas), intentar crear nueva fila propia
+          await attemptInsert();
+        }
+      } else {
+        await attemptInsert();
+      }
+
+      // Recargar y reflejar estado desde DB
+      const { data: freshRows } = await supabase
+        .from('comercios')
+        .select('name, slug, direction, phone, category, tags, social_media, logo_url, created_at')
+        .eq('owner_id', uid)
+        .order('created_at', { ascending: false });
+      if (freshRows && freshRows.length) {
+        const biz = freshRows[0] as any;
+        const redes = { instagram: biz.social_media?.instagram || '', facebook: biz.social_media?.facebook || '', tiktok: biz.social_media?.tiktok || '' };
+        const loadedBiz: ComercioState = { name: biz.name||'', slug: biz.slug||'', cargo: '', categoria: biz.category||'', direccion: biz.direction||'', telefono: biz.phone||'', horarios: comercio.horarios, redes, tags: Array.isArray(biz.tags)? biz.tags: [], logo: biz.logo_url || '' };
+        setComercio(loadedBiz);
+        setComercioDraft(loadedBiz);
+      } else {
+        setComercio(comercioDraft);
+      }
+
+      const full_name = [userDraft.nombre, userDraft.apellido].filter(Boolean).join(' ').trim()
+      if (full_name && safeName) {
+        await supabase.from('profiles').update({ isOnboardingComplete: true }).eq('id', userId)
+      }
+      setSuccessMessage('Cambios guardados exitosamente');
+      setSuccessOpen(true);
+    } catch (e) {
+      console.error('Error guardando comercio', e);
+      const msg = (e as any)?.message || String(e);
+      alert(`No se pudo guardar el comercio. Detalle: ${msg}`);
+    }
   }
 
   // Horarios ediciones locales
@@ -241,7 +354,14 @@ export default function CuentaPage() {
       {/* Card Comercio */}
       <h4 className="text-2xl font-extrabold text-[#005B82]">Comercio</h4>
       <Card className="shadow-lg hover:shadow-xl duration-300 bg-transparent border-[1px] border-[#000] shadow-sm py-4">
-        <CardContent className="space-y-2 px-6 pb-5 text-left">
+        <CardContent className="space-y-2 px-6 pb-5 text-left relative">
+          {comercio.logo && (
+            <img
+              src={comercio.logo}
+              alt="Logo del comercio"
+              className="absolute top-6 right-4 w-12 h-12 rounded object-cover bg-white border shadow"
+            />
+          )}
           <p><strong>Nombre:</strong> {comercio.name || '-'}</p>
           <p><strong>Slug:</strong> {comercio.slug || '-'}</p>
           <p><strong>Cargo:</strong> {comercio.cargo || '-'}</p>
@@ -256,12 +376,54 @@ export default function CuentaPage() {
               <DialogTrigger asChild>
                 <Button size="icon" className="rounded-full" onClick={() => setComercioDraft(comercio)}>+</Button>
               </DialogTrigger>
-              <DialogContent className="max-h-[80vh] overflow-y-auto p-6">
+              <DialogContent className="relative max-h-[80vh] overflow-y-auto p-6">
                 <DialogHeader>
                   <DialogTitle>Editar Comercio</DialogTitle>
                 </DialogHeader>
 
+                {/* Logo preview en esquina superior derecha */}
+                {(comercioDraft.logo || comercio.logo) && (
+                  <img
+                    src={(comercioDraft.logo || comercio.logo) as string}
+                    alt="Logo del comercio"
+                    className="absolute top-4 right-4 w-14 h-14 rounded object-cover bg-white border shadow"
+                  />
+                )}
+
                 <div className="grid gap-5 pt-2">
+                  {/* Logo del comercio */}
+                  <div>
+                    <Label>Subir su logo</Label>
+                    <div className="mt-2 flex items-center gap-4">
+                      <img src={comercioDraft.logo || '/images/logo.jpg'} alt="Logo" className="w-20 h-20 rounded object-cover ring-2 ring-[#005B82] bg-white" />
+                      <div className="flex flex-col gap-2">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            setLogoError("");
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            if (!file.type.startsWith('image/')) { setLogoError('El archivo debe ser una imagen.'); return; }
+                            if (file.size > 2 * 1024 * 1024) { setLogoError('La imagen no puede superar 2MB.'); return; }
+                            const reader = new FileReader();
+                            reader.onload = (ev) => {
+                              const result = ev.target?.result as string | undefined;
+                              if (result) setComercioDraft({ ...comercioDraft, logo: result });
+                            };
+                            reader.readAsDataURL(file);
+                          }}
+                        />
+                        {logoError && <p className="text-xs text-red-600">{logoError}</p>}
+                        {!!comercioDraft.logo && (
+                          <div className="flex gap-2">
+                            <Button type="button" className="bg-gray-200 text-gray-800" onClick={() => setComercioDraft({ ...comercioDraft, logo: '' })}>Quitar logo</Button>
+                          </div>
+                        )}
+                        <p className="text-xs text-gray-500">Subí una imagen de tu marca (máx. 2MB).</p>
+                      </div>
+                    </div>
+                  </div>
                   <div>
                     <Label>Nombre del comercio</Label>
                     <Input value={comercioDraft.name} onChange={(e) => setComercioDraft({ ...comercioDraft, name: e.target.value, slug: comercioDraft.slug || slugify(e.target.value) })} className="mt-1" placeholder="Ej: Mi Comercio" />
@@ -271,29 +433,29 @@ export default function CuentaPage() {
                     <Input value={comercioDraft.slug} onChange={(e) => setComercioDraft({ ...comercioDraft, slug: slugify(e.target.value) })} className="mt-1" placeholder="mi-comercio" />
                   </div>
 
-                  <div>
-                    <Label>Cargo</Label>
-                    <Select defaultValue={comercioDraft.cargo}>
-                      <SelectTrigger className="mt-1"><SelectValue placeholder="Seleccioná cargo" /></SelectTrigger>
-                      <SelectContent>
-                        {['Dueño','Encargado','Gerente','Empleado','Otro'].map(opt => (
-                          <SelectItem key={opt} value={opt} onClick={() => setComercioDraft({ ...comercioDraft, cargo: opt })}>{opt}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+          <div>
+            <Label>Cargo</Label>
+            <Select key={`cargo-${comercioDraft.cargo || 'none'}`} defaultValue={comercioDraft.cargo} onValueChange={(v) => setComercioDraft({ ...comercioDraft, cargo: v })}>
+              <SelectTrigger className="mt-1"><SelectValue placeholder="Seleccioná cargo" /></SelectTrigger>
+              <SelectContent>
+                {['Dueño','Encargado','Gerente','Empleado','Otro'].map(opt => (
+                  <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-                  <div>
-                    <Label>Categoría</Label>
-                    <Select defaultValue={comercioDraft.categoria}>
-                      <SelectTrigger className="mt-1"><SelectValue placeholder="Seleccioná categoría" /></SelectTrigger>
-                      <SelectContent>
-                        {['Gastronomía','Servicios','Salud','Educación','Deportes','Inmobiliaria'].map(opt => (
-                          <SelectItem key={opt} value={opt} onClick={() => setComercioDraft({ ...comercioDraft, categoria: opt })}>{opt}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+          <div>
+            <Label>Categoría</Label>
+            <Select key={`cat-${comercioDraft.categoria || 'none'}`} defaultValue={comercioDraft.categoria} onValueChange={(v) => setComercioDraft({ ...comercioDraft, categoria: v })}>
+              <SelectTrigger className="mt-1"><SelectValue placeholder="Seleccioná categoría" /></SelectTrigger>
+              <SelectContent>
+                {CATEGORY_OPTIONS.map(opt => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
                   <div>
                     <Label>Descripción</Label>
@@ -406,6 +568,23 @@ export default function CuentaPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modal de éxito */}
+      <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
+        <DialogContent className="max-w-sm p-6 sm:p-7 rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>Cambios guardados</DialogTitle>
+          </DialogHeader>
+          <div className="mt-2">
+            <p className="text-sm text-gray-700 leading-relaxed">
+              {successMessage || 'Cambios guardados exitosamente.'}
+            </p>
+          </div>
+          <div className="flex justify-end pt-4">
+            <Button className="px-5" onClick={() => setSuccessOpen(false)}>Aceptar</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

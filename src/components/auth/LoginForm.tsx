@@ -23,6 +23,7 @@ export function LoginForm() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (field: keyof LoginCredentials) => (
     e: React.ChangeEvent<HTMLInputElement>
@@ -62,11 +63,16 @@ export function LoginForm() {
     }
 
     try {
+      setSubmitting(true);
       await login(credentials);
       // Ir a la página de validación después de login exitoso
-      router.push('/validation');
+      router.push(`/validation`);
     } catch (error) {
       console.error('Login error:', error);
+      // Igual navegamos a validation para que resuelva el estado
+      router.push('/validation');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -92,7 +98,7 @@ export function LoginForm() {
           error={touched.email ? errors.email : undefined}
           leftIcon={<Mail />}
           required
-          disabled={authState.isLoading}
+          disabled={submitting}
         />
 
         <Input
@@ -106,7 +112,7 @@ export function LoginForm() {
           leftIcon={<Lock />}
           showPasswordToggle
           required
-          disabled={authState.isLoading}
+          disabled={submitting}
         />
 
         <div className="flex items-center justify-between">
@@ -114,7 +120,7 @@ export function LoginForm() {
             checked={credentials.rememberMe}
             onChange={handleChange('rememberMe')}
             label="Recordarme"
-            disabled={authState.isLoading}
+            disabled={submitting}
           />
 
           <Link
@@ -128,9 +134,9 @@ export function LoginForm() {
         <Button
           type="submit"
           className="w-full"
-          disabled={authState.isLoading}
+          disabled={submitting}
         >
-          {authState.isLoading ? (
+          {submitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Iniciando sesión...

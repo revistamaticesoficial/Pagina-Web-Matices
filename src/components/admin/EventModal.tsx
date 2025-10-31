@@ -4,12 +4,21 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import type { AdminEvent } from "@/lib/admin-service"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Label } from "@/components/ui/Label"
 import { Textarea } from "@/components/ui/textarea"
-import { Calendar, Clock, MapPin } from "lucide-react"
+import { Calendar, Clock, MapPin, Store } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select"
+import { adminService, type AdminComercio } from "@/lib/admin-service"
 
 interface EventModalProps {
   event: AdminEvent | null
@@ -25,6 +34,34 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
     date: new Date().toISOString().split("T")[0],
     location: "",
   })
+
+  const [businesses, setBusinesses] = useState<Pick<AdminComercio, 'id' | 'name'>[]>([])
+  const [businessFilter, setBusinessFilter] = useState<string>("")
+  const [comboOpen, setComboOpen] = useState<boolean>(false)
+
+  useEffect(() => {
+    const loadBusinesses = async () => {
+      try {
+        const data = await adminService.getComercios({ limit: 200 })
+        setBusinesses((data || []).map(c => ({ id: c.id, name: c.name })))
+      } catch (e) {
+        console.warn('No se pudieron cargar los comercios', e)
+      }
+    }
+    if (open) loadBusinesses()
+  }, [open])
+
+  // Búsqueda remota al escribir (con debounce)
+  useEffect(() => {
+    const t = setTimeout(async () => {
+      if (!open) return
+      try {
+        const data = await adminService.getComercios({ limit: 50, search: businessFilter })
+        setBusinesses((data || []).map(c => ({ id: c.id, name: c.name })))
+      } catch {}
+    }, 220)
+    return () => clearTimeout(t)
+  }, [businessFilter, open])
 
   useEffect(() => {
     if (event) {
@@ -46,26 +83,24 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto  p-4  [&::-webkit-scrollbar]:w-2
+    <Sheet open={open} onOpenChange={onClose}>
+      <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:bg-gray-100
   [&::-webkit-scrollbar-thumb]:rounded-full
   [&::-webkit-scrollbar-thumb]:bg-gray-300
   dark:[&::-webkit-scrollbar-track]:bg-neutral-700
   dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
-        <DialogHeader>
-          <DialogTitle>
+        <SheetHeader>
+          <SheetTitle>
             {event ? "Editar Evento" : "Agregar Evento"}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="pb-6">
-          <p className="text-slate-600 mt-2">
+          </SheetTitle>
+          <SheetDescription>
             {event ? "Modifica la información del evento" : "Completa la información del nuevo evento"}
-          </p>
-        </div>
+          </SheetDescription>
+        </SheetHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="grid flex-1 auto-rows-min gap-6 px-4">
           {/* Información Básica */}
           <div className="space-y-6">
             <h3 className="text-lg font-medium text-slate-900 flex items-center">
@@ -151,25 +186,79 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
             </div>
           </div>
 
-          {/* Botones */}
-          <div className="flex justify-end space-x-4 pt-6 border-t border-slate-200">
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={onClose}
-              className="rounded-xl border-slate-200 hover:bg-slate-50"
-            >
-              Cancelar
-            </Button>
-            <Button 
-              type="submit"
-              className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white"
-            >
-              {event ? "Actualizar Evento" : "Crear Evento"}
-            </Button>
+          {/* Comercios */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium text-slate-900 flex items-center">
+              <div className="p-2 bg-slate-100 rounded-lg mr-3">
+                <Store className="h-4 w-4 text-slate-600" />
+              </div>
+              Comercios
+            </h3>
+
+            {/* Combobox simple: un solo campo que permite escribir y seleccionar */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-slate-700">Comercio</Label>
+              <div className="relative">
+                <Input
+                  value={businessFilter || (formData.business_id ? (businesses.find(b => b.id === formData.business_id)?.name || '') : '')}
+                  onChange={(e) => { setBusinessFilter(e.target.value); setComboOpen(true); }}
+                  onFocus={() => { setComboOpen(true); }}
+                  onBlur={() => setTimeout(() => setComboOpen(false), 120)}
+                  placeholder="Escribe para buscar y seleccionar"
+                  className="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400 pr-8"
+                />
+                <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none text-slate-400">▾</div>
+
+                {/* Dropdown */}
+                {(comboOpen && businesses.length > 0) && (
+                  <div className="absolute z-50 mt-1 w-full max-h-60 overflow-auto rounded-xl border border-slate-200 bg-white shadow-lg">
+                    {businesses
+                      .filter(b => b.name.toLowerCase().includes((businessFilter || '').toLowerCase()))
+                      .slice(0, 50)
+                      .map((b) => (
+                        <button
+                          key={b.id}
+                          type="button"
+                          onMouseDown={() => {
+                            setFormData({ ...formData, business_id: b.id })
+                            setBusinessFilter(b.name)
+                            setComboOpen(false)
+                          }}
+                          className="w-full text-left px-3 py-2 hover:bg-slate-50"
+                        >
+                          {b.name}
+                        </button>
+                      ))}
+                    {businesses.filter(b => b.name.toLowerCase().includes((businessFilter || '').toLowerCase())).length === 0 && (
+                      <div className="px-3 py-2 text-sm text-slate-500">Sin resultados</div>
+                    )}
+                  </div>
+                )}
+              </div>
+              {formData.business_id && (
+                <p className="text-xs text-slate-500">Seleccionado: {businesses.find(b => b.id === formData.business_id)?.name || '—'}</p>
+              )}
+            </div>
           </div>
+
+        <SheetFooter>
+          <Button 
+            type="submit"
+            className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white"
+          >
+            {event ? "Actualizar Evento" : "Crear Evento"}
+          </Button>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onClose}
+            className="rounded-xl border-slate-200 hover:bg-slate-50"
+          >
+            Cancelar
+          </Button>
+        </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   )
 }

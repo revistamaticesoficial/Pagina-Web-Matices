@@ -6,11 +6,27 @@ import { User, AuthState, LoginCredentials, RegisterCredentials } from '@/types/
 import { supabase, getUserProfile, getUserBusiness } from '@/lib/supabase';
 import { ProfileWithBusiness } from '@/types/business';
 
+// Timeout suave: si tarda, devolvemos null en lugar de lanzar error y no bloqueamos la UI
+async function softTimeout<T>(promise: Promise<T>, ms = 3500): Promise<T | null> {
+  let timer: any;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<null>((resolve) => {
+        timer = setTimeout(() => resolve(null), ms);
+      })
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
 // Supabase auth service
 const supabaseAuthService = {
   async login(credentials: LoginCredentials): Promise<User> {
     console.log('[Auth] Starting login process...');
-    
+
+    // Login directo: no usar timeout duro que bloquee el flujo
     const { data, error } = await supabase.auth.signInWithPassword({
       email: credentials.email,
       password: credentials.password,
@@ -25,57 +41,28 @@ const supabaseAuthService = {
       throw new Error('No se pudo obtener el usuario');
     }
 
-    console.log('[Auth] User authenticated, getting profile...');
-
-    // Get profile data
-    let profile;
-    try {
-      profile = await getUserProfile(data.user.id);
-      console.log('[Auth] Profile loaded:', profile);
-    } catch (profileError) {
-      console.warn('[Auth] Error loading profile, creating default:', profileError);
-      // Crear un perfil por defecto si no existe
-      profile = {
+    // Estado mínimo inmediato: no bloquear por datos extendidos
+    const baseUser: User = {
+      id: data.user.id,
+      email: data.user.email!,
+      firstName: (data.user.user_metadata?.full_name || '').split(' ')[0] || '',
+      lastName: (data.user.user_metadata?.full_name || '').split(' ').slice(1).join(' ') || '',
+      role: 'owner',
+      isEmailVerified: data.user.email_confirmed_at !== null,
+      createdAt: data.user.created_at,
+      updatedAt: data.user.updated_at || data.user.created_at,
+      profile: {
         id: data.user.id,
         full_name: data.user.user_metadata?.full_name || '',
         avatar_url: null,
         role: 'owner',
         created_at: data.user.created_at,
-      };
-    }
-
-    let business;
-    try {
-      const rawBusiness = await getUserBusiness(data.user.id);
-      business = rawBusiness
-        ? ({
-          ...rawBusiness,
-          comercio_schedules: Array.isArray((rawBusiness as any).comercio_schedules)
-            ? (rawBusiness as any).comercio_schedules
-            : [],
-        } as unknown as ProfileWithBusiness['business'])
-        : undefined;
-      console.log('[Auth] Business loaded:', business);
-    } catch (businessError) {
-      console.warn('[Auth] Error loading business (non-critical):', businessError);
-      business = undefined;
-    }
-
-    const user = {
-      id: data.user.id,
-      email: data.user.email!,
-      firstName: profile.full_name?.split(' ')[0] || '',
-      lastName: profile.full_name?.split(' ').slice(1).join(' ') || '',
-      role: profile.role as 'user' | 'admin' | 'owner',
-      isEmailVerified: data.user.email_confirmed_at !== null,
-      createdAt: data.user.created_at,
-      updatedAt: data.user.updated_at || data.user.created_at,
-      profile: profile,
-      business,
+      } as any,
+      business: undefined,
     };
 
-    console.log('[Auth] Login successful:', user);
-    return user;
+    console.log('[Auth] Login successful (base)');
+    return baseUser;
   },
 
   async register(credentials: RegisterCredentials): Promise<User> {
@@ -92,11 +79,26 @@ const supabaseAuthService = {
     if (error) throw new Error(error.message);
     if (!data.user) throw new Error('No se pudo crear el usuario');
 
-    // The profile is created automatically by the trigger
-    // Wait a bit for the trigger to complete
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const profile = await getUserProfile(data.user.id);
+    // Crear/obtener perfil de forma robusta (con o sin trigger)
+    let profile;
+    try {
+      // Esperar brevemente por si existe trigger
+      await new Promise(resolve => setTimeout(resolve, 600));
+      profile = await getUserProfile(data.user.id);
+    } catch (profileError: any) {
+      // Si no existe, lo creamos manualmente
+      const { error: createError } = await supabase
+        .from('profiles')
+        .insert({
+          id: data.user.id,
+          full_name: `${credentials.firstName || ''} ${credentials.lastName || ''}`.trim(),
+          role: 'owner',
+        });
+      if (createError) {
+        throw new Error(createError.message || 'No se pudo crear el perfil');
+      }
+      profile = await getUserProfile(data.user.id);
+    }
 
     return {
       id: data.user.id,
@@ -198,13 +200,59 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const user = await supabaseAuthService.getCurrentUser();
+        const { data: { user } } = await supabase.auth.getUser();
         setAuthState(prev => ({
           ...prev,
-          user,
+          user: user ? ({
+            id: user.id,
+            email: user.email!,
+            firstName: (user.user_metadata?.full_name || '').split(' ')[0] || '',
+            lastName: (user.user_metadata?.full_name || '').split(' ').slice(1).join(' ') || '',
+            role: 'owner',
+            isEmailVerified: user.email_confirmed_at !== null,
+            createdAt: user.created_at,
+            updatedAt: user.updated_at || user.created_at,
+            profile: {
+              id: user.id,
+              full_name: user.user_metadata?.full_name || '',
+              avatar_url: null,
+              role: 'owner',
+              created_at: user.created_at,
+            } as any,
+            business: undefined,
+          } as User) : null,
           isAuthenticated: !!user,
           isLoading: false,
         }));
+
+        // Carga extendida en background
+        if (user) {
+          (async () => {
+            const prof = await softTimeout(getUserProfile(user.id), 3500);
+            const bizRaw = await softTimeout(getUserBusiness(user.id), 3500);
+            const business = bizRaw
+              ? ({
+                  ...bizRaw,
+                  comercio_schedules: Array.isArray((bizRaw as any).comercio_schedules)
+                    ? (bizRaw as any).comercio_schedules
+                    : [],
+                } as unknown as ProfileWithBusiness['business'])
+              : undefined;
+            setAuthState(prev => ({
+              ...prev,
+              user: prof
+                ? ({
+                    ...(prev.user as User),
+                    firstName: prof.full_name?.split(' ')[0] || (prev.user as User).firstName,
+                    lastName: prof.full_name?.split(' ').slice(1).join(' ') || (prev.user as User).lastName,
+                    role: (prof.role as any) || (prev.user as User).role,
+                    profile: prof as any,
+                    business,
+                  })
+                : ({ ...(prev.user as User), business }),
+            }));
+          })().catch(() => void 0);
+        }
       } catch (error) {
         setAuthState(prev => ({
           ...prev,
@@ -217,13 +265,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
-          const user = await supabaseAuthService.getCurrentUser();
-          setAuthState({
-            user,
+          const u = session.user;
+          setAuthState(prev => ({
+            ...prev,
+            user: {
+              id: u.id,
+              email: u.email!,
+              firstName: (u.user_metadata?.full_name || '').split(' ')[0] || '',
+              lastName: (u.user_metadata?.full_name || '').split(' ').slice(1).join(' ') || '',
+              role: 'owner',
+              isEmailVerified: u.email_confirmed_at !== null,
+              createdAt: u.created_at,
+              updatedAt: u.updated_at || u.created_at,
+              profile: {
+                id: u.id,
+                full_name: u.user_metadata?.full_name || '',
+                avatar_url: null,
+                role: 'owner',
+                created_at: u.created_at,
+              } as any,
+              business: undefined,
+            } as User,
             isLoading: false,
-            isAuthenticated: !!user,
+            isAuthenticated: true,
             error: null,
-          });
+          }));
+          // Carga extendida en background
+          (async () => {
+            const prof = await softTimeout(getUserProfile(u.id), 3500);
+            const bizRaw = await softTimeout(getUserBusiness(u.id), 3500);
+            const business = bizRaw
+              ? ({
+                  ...bizRaw,
+                  comercio_schedules: Array.isArray((bizRaw as any).comercio_schedules)
+                    ? (bizRaw as any).comercio_schedules
+                    : [],
+                } as unknown as ProfileWithBusiness['business'])
+              : undefined;
+            setAuthState(prev => ({
+              ...prev,
+              user: prof
+                ? ({
+                    ...(prev.user as User),
+                    firstName: prof.full_name?.split(' ')[0] || (prev.user as User).firstName,
+                    lastName: prof.full_name?.split(' ').slice(1).join(' ') || (prev.user as User).lastName,
+                    role: (prof.role as any) || (prev.user as User).role,
+                    profile: prof as any,
+                    business,
+                  })
+                : ({ ...(prev.user as User), business }),
+            }));
+          })().catch(() => void 0);
         } else if (event === 'SIGNED_OUT') {
           setAuthState({
             user: null,
@@ -270,6 +362,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       
       console.log('[Auth] Login completed successfully');
+
+      // Carga extendida en background (no bloquea navegación)
+      (async () => {
+        const prof = await softTimeout(getUserProfile(user.id), 3500);
+        const bizRaw = await softTimeout(getUserBusiness(user.id), 3500);
+        const business = bizRaw
+          ? ({
+              ...bizRaw,
+              comercio_schedules: Array.isArray((bizRaw as any).comercio_schedules)
+                ? (bizRaw as any).comercio_schedules
+                : [],
+            } as unknown as ProfileWithBusiness['business'])
+          : undefined;
+        setAuthState(prev => ({
+          ...prev,
+          user: prof
+            ? ({
+                ...(prev.user as User),
+                firstName: prof.full_name?.split(' ')[0] || (prev.user as User).firstName,
+                lastName: prof.full_name?.split(' ').slice(1).join(' ') || (prev.user as User).lastName,
+                role: (prof.role as any) || (prev.user as User).role,
+                profile: prof as any,
+                business,
+              })
+            : ({ ...(prev.user as User), business }),
+        }));
+      })().catch(() => void 0);
     } catch (error) {
       console.error('[Auth] Login error:', error);
       setAuthState(prev => ({
@@ -299,7 +418,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading: false,
         error: error instanceof Error ? error.message : 'Error al registrarse',
       }));
-      throw error;
+      // No relanzamos el error para permitir que la UI continúe (ej: redirigir a /validation)
+      return;
     }
   };
 

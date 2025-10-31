@@ -387,17 +387,49 @@ export const adminService = {
   async createBenefit(data: Partial<AdminBenefit>) {
     const supabase = createSupabaseClient();
     
+    // Obtener el usuario autenticado
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      throw new Error('Usuario no autenticado');
+    }
+
+    // Obtener el primer comercio del usuario y usar su ID como business_id
+    // Nota: En la práctica, business_id puede referirse al ID de comercios
+    let businessId = data.business_id;
+    if (!businessId) {
+      const { data: comercio, error: comercioError } = await supabase
+        .from('comercios')
+        .select('id')
+        .eq('owner_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (comercioError || !comercio) {
+        throw new Error('No se encontró un comercio asociado. Crea un comercio primero en la sección de gestión.');
+      }
+      businessId = comercio.id;
+    }
+
+    // Mapear tipos: discount/promotion/gift -> coupon/giveaway
+    let mappedType: "coupon" | "giveaway" = "coupon";
+    if (data.type === "discount") {
+      mappedType = "coupon";
+    } else if (data.type === "multipromo") {
+      mappedType = "giveaway";
+    }
+
     const { data: result, error } = await supabase
       .from('benefits')
       .insert({
-        business_id: data.business_id!,
+        business_id: businessId,
         title: data.title!,
         description: data.description,
-        type: data.type as "coupon" | "giveaway",
+        type: mappedType,
         quantity: data.quantity || 0,
         valid_from: data.valid_from,
         valid_to: data.valid_to,
-        expires_at: data.expires_at,
+        expires_at: data.expires_at || data.valid_to || null,
       })
       .select()
       .single();
@@ -409,17 +441,34 @@ export const adminService = {
   async updateBenefit(id: string, data: Partial<AdminBenefit>) {
     const supabase = createSupabaseClient();
     
+    // Mapear tipos: discount/promotion/gift -> coupon/giveaway
+    let mappedType: "coupon" | "giveaway" | undefined = undefined;
+    if (data.type) {
+      if (data.type === "discount" ) {
+        mappedType = "coupon";
+      } else if (data.type === "multipromo") {
+        mappedType = "giveaway";
+      } else {
+        mappedType = data.type as "coupon" | "giveaway";
+      }
+    }
+    
+    const updateData: any = {
+      title: data.title,
+      description: data.description,
+      quantity: data.quantity,
+      valid_from: data.valid_from,
+      valid_to: data.valid_to,
+      expires_at: data.expires_at,
+    };
+    
+    if (mappedType !== undefined) {
+      updateData.type = mappedType;
+    }
+
     const { data: result, error } = await supabase
       .from('benefits')
-      .update({
-        title: data.title,
-        description: data.description,
-        type: data.type as "coupon" | "giveaway",
-        quantity: data.quantity,
-        valid_from: data.valid_from,
-        valid_to: data.valid_to,
-        expires_at: data.expires_at,
-      })
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();
@@ -487,10 +536,34 @@ export const adminService = {
   async createEvent(data: Partial<AdminEvent>) {
     const supabase = createSupabaseClient();
     
+    // Obtener el usuario autenticado
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      throw new Error('Usuario no autenticado');
+    }
+
+    // Obtener el primer comercio del usuario y usar su ID como business_id
+    // Nota: En la práctica, business_id puede referirse al ID de comercios
+    let businessId = data.business_id;
+    if (!businessId) {
+      const { data: comercio, error: comercioError } = await supabase
+        .from('comercios')
+        .select('id')
+        .eq('owner_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (comercioError || !comercio) {
+        throw new Error('No se encontró un comercio asociado. Crea un comercio primero en la sección de gestión.');
+      }
+      businessId = comercio.id;
+    }
+
     const { data: result, error } = await supabase
       .from('events')
       .insert({
-        business_id: data.business_id!,
+        business_id: businessId,
         title: data.title!,
         description: data.description,
         date: data.date!,

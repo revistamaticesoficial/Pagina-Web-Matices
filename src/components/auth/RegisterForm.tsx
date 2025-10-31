@@ -27,6 +27,7 @@ export function RegisterForm() {
   
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (field: keyof RegisterCredentials) => (
     e: React.ChangeEvent<HTMLInputElement>
@@ -78,11 +79,15 @@ export function RegisterForm() {
     }
 
     try {
+      setSubmitting(true);
       await register(credentials);
       router.push('/validation');
     } catch (error) {
-      // Error is handled by the auth context
+      // El contexto maneja el error; igual navegamos para validar el estado
       console.error('Registration error:', error);
+      router.push('/validation');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -118,7 +123,7 @@ export function RegisterForm() {
           error={touched.email ? errors.email : undefined}
           leftIcon={<Mail />}
           required
-          disabled={authState.isLoading}
+          disabled={submitting}
         />
 
         <Input
@@ -133,7 +138,7 @@ export function RegisterForm() {
           showPasswordToggle
           helperText="Mínimo 8 caracteres, 1 mayúscula, 1 minúscula y 1 número"
           required
-          disabled={authState.isLoading}
+          disabled={submitting}
         />
 
         <Input
@@ -147,7 +152,7 @@ export function RegisterForm() {
           leftIcon={<Lock />}
           showPasswordToggle
           required
-          disabled={authState.isLoading}
+          disabled={submitting}
         />
 
         <div className="space-y-4">
@@ -168,7 +173,7 @@ export function RegisterForm() {
               </span>
             }
             required
-            disabled={authState.isLoading}
+            disabled={submitting}
           />
 
           <Checkbox
@@ -176,16 +181,16 @@ export function RegisterForm() {
             onChange={handleChange('newsletter')}
             label="Quiero recibir noticias y actualizaciones por email"
             description="Puedes cancelar la suscripción en cualquier momento"
-            disabled={authState.isLoading}
+            disabled={submitting}
           />
         </div>
 
         <Button
           type="submit"
           className="w-full"
-          disabled={authState.isLoading}
+          disabled={submitting}
         >
-          {authState.isLoading ? (
+          {submitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Creando cuenta...
