@@ -12,7 +12,7 @@ const gabarito = Gabarito({
 
 export const metadata: Metadata = {
   title: "Revista Matices - Cerro de las Rosas, Córdoba",
-  description: "Revista del Cerro de las Rosas con 34 años de trayectoria. Noticias locales, comercios del barrio y contenido de interés para la comunidad del norte de Córdoba.",
+  description: "Revista del Cerro de las Rosas con 35 años de trayectoria. Noticias locales, comercios del barrio y contenido de interés para la comunidad del norte de Córdoba.",
   keywords: "revista, matices, cerro de las rosas, córdoba, noticias locales, comercios, barrio",
   authors: [{ name: "Revista Matices" }],
   openGraph: {

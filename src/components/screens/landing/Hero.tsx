@@ -13,7 +13,7 @@ const slides = [
     title: "Revista",
     highlight: "Matices",
     description:
-      "Creciendo junto a vos",
+      "Lideres de zona norte",
   },
   {
     image: "/images/banner/kempes.png",
