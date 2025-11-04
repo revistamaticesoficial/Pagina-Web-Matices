@@ -445,6 +445,48 @@ export interface Database {
         };
         Relationships: [];
       };
+      announcements: {
+        Row: {
+          id: string;
+          title: string;
+          image_url: string;
+          alt_text: string | null;
+          click_url: string | null;
+          is_active: boolean;
+          display_order: number;
+          start_date: string | null;
+          end_date: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          image_url: string;
+          alt_text?: string | null;
+          click_url?: string | null;
+          is_active?: boolean;
+          display_order?: number;
+          start_date?: string | null;
+          end_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          image_url?: string;
+          alt_text?: string | null;
+          click_url?: string | null;
+          is_active?: boolean;
+          display_order?: number;
+          start_date?: string | null;
+          end_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;

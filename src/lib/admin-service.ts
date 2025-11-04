@@ -364,22 +364,40 @@ export const adminService = {
 
     if (error) throw error;
 
-    // Obtener conteo de redenciones
-    const benefitsWithRedemptions = await Promise.all(
-      (data || []).map(async (benefit) => {
-        const { count: redemptions } = await supabase
+    // Obtener IDs de beneficios para buscar redenciones en lote
+    const benefitIds = (data || []).map(b => b.id);
+    
+    // Obtener conteo de redenciones en una sola query usando supabase RPC o agregación
+    const redemptionsMap: Record<string, number> = {};
+    
+    if (benefitIds.length > 0) {
+      try {
+        // Intentar obtener redenciones agrupadas por benefit_id
+        const { data: redemptionsData, error: redemptionsError } = await supabase
           .from('benefit_redemptions')
-          .select('*', { count: 'exact', head: true })
-          .eq('benefit_id', benefit.id);
+          .select('benefit_id')
+          .in('benefit_id', benefitIds);
 
-        return {
-          ...benefit,
-          comercio: undefined, // Por ahora no incluimos la información del comercio
-          redemptions_count: redemptions || 0,
-          isActive: true // Por ahora todos están activos
-        };
-      })
-    );
+        if (!redemptionsError && redemptionsData) {
+          // Contar redenciones por benefit_id, ignorando nulos
+          (redemptionsData as { benefit_id: string | null }[]).forEach(({ benefit_id }) => {
+            if (!benefit_id) return;
+            redemptionsMap[benefit_id] = (redemptionsMap[benefit_id] || 0) + 1;
+          });
+        }
+      } catch (err) {
+        console.error('Error loading redemptions:', err);
+        // Si falla, continuamos sin los conteos
+      }
+    }
+
+    // Combinar beneficios con conteos de redenciones
+    const benefitsWithRedemptions = (data || []).map(benefit => ({
+      ...benefit,
+      comercio: undefined,
+      redemptions_count: redemptionsMap[benefit.id] || 0,
+      isActive: true
+    }));
 
     return benefitsWithRedemptions as AdminBenefit[];
   },
@@ -790,5 +808,73 @@ export const adminService = {
     if (error) throw error;
 
     return data as AdminArticle;
+  },
+
+  // Anuncios
+  async getAnnouncements() {
+    const supabase = createSupabaseClient();
+    
+    const { data, error } = await supabase
+      .from('announcements')
+      .select('*')
+      .order('display_order', { ascending: true });
+
+    if (error) throw error;
+
+    return data || [];
+  },
+
+  async getAnnouncementById(id: string) {
+    const supabase = createSupabaseClient();
+    
+    const { data, error } = await supabase
+      .from('announcements')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+
+    return data;
+  },
+
+  async createAnnouncement(data: any) {
+    const supabase = createSupabaseClient();
+    
+    const { data: result, error } = await supabase
+      .from('announcements')
+      .insert(data)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return result;
+  },
+
+  async updateAnnouncement(id: string, data: any) {
+    const supabase = createSupabaseClient();
+    
+    const { data: result, error } = await supabase
+      .from('announcements')
+      .update(data)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return result;
+  },
+
+  async deleteAnnouncement(id: string) {
+    const supabase = createSupabaseClient();
+    
+    const { error } = await supabase
+      .from('announcements')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
   }
 };

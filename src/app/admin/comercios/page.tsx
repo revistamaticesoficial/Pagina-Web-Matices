@@ -102,7 +102,8 @@ export default function ComerciosPage() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center items-center py-12">
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#005B82] mb-4"></div>
             <div className="text-gray-500">Cargando comercios...</div>
           </div>
         ) : (
