@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Revista Matices" }],
   openGraph: {
     title: "Revista Matices - Cerro de las Rosas",
-    description: "34 años informando al norte de Córdoba",
+    description: "35 años informando al norte de Córdoba",
     type: "website",
     locale: "es_AR",
   },
