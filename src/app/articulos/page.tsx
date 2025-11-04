@@ -57,7 +57,7 @@ export default async function ArticulosPage() {
   return (
     <LandingLayout>
       <ErrorBoundary>
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-white justify-between">
           {/* Hero Section */}
           <section className="bg-gradient-to-r from-[#003c56] to-[#005B82] text-white py-16">
             <div className="relative z-10 container mx-auto px-4 h-full flex items-center justify-center text-center">

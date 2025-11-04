@@ -5,7 +5,7 @@ export const mockAnnouncements: Announcement[] = [
   {
     id: 'announcement-001',
     title: 'Nueva Edición de Revista Matices',
-    imageUrl: '/images/mati-revista.png',
+    imageUrl: '/images/publicidad1.png',
     altText: 'Anuncio de la nueva edición de Revista Matices del Cerro',
     isActive: true,
     clickUrl: '/ediciones',
@@ -15,7 +15,7 @@ export const mockAnnouncements: Announcement[] = [
   {
     id: 'announcement-002',
     title: 'Descuentos Exclusivos en Comercios del Barrio',
-    imageUrl: '/images/banner/kempes.png',
+    imageUrl: '/images/publicidad2.png',
     altText: 'Descuentos especiales en comercios del Cerro de las Rosas',
     isActive: true,
     clickUrl: '/sugerencias',
@@ -25,7 +25,7 @@ export const mockAnnouncements: Announcement[] = [
   {
     id: 'announcement-003',
     title: 'Eventos del Mes en el Cerro',
-    imageUrl: '/images/banner/mujer-urbana.jpg',
+    imageUrl: '/images/publicidad1.png',
     altText: 'Próximos eventos en el barrio Cerro de las Rosas',
     isActive: true,
     clickUrl: '/sugerencias?tab=eventos',

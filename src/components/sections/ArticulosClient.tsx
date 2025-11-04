@@ -55,11 +55,11 @@ export default function ArticulosClient({ initialArticles, total, hasMore }: Art
   return (
     <>
       {/* Articles Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto mb-12 justify-between">
         {pagination.items.map((article) => (
-          <div key={article.id} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
+          <div key={article.id} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
             {/* Image Section */}
-            <div className="relative h-48 bg-gradient-to-r from-gray-100 to-gray-200 overflow-hidden">
+            <div className="relative h-48 bg-gradient-to-r from-gray-100 to-gray-200 overflow-hidden justify-between">
               {article.featured_image_url ? (
                 <Image 
                   src={article.featured_image_url} 
@@ -98,7 +98,7 @@ export default function ArticulosClient({ initialArticles, total, hasMore }: Art
             </div>
 
             {/* Content Section */}
-            <div className="p-6">
+            <div className="p-6 flex flex-col flex-grow">
               <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2">
                 {article.title}
               </h3>
@@ -128,6 +128,9 @@ export default function ArticulosClient({ initialArticles, total, hasMore }: Art
                   <span>{article.author_name || 'Redacción Matices'}</span>
                 </div>
               </div>
+
+              {/* Spacer to push button to the bottom */}
+              <div className="flex-grow" />
 
               {/* Read Full Article Button */}
               <Link href={`/articulos/${article.slug}`}>

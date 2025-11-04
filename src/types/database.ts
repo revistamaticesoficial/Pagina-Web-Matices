@@ -204,6 +204,7 @@ export interface Database {
         Row: {
           id: string;
           business_id: string;
+          banner_url: string;
           title: string;
           description: string | null;
           type: "discount" | "multipromo";
@@ -216,6 +217,7 @@ export interface Database {
         Insert: {
           id?: string;
           business_id: string;
+          banner_url: string;
           title: string;
           description?: string | null;
           type: "coupon" | "giveaway";
@@ -226,6 +228,7 @@ export interface Database {
         Update: {
           id?: string;
           business_id?: string;
+          banner_url?: string;
           title?: string;
           description?: string | null;
           type?: "coupon" | "giveaway";

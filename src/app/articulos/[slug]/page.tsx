@@ -116,8 +116,8 @@ export default async function ArticleDetailPage({
             <div className="absolute inset-0 bg-black/50"></div>
             
             {/* Contenido del hero */}
-            <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-end pb-8">
-              <div className="max-w-4xl">
+            <div className="relative z-10 container mx-auto px-4 h-full justify-between pb-8">
+              <div className="max-w-4xl justify-between h-full">
                 <div className="mb-4">
                   <span className="px-3 py-1 bg-[#F58220] text-white rounded-full text-sm font-medium">
                     {article.category}

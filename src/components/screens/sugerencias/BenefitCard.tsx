@@ -25,7 +25,7 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
       {/* Header with Business Info */}
       <div className="relative h-64 bg-gradient-to-r from-purple-500 to-pink-500 overflow-hidden flex-shrink-0">
         {/* Video Background */}
-        {benefit.businessLogo && (
+        {benefit.banner_url && (
           <video
             className="w-full h-full object-cover"
             autoPlay
@@ -34,15 +34,15 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
             playsInline
             preload="auto"
             onError={(e) => {
-              console.warn('Error loading video:', benefit.businessLogo);
+              console.warn('Error loading video:', benefit.banner_url);
               // Fallback to gradient background if video fails
               e.currentTarget.style.display = 'none';
             }}
             onLoadStart={() => {
-              console.log('Loading video:', benefit.businessLogo);
+              console.log('Loading video:', benefit.banner_url || '');
             }}
           >
-            <source src={benefit.businessLogo} type="video/mp4" />
+            <source src={benefit.banner_url} type="video/mp4" />
             Tu navegador no soporta videos.
           </video>
         )}

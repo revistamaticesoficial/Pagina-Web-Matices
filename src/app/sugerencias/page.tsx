@@ -32,6 +32,7 @@ async function loadData() {
     .select('*')
     .order('created_at', { ascending: false })
     .limit(24);
+console.log(beneficiosQ);
 
   const [{ data: comercios }, { data: eventos }, { data: beneficios }] = await Promise.all([
     comerciosQ, eventosQ, beneficiosQ
@@ -46,7 +47,8 @@ async function loadData() {
       discount: row.title.slice(0, 3),
       type: row.type,
       business: 'Comercio',
-      businessLogo: '/comida/Pizza.mp4',
+      businessLogo: row.banner_url  || '',
+      banner_url: row.banner_url,
       code: row.id,
       validUntil: row.valid_to,
       image: '/images/logo.jpg',
@@ -60,6 +62,8 @@ async function loadData() {
 export default async function SugerenciasPage({ searchParams }: { searchParams: Promise<{ tab: string }> }) {
   const { comercios, eventos, beneficios } = await loadData();
   const resolvedSearchParams = await searchParams;
+
+  console.log(beneficios);
   return (
     <SugerenciasClient
       initialComercios={comercios as unknown as Comercio[]}

@@ -21,6 +21,7 @@ export interface Benefit {
   description: string;
   business: string;
   businessLogo: string;
+  banner_url: string;
   discount: string;
   discountPercentage?: number;
   code: string;
