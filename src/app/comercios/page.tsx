@@ -1,5 +1,6 @@
 import LandingLayout from '@/components/layout/LandingLayout';
-import { ComerciosGrid, ComerciosPagination } from '@/components/sections';
+import { ComerciosPagination } from '@/components/sections';
+import ComerciosFilterClient from '@/components/sections/ComerciosFilterClient';
 import { comercioService } from '@/lib/comercio-service';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Suspense } from 'react';
@@ -97,10 +98,10 @@ export default async function ComerciosPage() {
               </p>
             </div>
 
-            {/* Comercios Grid con Suspense y ErrorBoundary */}
+            {/* Filtro + Grid (cliente) */}
             <ErrorBoundary>
               <Suspense fallback={<ComerciosGridSkeleton />}>
-                <ComerciosGrid comercios={comercios} />
+                <ComerciosFilterClient comercios={comercios as any} />
               </Suspense>
             </ErrorBoundary>
 

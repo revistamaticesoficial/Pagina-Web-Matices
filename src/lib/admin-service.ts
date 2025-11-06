@@ -119,6 +119,17 @@ export interface AdminArticle {
   updated_at: string;
 }
 
+export interface AdminAnnouncements {
+  id: string;
+  title: string;
+  image_url: string;
+  alt_text: string | null;
+  click_url: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export const adminService = {
   // Dashboard Stats
   async getDashboardStats(): Promise<DashboardStats> {
@@ -817,54 +828,74 @@ export const adminService = {
     const { data, error } = await supabase
       .from('announcements')
       .select('*')
-      .order('display_order', { ascending: true });
+      .order('created_at', { ascending: true });
 
     if (error) throw error;
 
-    return data || [];
+    return (data || []) as AdminAnnouncements[];
   },
 
-  async getAnnouncementById(id: string) {
+  async getAnnouncementById(id: string): Promise<AdminAnnouncements | null> {
     const supabase = createSupabaseClient();
     
     const { data, error } = await supabase
       .from('announcements')
       .select('*')
       .eq('id', id)
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
 
-    return data;
+    return data as AdminAnnouncements | null;
   },
 
-  async createAnnouncement(data: any) {
+  async createAnnouncement(data: Partial<AdminAnnouncements>) {
     const supabase = createSupabaseClient();
+    
+    const insertData = {
+      title: data.title!,
+      image_url: data.image_url!, // URL de la imagen guardada en Supabase Storage
+      alt_text: data.alt_text || null,
+      click_url: data.click_url || null,
+      is_active: data.is_active ?? true,
+    };
+    
+    console.log('Insertando anuncio en Supabase con image_url:', insertData.image_url)
     
     const { data: result, error } = await supabase
       .from('announcements')
-      .insert(data)
+      .insert(insertData)
       .select()
       .single();
 
     if (error) throw error;
 
-    return result;
+    return result as AdminAnnouncements;
   },
 
-  async updateAnnouncement(id: string, data: any) {
+  async updateAnnouncement(id: string, data: Partial<AdminAnnouncements>) {
     const supabase = createSupabaseClient();
+    
+    const updateData = {
+      title: data.title,
+      image_url: data.image_url, // URL de la imagen guardada en Supabase Storage
+      alt_text: data.alt_text,
+      click_url: data.click_url,
+      is_active: data.is_active,
+    };
+    
+    console.log('Actualizando anuncio en Supabase con image_url:', updateData.image_url)
     
     const { data: result, error } = await supabase
       .from('announcements')
-      .update(data)
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();
 
     if (error) throw error;
 
-    return result;
+    return result as AdminAnnouncements;
   },
 
   async deleteAnnouncement(id: string) {

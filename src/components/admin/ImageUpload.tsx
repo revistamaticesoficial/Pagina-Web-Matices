@@ -21,15 +21,26 @@ export function ImageUpload({ currentImage, onImageChange, bucket, path }: Image
     const file = e.target.files?.[0]
     if (!file) return
 
+    // Mostrar información del archivo en consola para debugging
+    const fileSizeMB = storageService.getFileSizeMB(file)
+    const fileSizeKB = file.size / 1024
+    console.log('Archivo seleccionado:', {
+      nombre: file.name,
+      tipo: file.type,
+      tamaño_bytes: file.size,
+      tamaño_KB: fileSizeKB.toFixed(2),
+      tamaño_MB: fileSizeMB.toFixed(2)
+    })
+
     // Validar que es una imagen
     if (!storageService.isValidImageFile(file)) {
       setError('Por favor selecciona una imagen válida (JPG, PNG, GIF, WEBP)')
       return
     }
 
-    // Validar tamaño (max 5MB)
-    if (storageService.getFileSizeMB(file) > 5) {
-      setError('La imagen no debe superar los 5MB')
+    // Validar tamaño (max 50MB)
+    if (fileSizeMB > 50) {
+      setError(`La imagen no debe superar los 50MB. Tamaño actual: ${fileSizeMB.toFixed(2)}MB`)
       return
     }
 
@@ -37,16 +48,27 @@ export function ImageUpload({ currentImage, onImageChange, bucket, path }: Image
     setUploading(true)
 
     try {
+      console.log(`Intentando subir imagen al bucket: ${bucket || 'articles'}`)
       const result = await storageService.uploadImage(file, bucket, path)
       
       if (result) {
+        console.log('Imagen subida exitosamente:', result.url)
         onImageChange(result.url)
+        setError(null)
       } else {
+        console.error('No se recibió resultado de la subida')
         setError('Error al subir la imagen')
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error uploading image:', err)
-      setError('Error al subir la imagen')
+      console.error('Detalles del error:', {
+        message: err?.message,
+        statusCode: err?.statusCode,
+        error: err?.error,
+        code: err?.code
+      })
+      const errorMessage = err?.message || err?.error?.message || 'Error desconocido al subir la imagen'
+      setError(`Error al subir la imagen: ${errorMessage}`)
     } finally {
       setUploading(false)
       // Reset input
@@ -95,8 +117,7 @@ export function ImageUpload({ currentImage, onImageChange, bucket, path }: Image
           variant="outline"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="w-full"
-        >
+          className="w-full"        >
           {uploading ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -116,7 +137,7 @@ export function ImageUpload({ currentImage, onImageChange, bucket, path }: Image
       )}
 
       <p className="text-xs text-muted-foreground">
-        Máximo 5MB. Formatos: JPG, PNG, GIF, WEBP
+        Máximo 50MB. Formatos: JPG, PNG, GIF, WEBP
       </p>
     </div>
   )

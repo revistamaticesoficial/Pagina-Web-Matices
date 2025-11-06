@@ -63,7 +63,7 @@ export default function ComercioCard({ comercio }: ComercioCardProps) {
         </div>
 
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-          {comercio.description}
+          {comercio.description || 'Sin descripción'}
         </p>
 
         {/* Location */}
@@ -71,7 +71,7 @@ export default function ComercioCard({ comercio }: ComercioCardProps) {
           <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
           <div className="min-w-0">
             <div className="truncate">
-              {comercio.location || "Dirección no disponible"}
+              {(comercio as any).direction || comercio.location || "Dirección no disponible"}
             </div>
             <div className="text-xs text-gray-400">
               {comercio.neighborhood || "Zona Norte"}
@@ -80,18 +80,24 @@ export default function ComercioCard({ comercio }: ComercioCardProps) {
         </div>
 
         {/* Contact Info */}
-        {comercio.contact && (
+        {(comercio.contact || (comercio as any).phone) && (
           <div className="space-y-1 mb-4">
-            {comercio.contact.phone && (
+            {(comercio as any).phone && (
+              <div className="flex items-center text-sm text-gray-500">
+                <Phone className="h-4 w-4 mr-2" />
+                <span>{(comercio as any).phone}</span>
+              </div>
+            )}
+            {comercio.contact?.phone && !(comercio as any).phone && (
               <div className="flex items-center text-sm text-gray-500">
                 <Phone className="h-4 w-4 mr-2" />
                 <span>{comercio.contact.phone}</span>
               </div>
             )}
-            {comercio.contact.website && (
+            {comercio.contact?.website && (
               <div className="flex items-center text-sm text-gray-500">
                 <Globe className="h-4 w-4 mr-2" />
-                <span className="truncate">{comercio.contact.website}</span>
+                <span className="truncate">{comercio.contact?.website}</span>
               </div>
             )}
           </div>

@@ -37,8 +37,28 @@ console.log(beneficiosQ);
   const [{ data: comercios }, { data: eventos }, { data: beneficios }] = await Promise.all([
     comerciosQ, eventosQ, beneficiosQ
   ]);
+  // Mapear comercios del esquema de DB al tipo esperado por la UI
+  const mappedComercios = (comercios ?? []).map((c) => ({
+    id: c.id,
+    name: c.name,
+    description: (c as any).description || '',
+    logo: '',
+    category: c.category || 'SERVICIOS',
+    backgroundColor: '#ffffff',
+    location: c.direction || 'Dirección no disponible',
+    neighborhood: 'Zona Norte',
+    contact: {
+      phone: c.phone || ''
+    },
+    // Campos opcionales provenientes de Supabase
+    slug: c.slug,
+    logo_url: undefined,
+    direction: c.direction || undefined,
+    phone: c.phone || undefined,
+  }))
+
   return {
-    comercios: comercios ?? [],
+    comercios: mappedComercios,
     eventos: eventos ?? [],
     beneficios: (beneficios ?? []).map((row) => ({
       id: row.id,

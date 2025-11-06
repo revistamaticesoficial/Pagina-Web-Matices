@@ -16,7 +16,7 @@ function ComerciosSection() {
       const { data, error } = await supabase
         .from('comercios')
         .select('*')
-        .order('created_at',{ ascending:false })
+        .order('created_at',{ ascending:true })
         .limit(5);
 
         setComercios(Array.isArray(data) ? (data as unknown as Comercio[]) : []);

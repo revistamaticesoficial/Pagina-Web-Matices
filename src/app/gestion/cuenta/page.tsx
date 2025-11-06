@@ -141,14 +141,14 @@ export default function CuentaPage() {
       // Comercio
       const { data: bizRows, error: bizErr } = await supabase
         .from('comercios')
-        .select('id, name, slug, direction, phone, category, tags, social_media, logo_url, created_at')
+        .select('id, name, slug, description, direction, phone, category, tags, social_media, logo_url, created_at')
         .eq('owner_id', userId)
         .order('created_at', { ascending: false });
 
       if (!bizErr && Array.isArray(bizRows) && bizRows.length > 0) {
         const biz = bizRows[0] as any;
         const redes = { instagram: biz.social_media?.instagram || '', facebook: biz.social_media?.facebook || '', tiktok: biz.social_media?.tiktok || '' };
-        const loadedBiz: ComercioState = { name: biz.name||'', slug: biz.slug||'', cargo: '', categoria: biz.category||'', direccion: biz.direction||'', telefono: biz.phone||'', horarios: comercio.horarios, redes, tags: Array.isArray(biz.tags)? biz.tags: [], logo: biz.logo_url || '' };
+        const loadedBiz: ComercioState = { name: biz.name||'', slug: biz.slug||'', cargo: '', categoria: biz.category||'', descripcion: biz.description||'', direccion: biz.direction||'', telefono: biz.phone||'', horarios: comercio.horarios, redes, tags: Array.isArray(biz.tags)? biz.tags: [], logo: biz.logo_url || '' };
         setComercio(loadedBiz); setComercioDraft(loadedBiz);
       }
     }
@@ -211,6 +211,7 @@ export default function CuentaPage() {
         owner_id: uid,
         name: safeName,
         slug: safeSlug,
+        description: comercioDraft.descripcion || null,
         direction: comercioDraft.direccion || null,
         phone: comercioDraft.telefono || null,
         category: normalizedCategory || null,
@@ -252,13 +253,13 @@ export default function CuentaPage() {
       // Recargar y reflejar estado desde DB
       const { data: freshRows } = await supabase
         .from('comercios')
-        .select('name, slug, direction, phone, category, tags, social_media, logo_url, created_at')
+        .select('name, slug, description, direction, phone, category, tags, social_media, logo_url, created_at')
         .eq('owner_id', uid)
         .order('created_at', { ascending: false });
       if (freshRows && freshRows.length) {
         const biz = freshRows[0] as any;
         const redes = { instagram: biz.social_media?.instagram || '', facebook: biz.social_media?.facebook || '', tiktok: biz.social_media?.tiktok || '' };
-        const loadedBiz: ComercioState = { name: biz.name||'', slug: biz.slug||'', cargo: '', categoria: biz.category||'', direccion: biz.direction||'', telefono: biz.phone||'', horarios: comercio.horarios, redes, tags: Array.isArray(biz.tags)? biz.tags: [], logo: biz.logo_url || '' };
+        const loadedBiz: ComercioState = { name: biz.name||'', slug: biz.slug||'', cargo: '', categoria: biz.category||'', descripcion: biz.description||'', direccion: biz.direction||'', telefono: biz.phone||'', horarios: comercio.horarios, redes, tags: Array.isArray(biz.tags)? biz.tags: [], logo: biz.logo_url || '' };
         setComercio(loadedBiz);
         setComercioDraft(loadedBiz);
       } else {

@@ -24,9 +24,9 @@ export function MarkdownImageUpload({ onImageInsert }: MarkdownImageUploadProps)
       return
     }
 
-    // Validar tamaño (max 5MB)
-    if (storageService.getFileSizeMB(file) > 5) {
-      setError('La imagen no debe superar los 5MB')
+    // Validar tamaño (max 50MB)
+    if (storageService.getFileSizeMB(file) > 50) {
+      setError('La imagen no debe superar los 50MB')
       return
     }
 
