@@ -76,6 +76,7 @@ export interface AdminBenefit {
   valid_to: string | null;
   created_at: string;
   expires_at: string | null;
+  banner_url: string | null;
   comercio?: {
     name: string;
     logo_url: string | null;
@@ -452,6 +453,7 @@ export const adminService = {
       .from('benefits')
       .insert({
         business_id: businessId,
+        banner_url: data.banner_url || '',
         title: data.title!,
         description: data.description,
         type: mappedType,

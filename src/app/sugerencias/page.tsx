@@ -32,7 +32,6 @@ async function loadData() {
     .select('*')
     .order('created_at', { ascending: false })
     .limit(24);
-console.log(beneficiosQ);
 
   const [{ data: comercios }, { data: eventos }, { data: beneficios }] = await Promise.all([
     comerciosQ, eventosQ, beneficiosQ
@@ -83,7 +82,6 @@ export default async function SugerenciasPage({ searchParams }: { searchParams: 
   const { comercios, eventos, beneficios } = await loadData();
   const resolvedSearchParams = await searchParams;
 
-  console.log(beneficios);
   return (
     <SugerenciasClient
       initialComercios={comercios as unknown as Comercio[]}

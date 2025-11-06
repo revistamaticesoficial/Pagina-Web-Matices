@@ -26,6 +26,7 @@
      description: row.description || '',
      business: 'Comercio', // Opcional: hacer join para traer el nombre real
      businessLogo: '', // Opcional: video/imagen si existe en tu modelo
+     banner_url: row.banner_url,
      discount: discountLabel,
      discountPercentage: undefined,
      code: row.id, // Fallback simple

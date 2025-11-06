@@ -8,7 +8,7 @@ export const mockAnnouncements: Announcement[] = [
     imageUrl: '/images/publicidad1.png',
     altText: 'Anuncio de la nueva edición de Revista Matices del Cerro',
     isActive: true,
-    clickUrl: '/ediciones',
+    clickUrl: '/sugerencias',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -18,7 +18,7 @@ export const mockAnnouncements: Announcement[] = [
     imageUrl: '/images/publicidad2.png',
     altText: 'Descuentos especiales en comercios del Cerro de las Rosas',
     isActive: true,
-    clickUrl: '/sugerencias',
+    clickUrl: '/',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
@@ -28,17 +28,7 @@ export const mockAnnouncements: Announcement[] = [
     imageUrl: '/images/publicidad1.png',
     altText: 'Próximos eventos en el barrio Cerro de las Rosas',
     isActive: true,
-    clickUrl: '/sugerencias?tab=eventos',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: 'announcement-004',
-    title: 'Últimas Noticias del Barrio',
-    imageUrl: '/images/banner/nunez.jpg',
-    altText: 'Mantente informado con las últimas noticias',
-    isActive: true,
-    clickUrl: '/articulos',
+    clickUrl: '/sugerencias?tab=beneficios',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
