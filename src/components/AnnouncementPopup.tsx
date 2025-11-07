@@ -31,8 +31,9 @@ export function AnnouncementPopup({ announcement, onClose }: AnnouncementPopupPr
   }
 
   const handleImageClick = () => {
-    if (announcement.clickUrl) {
-      window.open(announcement.clickUrl, '_blank', 'noopener,noreferrer')
+    const clickUrl = announcement.click_url || (announcement as any).clickUrl;
+    if (clickUrl) {
+      window.open(clickUrl, '_blank', 'noopener,noreferrer')
     }
   }
 
@@ -69,13 +70,13 @@ export function AnnouncementPopup({ announcement, onClose }: AnnouncementPopupPr
           {/* Imagen del anuncio */}
           <div 
             className={`relative w-full h-full rounded-lg overflow-hidden shadow-2xl ${
-              announcement.clickUrl ? 'cursor-pointer' : ''
+              (announcement.click_url || (announcement as any).clickUrl) ? 'cursor-pointer' : ''
             }`}
             onClick={handleImageClick}
           >
             <img
-              src={announcement.imageUrl}
-              alt={announcement.altText}
+              src={announcement.image_url || (announcement as any).imageUrl}
+              alt={announcement.alt_text || (announcement as any).altText || ''}
               className="w-full h-full object-cover"
             />
           </div>
@@ -100,16 +101,16 @@ export function AnnouncementPopup({ announcement, onClose }: AnnouncementPopupPr
           <div className="grid grid-cols-1 gap-2 p-4">
             <div
               className={`relative aspect-[4/3] max-h-[140px] rounded-lg overflow-hidden shadow-md ${
-                announcement.clickUrl ? 'cursor-pointer' : ''
+                (announcement.click_url || (announcement as any).clickUrl) ? 'cursor-pointer' : ''
               }`}
               onClick={handleImageClick}
             >
               <img
-                src={announcement.imageUrl}
-                alt={announcement.altText}
+                src={announcement.image_url || (announcement as any).imageUrl}
+                alt={announcement.alt_text || (announcement as any).altText || ''}
                 className="w-full h-full object-cover"
               />
-              {announcement.clickUrl && (
+              {(announcement.click_url || (announcement as any).clickUrl) && (
                 <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-200 flex items-center justify-center">
                   <div className="opacity-0 hover:opacity-100 transition-opacity duration-200 bg-white/90 text-black px-2 py-1 rounded text-xs font-medium">
                     Toca para ver más
@@ -131,7 +132,8 @@ export function useAnnouncementPopup(announcement?: Announcement) {
 
   useEffect(() => {
     // Solo mostrar si hay un anuncio activo
-    if (!announcement || !announcement.isActive) {
+    const isActive = announcement?.is_active ?? (announcement as any)?.isActive ?? false;
+    if (!announcement || !isActive) {
       return
     }
 

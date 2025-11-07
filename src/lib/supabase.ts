@@ -42,20 +42,27 @@ export const getUserProfile = async (userId: string) => {
 // Helper function to get user business from comercios table
 export const getUserBusiness = async (userId: string) => {
   try {
+    // Consulta sin el join a comercio_schedules ya que esa tabla/relación no existe
+    // o no está configurada correctamente en Supabase
     const { data, error } = await supabase
       .from('comercios')
-      .select(`
-        *,
-        comercio_schedules(*)
-      `)
+      .select('*')
       .eq('owner_id', userId)
-      .single()
+      .maybeSingle() // Usar maybeSingle en lugar de single para evitar errores si no existe
     
-    if (error && error.code !== 'PGRST116') {
-      console.warn('Error fetching business data:', error);
-      return null; // Return null instead of throwing
+    if (error) {
+      // Solo loguear errores que no sean "no encontrado"
+      if (error.code !== 'PGRST116') {
+        console.warn('Error fetching business data:', error);
+      }
+      return null;
     }
-    return data
+    
+    // Agregar comercio_schedules como array vacío si no existe
+    return data ? {
+      ...data,
+      comercio_schedules: []
+    } : null;
   } catch (error) {
     console.warn('Error in getUserBusiness:', error);
     return null; // Return null instead of throwing
