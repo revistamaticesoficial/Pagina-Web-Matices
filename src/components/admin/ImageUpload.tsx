@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef } from 'react'
+import Image from 'next/image'
 import { Button } from '@/components/ui/Button'
 import { Upload, X, ImageIcon, Loader2 } from 'lucide-react'
 import { storageService } from '@/lib/storage-service'
@@ -85,11 +86,13 @@ export function ImageUpload({ currentImage, onImageChange, bucket, path }: Image
   return (
     <div className="space-y-4">
       {currentImage && (
-        <div className="relative">
-          <img
+        <div className="relative w-full h-64">
+          <Image
             src={currentImage}
             alt="Preview"
-            className="w-full h-64 object-cover rounded-lg border"
+            fill
+            className="object-cover rounded-lg border"
+            sizes="(max-width: 768px) 100vw, 512px"
           />
           <Button
             type="button"

@@ -5,38 +5,38 @@ export const mockAnnouncements: Announcement[] = [
   {
     id: 'announcement-001',
     title: 'Nueva Edición de Revista Matices',
-    imageUrl: '/images/publicidad1.png',
-    altText: 'Anuncio de la nueva edición de Revista Matices del Cerro',
-    isActive: true,
-    clickUrl: '/sugerencias',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    image_url: '/images/publicidad1.png',
+    alt_text: 'Anuncio de la nueva edición de Revista Matices del Cerro',
+    is_active: true,
+    click_url: '/sugerencias',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   },
   {
     id: 'announcement-002',
     title: 'Descuentos Exclusivos en Comercios del Barrio',
-    imageUrl: '/images/publicidad2.png',
-    altText: 'Descuentos especiales en comercios del Cerro de las Rosas',
-    isActive: true,
-    clickUrl: '/',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    image_url: '/images/publicidad2.png',
+    alt_text: 'Descuentos especiales en comercios del Cerro de las Rosas',
+    is_active: true,
+    click_url: '/',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   },
   {
     id: 'announcement-003',
     title: 'Eventos del Mes en el Cerro',
-    imageUrl: '/images/publicidad1.png',
-    altText: 'Próximos eventos en el barrio Cerro de las Rosas',
-    isActive: true,
-    clickUrl: '/sugerencias?tab=beneficios',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    image_url: '/images/publicidad1.png',
+    alt_text: 'Próximos eventos en el barrio Cerro de las Rosas',
+    is_active: true,
+    click_url: '/sugerencias?tab=beneficios',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   }
 ]
 
 // Función para obtener un anuncio aleatorio activo
 export function getRandomActiveAnnouncement(): Announcement | null {
-  const activeAnnouncements = mockAnnouncements.filter(announcement => announcement.isActive)
+  const activeAnnouncements = mockAnnouncements.filter(announcement => announcement.is_active)
   
   if (activeAnnouncements.length === 0) {
     return null
@@ -100,7 +100,7 @@ function markAnnouncementAsShown(announcementId: string): void {
     // Mantener solo los últimos 10 registros
     const recentData = data.slice(-10)
     
-    localStorage.setItem('recently-shown-announcements', JSON.stringify(recentData))
+    localStorage.setItem("recently-shown-announcements", JSON.stringify(recentData));
   } catch {
     // Silently fail
   }
@@ -108,6 +108,5 @@ function markAnnouncementAsShown(announcementId: string): void {
 
 // Función para obtener el anuncio activo (mantener compatibilidad)
 export function getActiveAnnouncement(): Announcement | null {
-  return getRandomActiveAnnouncement()
+  return getRandomActiveAnnouncement();
 }
-

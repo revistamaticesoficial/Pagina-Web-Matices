@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import type { AdminArticle } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -42,10 +43,12 @@ export function ArticlesGrid({ articles, onEdit, onDelete }: ArticlesGridProps) 
           <Card key={article.id} className="overflow-hidden">
             <CardHeader className="p-0">
               <div className="relative h-48 w-full">
-                <img
+                <Image
                   src={article.featured_image_url || "/placeholder.svg?height=200&width=400"}
                   alt={article.title}
-                  className="h-full w-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <Badge variant={article.is_published ? "default" : "secondary"} className="absolute right-2 top-2">
                   {article.is_published ? "Publicado" : "Borrador"}

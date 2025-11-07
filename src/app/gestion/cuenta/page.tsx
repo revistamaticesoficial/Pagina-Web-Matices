@@ -326,7 +326,9 @@ export default function CuentaPage() {
                   <div>
                     <Label>Foto de perfil</Label>
                     <div className="mt-2 flex items-center gap-4">
-                      <img src={userDraft.foto || "/images/foto-perfil.jpg"} alt="Vista previa" className="w-20 h-20 rounded-full object-cover ring-2 ring-[#005B82]" />
+                      <div className="relative w-20 h-20">
+                        <Image src={userDraft.foto || "/images/foto-perfil.jpg"} alt="Vista previa" fill className="rounded-full object-cover ring-2 ring-[#005B82]" sizes="80px" />
+                      </div>
                       <div className="flex flex-col gap-2">
                         <input type="file" accept="image/*" onChange={(e) => { setPhotoError(""); const file = e.target.files?.[0]; if (!file) return; if (!file.type.startsWith("image/")) { setPhotoError("El archivo debe ser una imagen."); return; } if (file.size > 2 * 1024 * 1024) { setPhotoError("La imagen no puede superar 2MB."); return; } const reader = new FileReader(); reader.onload = (ev) => { const result = ev.target?.result as string | undefined; if (result) setUserDraft({ ...userDraft, foto: result }); }; reader.readAsDataURL(file); }} />
                         {photoError && <p className="text-xs text-red-600">{photoError}</p>}
@@ -357,11 +359,15 @@ export default function CuentaPage() {
       <Card className="shadow-lg hover:shadow-xl duration-300 bg-transparent border-[1px] border-[#000] shadow-sm py-4">
         <CardContent className="space-y-2 px-6 pb-5 text-left relative">
           {comercio.logo && (
-            <img
-              src={comercio.logo}
-              alt="Logo del comercio"
-              className="absolute top-6 right-4 w-12 h-12 rounded object-cover bg-white border shadow"
-            />
+            <div className="absolute top-6 right-4 w-12 h-12">
+              <Image
+                src={comercio.logo}
+                alt="Logo del comercio"
+                fill
+                className="rounded object-cover bg-white border shadow"
+                sizes="48px"
+              />
+            </div>
           )}
           <p><strong>Nombre:</strong> {comercio.name || '-'}</p>
           <p><strong>Slug:</strong> {comercio.slug || '-'}</p>
@@ -384,11 +390,15 @@ export default function CuentaPage() {
 
                 {/* Logo preview en esquina superior derecha */}
                 {(comercioDraft.logo || comercio.logo) && (
-                  <img
-                    src={(comercioDraft.logo || comercio.logo) as string}
-                    alt="Logo del comercio"
-                    className="absolute top-4 right-4 w-14 h-14 rounded object-cover bg-white border shadow"
-                  />
+                  <div className="absolute top-4 right-4 w-14 h-14">
+                    <Image
+                      src={(comercioDraft.logo || comercio.logo) as string}
+                      alt="Logo del comercio"
+                      fill
+                      className="rounded object-cover bg-white border shadow"
+                      sizes="56px"
+                    />
+                  </div>
                 )}
 
                 <div className="grid gap-5 pt-2">

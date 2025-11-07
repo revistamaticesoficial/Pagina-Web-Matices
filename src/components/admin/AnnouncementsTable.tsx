@@ -1,16 +1,17 @@
 "use client"
 
 import { useState } from "react"
-import type { AdminAnnouncement } from "@/lib/admin-service"
+import type { AdminAnnouncements } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/Badge"
 import { Edit, Trash2, Search, ImageIcon } from "lucide-react"
+import Image from "next/image"
 
 interface AnnouncementsTableProps {
-  announcements: AdminAnnouncement[]
-  onEdit: (announcement: AdminAnnouncement) => void
+  announcements: AdminAnnouncements[]
+  onEdit: (announcement: AdminAnnouncements) => void
   onDelete: (id: string) => void
 }
 
@@ -41,7 +42,6 @@ export function AnnouncementsTable({ announcements, onEdit, onDelete }: Announce
             <TableRow>
               <TableHead>Imagen</TableHead>
               <TableHead>Título</TableHead>
-              <TableHead>Orden</TableHead>
               <TableHead>Estado</TableHead>
               <TableHead>URL</TableHead>
               <TableHead className="text-right">Acciones</TableHead>
@@ -53,10 +53,11 @@ export function AnnouncementsTable({ announcements, onEdit, onDelete }: Announce
                 <TableCell>
                   <div className="relative h-16 w-24 overflow-hidden rounded border">
                     {announcement.image_url ? (
-                      <img
+                      <Image
                         src={announcement.image_url}
                         alt={announcement.alt_text || announcement.title}
                         className="h-full w-full object-cover"
+                        fill
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-gray-100">
@@ -66,7 +67,6 @@ export function AnnouncementsTable({ announcements, onEdit, onDelete }: Announce
                   </div>
                 </TableCell>
                 <TableCell className="font-medium">{announcement.title}</TableCell>
-                <TableCell>{announcement.display_order}</TableCell>
                 <TableCell>
                   <Badge variant={announcement.is_active ? "default" : "secondary"}>
                     {announcement.is_active ? "Activo" : "Inactivo"}

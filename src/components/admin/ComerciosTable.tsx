@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import type { AdminComercio } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -65,11 +66,15 @@ export function ComerciosTable({ comercios, onEdit, onDelete }: ComerciosTablePr
               <TableRow key={comercio.id}>
                 <TableCell>
                   <div className="flex items-center space-x-3">
-                    <img
-                      src={comercio.logo_url || "/placeholder.svg?height=40&width=40"}
-                      alt={comercio.name}
-                      className="h-10 w-10 rounded-full object-cover"
-                    />
+                    <div className="relative h-10 w-10 flex-shrink-0">
+                      <Image
+                        src={comercio.logo_url || "/placeholder.svg?height=40&width=40"}
+                        alt={comercio.name}
+                        fill
+                        className="rounded-full object-cover"
+                        sizes="40px"
+                      />
+                    </div>
                     <div>
                       <div className="font-medium">{comercio.name}</div>
                       <div className="text-sm text-slate-500 truncate max-w-[200px]">

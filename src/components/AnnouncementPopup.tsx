@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import type { Announcement } from "@/types/announcement"
@@ -31,8 +32,8 @@ export function AnnouncementPopup({ announcement, onClose }: AnnouncementPopupPr
   }
 
   const handleImageClick = () => {
-    if (announcement.clickUrl) {
-      window.open(announcement.clickUrl, '_blank', 'noopener,noreferrer')
+    if (announcement.click_url) {
+      window.open(announcement.click_url, '_blank', 'noopener,noreferrer')
     }
   }
 
@@ -69,14 +70,16 @@ export function AnnouncementPopup({ announcement, onClose }: AnnouncementPopupPr
           {/* Imagen del anuncio */}
           <div 
             className={`relative w-full h-full rounded-lg overflow-hidden shadow-2xl ${
-              announcement.clickUrl ? 'cursor-pointer' : ''
+              announcement.click_url ? 'cursor-pointer' : ''
             }`}
             onClick={handleImageClick}
           >
-            <img
-              src={announcement.imageUrl}
-              alt={announcement.altText}
-              className="w-full h-full object-cover"
+            <Image
+              src={announcement.image_url}
+              alt={announcement.alt_text}
+              fill
+              className="object-cover"
+              sizes="70vw"
             />
           </div>
         </div>
@@ -100,16 +103,18 @@ export function AnnouncementPopup({ announcement, onClose }: AnnouncementPopupPr
           <div className="grid grid-cols-1 gap-2 p-4">
             <div
               className={`relative aspect-[4/3] max-h-[140px] rounded-lg overflow-hidden shadow-md ${
-                announcement.clickUrl ? 'cursor-pointer' : ''
+                announcement.click_url ? 'cursor-pointer' : ''
               }`}
               onClick={handleImageClick}
             >
-              <img
-                src={announcement.imageUrl}
-                alt={announcement.altText}
-                className="w-full h-full object-cover"
+              <Image
+                src={announcement.image_url}
+                alt={announcement.alt_text}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 384px"
               />
-              {announcement.clickUrl && (
+              {announcement.click_url && (
                 <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-200 flex items-center justify-center">
                   <div className="opacity-0 hover:opacity-100 transition-opacity duration-200 bg-white/90 text-black px-2 py-1 rounded text-xs font-medium">
                     Toca para ver más
@@ -131,7 +136,7 @@ export function useAnnouncementPopup(announcement?: Announcement) {
 
   useEffect(() => {
     // Solo mostrar si hay un anuncio activo
-    if (!announcement || !announcement.isActive) {
+    if (!announcement || !announcement.is_active) {
       return
     }
 

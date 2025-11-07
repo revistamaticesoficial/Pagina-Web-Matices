@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
 import { eventos as eventosData } from '@/data/eventos'
 import { Event } from '@/types/sugerencias'
@@ -136,10 +137,12 @@ const EventDetailPage = () => {
         <div className="space-y-8">
             {/* Imagen principal */}
             <div className="relative h-96 bg-gradient-to-r from-orange-400 to-red-400 rounded-2xl overflow-hidden">
-              <img 
+              <Image 
                 src={evento.banner_url} 
                 alt={evento.title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 80vw"
               />
               <div className="absolute inset-0 bg-black bg-opacity-20" />
               <div className="absolute bottom-4 left-4 right-4">
