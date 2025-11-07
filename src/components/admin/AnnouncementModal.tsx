@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import type { AdminAnnouncement } from "@/lib/admin-service"
+import type { AdminAnnouncements } from "@/lib/admin-service"
 import {
   Sheet,
   SheetContent,
@@ -16,26 +16,23 @@ import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Label } from "@/components/ui/Label"
 import { Switch } from "@/components/ui/switch"
-import { ImageIcon, Link, Calendar, Hash } from "lucide-react"
+import { ImageIcon, Link, Hash } from "lucide-react"
 import { ImageUpload } from "./ImageUpload"
 
 interface AnnouncementModalProps {
-  announcement: AdminAnnouncement | null
+  announcement: AdminAnnouncements | null
   open: boolean
   onClose: () => void
-  onSave: (announcement: Partial<AdminAnnouncement>) => void
+  onSave: (announcement: Partial<AdminAnnouncements>) => void
 }
 
 export function AnnouncementModal({ announcement, open, onClose, onSave }: AnnouncementModalProps) {
-  const [formData, setFormData] = useState<Partial<AdminAnnouncement>>({
+  const [formData, setFormData] = useState<Partial<AdminAnnouncements>>({
     title: "",
     image_url: "",
     alt_text: "",
     click_url: "",
     is_active: true,
-    display_order: 1,
-    start_date: null,
-    end_date: null,
   })
 
   useEffect(() => {
@@ -57,9 +54,6 @@ export function AnnouncementModal({ announcement, open, onClose, onSave }: Annou
         alt_text: announcement.alt_text || "",
         click_url: announcement.click_url || "",
         is_active: announcement.is_active ?? true,
-        display_order: announcement.display_order || 1,
-        start_date: formatDateForInput(announcement.start_date),
-        end_date: formatDateForInput(announcement.end_date),
       })
     } else {
       setFormData({
@@ -68,9 +62,6 @@ export function AnnouncementModal({ announcement, open, onClose, onSave }: Annou
         alt_text: "",
         click_url: "",
         is_active: true,
-        display_order: 1,
-        start_date: null,
-        end_date: null,
       })
     }
   }, [announcement, open])
@@ -85,33 +76,20 @@ export function AnnouncementModal({ announcement, open, onClose, onSave }: Annou
     }
     
     // Preparar datos para enviar a Supabase
-    const dataToSave: Partial<AdminAnnouncement> = {
+    const dataToSave: Partial<AdminAnnouncements> = {
       title: formData.title.trim(),
       image_url: formData.image_url, // URL de la imagen subida a Supabase Storage
       alt_text: formData.alt_text?.trim() || null,
       click_url: formData.click_url?.trim() || null,
       is_active: formData.is_active ?? true,
-      display_order: formData.display_order || 1,
-      // Convertir strings vacíos a null para las fechas
-      start_date: formData.start_date && formData.start_date.toString().trim() !== "" 
-        ? formData.start_date.toString() 
-        : null,
-      end_date: formData.end_date && formData.end_date.toString().trim() !== "" 
-        ? formData.end_date.toString() 
-        : null,
     }
-    
-    console.log('Datos a guardar en Supabase (announcements):', dataToSave)
-    console.log('URL de imagen que se guardará:', dataToSave.image_url)
     
     onSave(dataToSave)
     onClose()
   }
 
   const handleImageChange = (url: string | null) => {
-    console.log('URL de imagen recibida:', url)
     setFormData({ ...formData, image_url: url || "" })
-    console.log('FormData actualizado con image_url:', url || "")
   }
 
   return (

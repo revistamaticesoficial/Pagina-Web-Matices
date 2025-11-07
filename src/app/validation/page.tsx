@@ -35,32 +35,33 @@ export default function ValidationPage() {
         const email = userData.user.email?.toLowerCase() || '';
         const userId = userData.user.id;
 
-        // 2) Verificar whitelist (timeout suave)
-        const w = await softTimeout(
+        // 2) Verificar whitelist (timeout de 5 segundos)
+        const wResult = await softTimeout(
           supabase
             .from('white_list')
             .select('email')
             .eq('email', email.toLowerCase())
             .maybeSingle()
-            .then(r => r)
-        , 2500);
+        , 5000);
 
-        if (w && (w as any)?.email) {
+        // Si está en white_list, redirigir a /admin (sin verificar onboarding)
+        if (wResult && !wResult.error && wResult.data?.email) {
           navigated = true;
           router.push('/admin/inicio');
-          return
+          return;
         }
-        // 3) Cargar perfil y revisar flag de onboarding (timeout suave)
-        const profile = await softTimeout(
+
+        // 3) Si NO está en white_list, verificar onboarding para /gestion
+        // (solo aplica para clientes, no para empleados de admin)
+        const profileResult = await softTimeout(
           supabase
             .from('profiles')
             .select('isOnboardingComplete')
             .eq('id', userId)
             .maybeSingle()
-            .then(r => r)
         , 2500);
 
-        const isComplete = Boolean((profile as any)?.isOnboardingComplete);
+        const isComplete = Boolean(profileResult?.data?.isOnboardingComplete);
         navigated = true;
         router.push(isComplete ? '/gestion/inicio' : '/gestion/cuenta');
       } catch (e) {
@@ -70,13 +71,13 @@ export default function ValidationPage() {
         }
       }
     };
-    // Fallback global en caso de cuelgue de red
+    // Fallback global en caso de cuelgue de red (después de verificar white_list)
     const globalFallback = setTimeout(() => {
       if (!navigated && !cancelled) {
         navigated = true;
         router.push('/gestion/inicio');
       }
-    }, 4000);
+    }, 6000);
 
     run();
     return () => {

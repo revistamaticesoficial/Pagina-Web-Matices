@@ -3,16 +3,16 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/Button"
 import { Plus, LayoutGrid, TableIcon } from "lucide-react"
-import { adminService, type AdminAnnouncement } from "@/lib/admin-service"
+import { adminService, type AdminAnnouncements } from "@/lib/admin-service"
 import { AnnouncementsTable } from "@/components/admin/AnnouncementsTable"
 import { AnnouncementsGrid } from "@/components/admin/AnnouncementsGrid"
 import { AnnouncementModal } from "@/components/admin/AnnouncementModal"
 
 export default function AnunciosPage() {
-  const [announcements, setAnnouncements] = useState<AdminAnnouncement[]>([])
+  const [announcements, setAnnouncements] = useState<AdminAnnouncements[]>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<"table" | "grid">("table")
-  const [selectedAnnouncement, setSelectedAnnouncement] = useState<AdminAnnouncement | null>(null)
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<AdminAnnouncements | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function AnunciosPage() {
     }
   }
 
-  const handleEdit = (announcement: AdminAnnouncement) => {
+  const handleEdit = (announcement: AdminAnnouncements) => {
     setSelectedAnnouncement(announcement)
     setIsModalOpen(true)
   }
@@ -48,7 +48,7 @@ export default function AnunciosPage() {
     }
   }
 
-  const handleSave = async (announcementData: Partial<AdminAnnouncement>) => {
+  const handleSave = async (announcementData: Partial<AdminAnnouncements>) => {
     try {
       if (selectedAnnouncement) {
         const updated = await adminService.updateAnnouncement(selectedAnnouncement.id, announcementData)

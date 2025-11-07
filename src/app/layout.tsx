@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from '@vercel/analytics/next';
 import { AuthProvider } from "@/providers/AuthProvider";
 import { Noto_Sans, Gabarito } from "next/font/google";
 import "./globals.css";
@@ -42,6 +43,7 @@ export default function RootLayout({
             {children}
           </main>
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );

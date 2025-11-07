@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import type { AdminComercio } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -52,10 +53,12 @@ export function ComerciosGrid({ comercios, onEdit, onDelete }: ComerciosGridProp
           <Card key={comercio.id} className="overflow-hidden">
             <CardHeader className="p-0">
               <div className="relative h-48 w-full">
-                <img
+                <Image
                   src={comercio.banners_url?.[0] || "/placeholder.svg?height=200&width=400"}
                   alt={comercio.name}
-                  className="h-full w-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute right-2 top-2 flex gap-2">
                   <Badge variant={comercio.isActive ? "default" : "secondary"}>
@@ -71,11 +74,15 @@ export function ComerciosGrid({ comercios, onEdit, onDelete }: ComerciosGridProp
             </CardHeader>
             <CardContent className="p-4">
               <div className="mb-3 flex items-start gap-3">
-                <img
-                  src={comercio.logo_url || "/placeholder.svg?height=60&width=60"}
-                  alt={comercio.name}
-                  className="h-14 w-14 rounded-full object-cover"
-                />
+                <div className="relative h-14 w-14 flex-shrink-0">
+                  <Image
+                    src={comercio.logo_url || "/placeholder.svg?height=60&width=60"}
+                    alt={comercio.name}
+                    fill
+                    className="rounded-full object-cover"
+                    sizes="56px"
+                  />
+                </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-lg">{comercio.name}</h3>
                   {comercio.category && (

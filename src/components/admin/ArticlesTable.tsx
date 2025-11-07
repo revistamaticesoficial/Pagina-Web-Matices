@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import type { AdminArticle } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -55,11 +56,15 @@ export function ArticlesTable({ articles, onEdit, onDelete }: ArticlesTableProps
               <TableRow key={article.id}>
                 <TableCell className="font-medium max-w-[300px]">
                   <div className="flex items-center gap-3">
-                    <img
-                      src={article.featured_image_url || "/placeholder.svg?height=40&width=60"}
-                      alt={article.title}
-                      className="h-10 w-16 rounded object-cover"
-                    />
+                    <div className="relative h-10 w-16">
+                      <Image
+                        src={article.featured_image_url || "/placeholder.svg?height=40&width=60"}
+                        alt={article.title}
+                        fill
+                        className="rounded object-cover"
+                        sizes="64px"
+                      />
+                    </div>
                     <span className="line-clamp-2">{article.title}</span>
                   </div>
                 </TableCell>

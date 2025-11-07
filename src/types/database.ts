@@ -54,7 +54,13 @@ export interface Database {
           tags: string[];
           phone: string | null;
           owner_id: string | null;
-          social_media: any;
+          social_media?: {
+            instagram?: string;
+            facebook?: string;
+            tiktok?: string;
+            twitter?: string;
+            youtube?: string;
+          };
           created_at: string;
         };
         Insert: {
@@ -66,7 +72,13 @@ export interface Database {
           tags?: string[];
           phone?: string | null;
           owner_id?: string | null;
-          social_media?: any;
+          social_media?: {
+            instagram?: string;
+            facebook?: string;
+            tiktok?: string;
+            twitter?: string;
+            youtube?: string;
+          };
           created_at?: string;
         };
         Update: {
@@ -78,7 +90,13 @@ export interface Database {
           tags?: string[];
           phone?: string | null;
           owner_id?: string | null;
-          social_media?: any;
+          social_media?: {
+            instagram?: string;
+            facebook?: string;
+            tiktok?: string;
+            twitter?: string;
+            youtube?: string;
+          };
           created_at?: string;
         };
         Relationships: [

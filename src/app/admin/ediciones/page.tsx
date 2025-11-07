@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/Button"
 import { Plus, LayoutGrid, TableIcon, Download, Eye } from "lucide-react"
 
@@ -173,10 +174,12 @@ export default function EdicionesPage() {
               >
                 {/* Cover Image */}
                 <div className="relative h-64">
-                  <img
+                  <Image
                     src={edition.cover_image_url}
                     alt={edition.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <div className="absolute top-2 right-2">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -272,11 +275,15 @@ export default function EdicionesPage() {
                   <tr key={edition.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <img
-                          className="h-12 w-8 object-cover rounded mr-3"
-                          src={edition.cover_image_url}
-                          alt={edition.title}
-                        />
+                        <div className="relative h-12 w-8 mr-3">
+                          <Image
+                            src={edition.cover_image_url}
+                            alt={edition.title}
+                            fill
+                            className="object-cover rounded"
+                            sizes="32px"
+                          />
+                        </div>
                         <div>
                           <div className="text-sm font-medium text-gray-900">
                             {edition.title}

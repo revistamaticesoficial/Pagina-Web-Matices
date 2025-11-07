@@ -28,11 +28,13 @@ export default function ComercioCard({ comercio }: ComercioCardProps) {
     <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col">
       {/* Logo Section */}
       {comercio.logo_url ? (
-        <div className="h-48 flex items-center justify-center relative flex-shrink-0 object-contain w-full">
+        <div className="bg-[#000] h-48 flex items-center justify-center relative flex-shrink-0 w-full overflow-hidden object-cover">
           <Image
             src={comercio.logo_url}
             alt={comercio.name}
             fill
+            // className="object-cover"
+            // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           />
         </div>
       ) : (

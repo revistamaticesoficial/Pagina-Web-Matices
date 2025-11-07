@@ -37,24 +37,27 @@ async function loadData() {
     comerciosQ, eventosQ, beneficiosQ
   ]);
   // Mapear comercios del esquema de DB al tipo esperado por la UI
-  const mappedComercios = (comercios ?? []).map((c) => ({
-    id: c.id,
-    name: c.name,
-    description: (c as any).description || '',
-    logo: '',
-    category: c.category || 'SERVICIOS',
-    backgroundColor: '#ffffff',
-    location: c.direction || 'Dirección no disponible',
-    neighborhood: 'Zona Norte',
-    contact: {
-      phone: c.phone || ''
-    },
-    // Campos opcionales provenientes de Supabase
-    slug: c.slug,
-    logo_url: undefined,
-    direction: c.direction || undefined,
-    phone: c.phone || undefined,
-  }))
+  const mappedComercios = (comercios ?? []).map((c) => {
+    const comercioData = c as any;
+    return {
+      id: c.id,
+      name: c.name,
+      description: comercioData.description || '',
+      logo: comercioData.logo_url || '',
+      category: c.category || 'SERVICIOS',
+      backgroundColor: '#ffffff',
+      location: c.direction || 'Dirección no disponible',
+      neighborhood: 'Zona Norte',
+      contact: {
+        phone: c.phone || ''
+      },
+      // Campos opcionales provenientes de Supabase
+      slug: c.slug,
+      logo_url: comercioData.logo_url || undefined,
+      direction: c.direction || undefined,
+      phone: c.phone || undefined,
+    };
+  })
 
   return {
     comercios: mappedComercios,

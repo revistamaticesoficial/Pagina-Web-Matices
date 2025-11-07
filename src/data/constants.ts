@@ -85,8 +85,8 @@ export const NAVIGATION = [
   { name: "Articulos", href: "/articulos", current: false },
   { name: 'Comercios', href: '/comercios', current: false },
   { name: "Ediciones", href: "/ediciones", current: false },
-  // { name: 'Suscripciones', href: '/suscripciones', current: false },
   { name: "¿Quienes somos?", href: "/nosotros", current: false },
+  { name: 'Contacto', href: '/contacto', current: false },
   // { name: 'Todos los números', href: '/todoslosnumeros', current: false }
 ];
 

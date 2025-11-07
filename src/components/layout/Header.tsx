@@ -23,7 +23,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white border-border shandow-sm">
-      <div className="container mx-auto px-4">
+      <div className="w-full px-2 lg:px-4 lg:container mx-auto">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-2">
             <Link href="/">
@@ -37,7 +37,7 @@ export function Header() {
           </div>
 
           {/* Navegación desktop */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-2 lg:space-x-6">
             {NAVIGATION.map((item) => (
               <Link
                 key={item.name}
@@ -47,27 +47,21 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
-            <Link
-              href="/contacto"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Contacto
-            </Link>
             <button onClick={handleAccess} className="text-sm text-gray-700 py-2 border flex gap-2 rounded-md border-gray-200 hover:shadow-lg px-4">
               <UserRound className="h-4 w-4" />
               <span>Acceder</span>
             </button>
           </nav>
-          <div className="block md:hidden border-b">
+          <div className="block md:hidden rounded-md border-gray-200">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
-                <X className="h-4 w-4 border-b border-gray-200" />
+                <X className="h-4 w-4" />
               ) : (
-                <Menu className="h-4 w-4 border-b border-gray-200" />
+                <Menu className="h-4 w-4 " />
               )}
             </Button>
             
@@ -86,13 +80,6 @@ export function Header() {
                       {item.name}
                     </Link>
                   ))}
-                  <Link
-                    href="/contacto"
-                    className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Contacto
-                  </Link>
                   {/* <div className="px-4 py-2 space-y-2 ">
                     <div className="text-sm text-gray-700 py-2 border-b flex gap-2 rounded-2">
                         <UserRound className="h-4 w-4" />

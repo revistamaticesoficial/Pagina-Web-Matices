@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { Calendar, Clock, MapPin, Users, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
@@ -45,10 +46,12 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
             <div className="relative h-96 bg-gradient-to-r from-orange-400 to-red-400 rounded-2xl overflow-hidden">
-              <img 
+              <Image 
                 src={(data as any).banner_url}
                 alt={String((data as any).title || '')}
-                className="w-full h-full object-contain"
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 80vw"
               />
               <div className="absolute inset-0 bg-black bg-opacity-20" />
               <div className="absolute bottom-4 left-4 right-4">

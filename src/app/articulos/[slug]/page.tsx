@@ -176,15 +176,21 @@ export default async function ArticleDetailPage({
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
-                      img: ({ node, ...props }) => (
-                        <div className="my-8">
-                          <img
-                            {...props}
-                            className="rounded-lg w-full h-auto shadow-lg"
-                            loading="lazy"
-                          />
-                        </div>
-                      ),
+                      img: ({ node, ...props }: any) => {
+                        const { src, alt = '', ...rest } = props;
+                        return (
+                          <div className="my-8 relative w-full aspect-video">
+                            <Image
+                              src={src || ''}
+                              alt={alt}
+                              fill
+                              className="rounded-lg object-contain shadow-lg"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                              {...rest}
+                            />
+                          </div>
+                        );
+                      },
                       h1: ({ node, ...props }) => (
                         <h1 className="text-4xl font-bold mt-8 mb-4 text-gray-900" {...props} />
                       ),

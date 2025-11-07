@@ -46,6 +46,7 @@ export default function ContactoPage() {
       setSending(false);
     }
   };
+
   return (
     <LandingLayout>
         <div className=" bg-white" />
@@ -64,7 +65,7 @@ export default function ContactoPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="w-full flex justify-center mb-8">
             <div className="w-full">
-              <Card className="border bg-white/70 shadow-sm backdrop-blur-sm">
+              <Card className="border bg-white/70 shadow-sm backdrop-blur-sm mt-5">
                 <CardHeader className="text-center">
                   {/* <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Send className="w-6 h-6 text-primary" />
