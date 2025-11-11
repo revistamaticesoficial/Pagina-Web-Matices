@@ -348,7 +348,9 @@ export interface Database {
           title: string;
           description: string | null;
           date: string;
+          time: string;
           location: string | null;
+          banner_url: string | null;
           created_at: string;
         };
         Insert: {
@@ -357,7 +359,9 @@ export interface Database {
           title: string;
           description?: string | null;
           date: string;
+          time: string;
           location?: string | null;
+          banner_url?: string | null;
           created_at?: string;
         };
         Update: {
@@ -366,7 +370,9 @@ export interface Database {
           title?: string;
           description?: string | null;
           date?: string;
+          time?: string;
           location?: string | null;
+          banner_url?: string | null;
           created_at?: string;
         };
         Relationships: [

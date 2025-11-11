@@ -2,9 +2,10 @@
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { User, AuthState, LoginCredentials, RegisterCredentials } from '@/types/auth';
+import { User, AuthState, LoginCredentials, RegisterCredentials, Logout } from '@/types/auth';
 import { supabase, getUserProfile, getUserBusiness } from '@/lib/supabase';
 import { ProfileWithBusiness } from '@/types/business';
+import { Home, Users, Zap, Calendar, FileText, User, Settings, ChevronLeft, ChevronRight, BookOpen, Megaphone, LogOut } from "lucide-react"
 
 // Timeout suave: si tarda, devolvemos null en lugar de lanzar error y no bloqueamos la UI
 async function softTimeout<T>(promise: Promise<T>, ms = 3500): Promise<T | null> {
@@ -215,7 +216,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             profile: {
               id: user.id,
               full_name: user.user_metadata?.full_name || '',
-              avatar_url: null,
+              avatar_url: user.user_metadata?.avatar_url || null,
               role: 'owner',
               created_at: user.created_at,
             } as any,
@@ -280,7 +281,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               profile: {
                 id: u.id,
                 full_name: u.user_metadata?.full_name || '',
-                avatar_url: null,
+                avatar_url: u.user_metadata?.avatar_url || null,
                 role: 'owner',
                 created_at: u.created_at,
               } as any,

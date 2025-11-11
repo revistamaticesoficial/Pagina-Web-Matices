@@ -18,8 +18,9 @@ import { Label } from "@/components/ui/Label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select"
-import { Gift, Hash, Calendar, Users, Store } from "lucide-react"
+import { Gift, Hash, Calendar, Users, Store, ImageIcon } from "lucide-react"
 import { adminService, type AdminComercio } from "@/lib/admin-service"
+import { ImageUpload } from "@/components/admin/ImageUpload"
 
 interface BenefitModalProps {
   benefit: AdminBenefit | null
@@ -36,6 +37,7 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
     valid_from: new Date().toISOString().split("T")[0],
     valid_to: "",
     type: "discount",
+    banner_url: "",
   })
 
   const [businesses, setBusinesses] = useState<Pick<AdminComercio, 'id' | 'name'>[]>([])
@@ -77,6 +79,7 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
         valid_from: new Date().toISOString().split("T")[0],
         valid_to: "",
         type: "discount",
+        banner_url: "",
       })
     }
   }, [benefit, open])
@@ -144,6 +147,25 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
             </div>
           </div>
 
+          {/* Imagen del Beneficio */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium text-slate-900 flex items-center justify-center">
+              <div className="p-2 bg-slate-100 rounded-lg mr-3">
+                <ImageIcon className="h-4 w-4 text-slate-600" />
+              </div>
+              Imagen del Beneficio
+            </h3>
+            
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-slate-700">Imagen del Beneficio</Label>
+              <ImageUpload
+                currentImage={formData.banner_url || undefined}
+                onImageChange={(url) => setFormData({ ...formData, banner_url: url || "" })}
+                bucket="benefits"
+              />
+            </div>
+          </div>
+
           {/* Tipo y Código */}
           <div className="space-y-6">
             <h3 className="text-lg font-medium text-slate-900 flex items-center">
@@ -165,8 +187,7 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="discount">Descuento</SelectItem>
-                    <SelectItem value="promotion">Promoción</SelectItem>
-                    <SelectItem value="gift">Regalo</SelectItem>
+                    <SelectItem value="multipromo">Multipromo</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -257,7 +278,12 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
               <Label className="text-sm font-medium text-slate-700">Comercio</Label>
               <div className="relative">
                 <Input
-                  value={businessFilter || (formData.business_id ? (businesses.find(b => b.id === formData.business_id)?.name || '') : '')}
+                  value={
+                    businessFilter ||
+                    (formData.business_id
+                      ? (businesses.find((b) => b.id === formData.business_id)?.name || '')
+                      : '')
+                  }
                   onChange={(e) => { setBusinessFilter(e.target.value); setComboOpen(true); }}
                   onFocus={() => { setComboOpen(true); }}
                   onBlur={() => setTimeout(() => setComboOpen(false), 120)}
@@ -293,7 +319,9 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
                 )}
               </div>
               {formData.business_id && (
-                <p className="text-xs text-slate-500">Seleccionado: {businesses.find(b => b.id === formData.business_id)?.name || '—'}</p>
+                <p className="text-xs text-slate-500">
+                  Seleccionado: {businesses.find((b) => b.id === formData.business_id)?.name || '—'}
+                </p>
               )}
             </div>
           </div>

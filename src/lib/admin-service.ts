@@ -90,8 +90,10 @@ export interface AdminEvent {
   title: string;
   description: string | null;
   date: string;
+  time: string;
   location: string | null;
   created_at: string;
+  banner_url: string | null;
   comercio?: {
     name: string;
     logo_url: string | null;
@@ -441,27 +443,31 @@ export const adminService = {
       businessId = comercio.id;
     }
 
-    // Mapear tipos: discount/promotion/gift -> coupon/giveaway
-    let mappedType: "coupon" | "giveaway" = "coupon";
-    if (data.type === "discount") {
-      mappedType = "coupon";
-    } else if (data.type === "multipromo") {
-      mappedType = "giveaway";
+    // Usar tipos tal como están en la base: 'discount' | 'multipromo'
+    const normalizedType = (data.type === 'multipromo' || data.type === 'discount')
+      ? data.type
+      : 'discount';
+
+    // Construir el objeto de inserción de forma condicional
+    const insertData: any = {
+      banner_url: data.banner_url && data.banner_url.trim() !== '' ? data.banner_url : '',
+      title: data.title!,
+      description: data.description,
+      type: normalizedType,
+      quantity: data.quantity || 0,
+      valid_from: data.valid_from,
+      valid_to: data.valid_to,
+      expires_at: data.expires_at || data.valid_to || null,
+    };
+
+    // Solo incluir business_id si existe la columna (se intentará insertar, si falla será por RLS u otro motivo)
+    if (businessId) {
+      insertData.business_id = businessId;
     }
 
     const { data: result, error } = await supabase
       .from('benefits')
-      .insert({
-        business_id: businessId,
-        banner_url: data.banner_url || '',
-        title: data.title!,
-        description: data.description,
-        type: mappedType,
-        quantity: data.quantity || 0,
-        valid_from: data.valid_from,
-        valid_to: data.valid_to,
-        expires_at: data.expires_at || data.valid_to || null,
-      })
+      .insert(insertData)
       .select()
       .single();
 
@@ -472,17 +478,10 @@ export const adminService = {
   async updateBenefit(id: string, data: Partial<AdminBenefit>) {
     const supabase = createSupabaseClient();
     
-    // Mapear tipos: discount/promotion/gift -> coupon/giveaway
-    let mappedType: "coupon" | "giveaway" | undefined = undefined;
-    if (data.type) {
-      if (data.type === "discount" ) {
-        mappedType = "coupon";
-      } else if (data.type === "multipromo") {
-        mappedType = "giveaway";
-      } else {
-        mappedType = data.type as "coupon" | "giveaway";
-      }
-    }
+    // Usar tipos tal como están en la base: 'discount' | 'multipromo'
+    const normalizedType = data.type && (data.type === 'multipromo' || data.type === 'discount')
+      ? data.type
+      : undefined;
     
     const updateData: any = {
       title: data.title,
@@ -493,8 +492,13 @@ export const adminService = {
       expires_at: data.expires_at,
     };
     
-    if (mappedType !== undefined) {
-      updateData.type = mappedType;
+    // Incluir banner_url solo si se proporciona (permite actualizar o limpiar la imagen)
+    if (data.banner_url !== undefined) {
+      updateData.banner_url = data.banner_url && data.banner_url.trim() !== '' ? data.banner_url : '';
+    }
+    
+    if (normalizedType !== undefined) {
+      updateData.type = normalizedType;
     }
 
     const { data: result, error } = await supabase
@@ -591,15 +595,26 @@ export const adminService = {
       businessId = comercio.id;
     }
 
+    // Construir el objeto de inserción de forma condicional
+    const insertData: any = {
+      business_id: businessId,
+      title: data.title!,
+      description: data.description || null,
+      date: data.date!,
+      time: data.time || "18:00", // Valor por defecto si no se proporciona
+      banner_url: data.banner_url && data.banner_url.trim() !== '' ? data.banner_url : null,
+    };
+
+    // Solo incluir location si tiene valor (evita problemas con columnas que pueden no existir)
+    if (data.location !== undefined && data.location !== null && data.location.trim() !== '') {
+      insertData.location = data.location.trim();
+    } else {
+      insertData.location = null;
+    }
+
     const { data: result, error } = await supabase
       .from('events')
-      .insert({
-        business_id: businessId,
-        title: data.title!,
-        description: data.description,
-        date: data.date!,
-        location: data.location,
-      })
+      .insert(insertData)
       .select()
       .single();
 
@@ -610,14 +625,22 @@ export const adminService = {
   async updateEvent(id: string, data: Partial<AdminEvent>) {
     const supabase = createSupabaseClient();
     
+    const updateData: any = {
+      title: data.title,
+      description: data.description,
+      date: data.date,
+      location: data.location !== undefined ? (data.location || null) : undefined,
+      banner_url: data.banner_url !== undefined ? (data.banner_url || null) : undefined,
+    };
+
+    // Incluir time si se proporciona
+    if (data.time !== undefined) {
+      updateData.time = data.time || "18:00";
+    }
+
     const { data: result, error } = await supabase
       .from('events')
-      .update({
-        title: data.title,
-        description: data.description,
-        date: data.date,
-        location: data.location,
-      })
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();

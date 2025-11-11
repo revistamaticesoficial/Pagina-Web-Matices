@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import type { AdminEvent } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -38,9 +39,19 @@ export function EventsGrid({ events, onEdit, onDelete }: EventsGridProps) {
           <Card key={event.id} className="overflow-hidden">
             <CardHeader className="p-0">
               <div className="relative h-48 w-full bg-slate-100 flex items-center justify-center">
-                <div className="text-slate-400">
-                  <Calendar className="h-12 w-12" />
-                </div>
+                {event.banner_url && event.banner_url.trim() !== '' ? (
+                  <Image
+                    src={event.banner_url}
+                    alt={event.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                ) : (
+                  <div className="text-slate-400">
+                    <Calendar className="h-12 w-12" />
+                  </div>
+                )}
                 <Badge variant="default" className="absolute right-2 top-2">
                   Activo
                 </Badge>

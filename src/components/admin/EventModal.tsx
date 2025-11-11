@@ -16,9 +16,10 @@ import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Label } from "@/components/ui/Label"
 import { Textarea } from "@/components/ui/textarea"
-import { Calendar, Clock, MapPin, Store } from "lucide-react"
+import { Calendar, Clock, MapPin, Store, ImageIcon } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select"
 import { adminService, type AdminComercio } from "@/lib/admin-service"
+import { ImageUpload } from "@/components/admin/ImageUpload"
 
 interface EventModalProps {
   event: AdminEvent | null
@@ -32,7 +33,9 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
     title: "",
     description: "",
     date: new Date().toISOString().split("T")[0],
+    time: "18:00", // Valor por defecto
     location: "",
+    banner_url: "",
   })
 
   const [businesses, setBusinesses] = useState<Pick<AdminComercio, 'id' | 'name'>[]>([])
@@ -71,7 +74,9 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
         title: "",
         description: "",
         date: new Date().toISOString().split("T")[0],
+        time: "18:00", // Valor por defecto
         location: "",
+        banner_url: "",
       })
     }
   }, [event, open])
@@ -137,27 +142,63 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
             </div>
           </div>
 
-          {/* Fecha */}
+          {/* Imagen del Evento */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium text-slate-900 flex items-center">
+              <div className="p-2 bg-slate-100 rounded-lg mr-3">
+                <ImageIcon className="h-4 w-4 text-slate-600" />
+              </div>
+              Imagen del Evento
+            </h3>
+            
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-slate-700">Banner/Imagen</Label>
+              <ImageUpload
+                currentImage={formData.banner_url || undefined}
+                onImageChange={(url) => setFormData({ ...formData, banner_url: url || "" })}
+                bucket="events"
+              />
+            </div>
+          </div>
+
+          {/* Fecha y Hora */}
           <div className="space-y-6">
             <h3 className="text-lg font-medium text-slate-900 flex items-center">
               <div className="p-2 bg-slate-100 rounded-lg mr-3">
                 <Clock className="h-4 w-4 text-slate-600" />
               </div>
-              Fecha
+              Fecha y Hora
             </h3>
             
-            <div className="space-y-2">
-              <Label htmlFor="date" className="text-sm font-medium text-slate-700">Fecha del Evento *</Label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <Input
-                  id="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
-                  required
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="date" className="text-sm font-medium text-slate-700">Fecha del Evento *</Label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    id="date"
+                    type="date"
+                    value={formData.date}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="time" className="text-sm font-medium text-slate-700">Hora del Evento *</Label>
+                <div className="relative">
+                  <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    id="time"
+                    type="time"
+                    value={formData.time || "18:00"}
+                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                    className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
+                    required
+                  />
+                </div>
               </div>
             </div>
           </div>

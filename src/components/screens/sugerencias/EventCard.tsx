@@ -31,16 +31,20 @@ export default function EventCard({ event }: EventCardProps) {
     <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col">
       {/* Image Section */}
       <div className="relative h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0">
-        <Image
-          src={event.banner_url}
-          alt={event.title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-          onError={(e) => {
-            // Fallback to gradient background if image fails
-            e.currentTarget.style.display = 'none';
-          }}
-        />
+        {event.banner_url && event.banner_url.trim() !== '' ? (
+          <Image
+            src={event.banner_url}
+            alt={event.title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => {
+              // Fallback to gradient background if image fails
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600"></div>
+        )}
         
         {/* Date Badge */}
         <div className="absolute top-4 left-4">

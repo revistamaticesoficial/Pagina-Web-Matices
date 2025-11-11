@@ -59,9 +59,30 @@ async function loadData() {
     };
   })
 
+  // Mapear eventos del esquema de DB al tipo esperado por la UI
+  const mappedEventos = (eventos ?? []).map((e) => {
+    const eventData = e as any;
+    return {
+      id: e.id,
+      title: e.title,
+      description: e.description || '',
+      date: e.date,
+      time: '18:00', // Valor por defecto, ajustar según necesidad
+      direction: e.location || 'Ubicación no disponible',
+      neighborhood: 'Zona Norte', // Valor por defecto
+      category: 'EVENTOS', // Valor por defecto
+      banner_url: eventData.banner_url || '',
+      price: undefined, // Valor por defecto
+      isFree: true, // Valor por defecto
+      organizer: 'Organizador', // Valor por defecto
+      capacity: undefined, // Valor por defecto
+      tags: [], // Valor por defecto
+    };
+  });
+
   return {
     comercios: mappedComercios,
-    eventos: eventos ?? [],
+    eventos: mappedEventos,
     beneficios: (beneficios ?? []).map((row) => ({
       id: row.id,
       title: row.title,

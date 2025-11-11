@@ -1,12 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Home, Users, Zap, Calendar, FileText, User, Settings, ChevronLeft, ChevronRight, BookOpen, Megaphone } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { Home, Users, Zap, Calendar, FileText, User, Settings, ChevronLeft, ChevronRight, BookOpen, Megaphone, LogOut } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
+import { useAuth } from "@/providers/AuthProvider"
 
 const menuItems = [
   { href: "/admin/inicio", label: "Inicio", icon: Home },
@@ -23,6 +24,39 @@ const menuItems = [
 export function DashboardSidebar() {
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const { authState, logout } = useAuth()
+  const user = authState.user
+
+  //obtener nombre completo
+  const fullName = user?.profile?.full_name ||
+                   (user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` :  '') ||
+                   user?.firstName || ''
+                  || 'Usuario'
+
+  //obtener email
+  const userEmail = user?.email || ''
+
+  //obtener avatar
+  const avatarUrl = user?.profile?.avatar_url || user?.avatar || ''
+
+  //obtener iniciales para el fallback del avatar
+  const getInitials = (name: string) => {
+     const parts = name.trim().split(' ')
+     if (parts.length >= 2) {
+       return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+     }
+     return name.substring(0, 2).toUpperCase()
+    }
+    const initials = getInitials(fullName)
+    const handleLogout = async () => {
+      try {
+        await logout()
+        //el logout ya redirige a '/' automaticamente segun authProvider
+      } catch (error) {
+        console.error('Error al cerrar sesión:', error)
+      }
+    }
+
 
   return (
     <aside
@@ -51,13 +85,19 @@ export function DashboardSidebar() {
       <div className="p-6 border-b border-white/20">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10 ">
-            <AvatarImage src="/placeholder.svg?height=40&width=40" />
-            <AvatarFallback className="bg-blue-500">JP</AvatarFallback>
-          </Avatar>
+            <AvatarImage src={avatarUrl || "/placeholder.svg?height=40&width=32"} />
+            <AvatarFallback className="bg-blue-500">{initials}</AvatarFallback>
+            </Avatar>
+            {/* <p className="font-semibold text-sm truncate">{fullName || 'Usuario'}</p>
+            <p className="text-xs text-white/60 truncate">{userEmail || 'no disponible'}</p> */}
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm truncate">Juan Perez</p>
-              <p className="text-xs text-white/60 truncate">juanperez@gmail.com</p>
+              <p className="font-semibold text-sm truncate">
+                {authState.isLoading ? 'Cargando...' : (fullName || 'Usuario')}
+              </p>
+              <p className="text-xs text-white/60 truncate">
+                {authState.isLoading ? '....' : (userEmail || 'no disponible')}
+              </p>
             </div>
           )}
         </div>
@@ -85,6 +125,21 @@ export function DashboardSidebar() {
           )
         })}
       </nav>
+
+  {/* Logout Button - Parte inferior */}
+  <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/20">
+        <Button
+          onClick={handleLogout}
+          variant="ghost"
+          className={cn(
+            "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-red-500 hover:bg-red-500/10 hover:text-red-400",
+            isCollapsed && "justify-center"
+          )}
+        >
+          <LogOut className="h-5 w-5 flex-shrink-0" />
+          {!isCollapsed && <span className="font-medium">Cerrar Sesión</span>}
+        </Button>
+      </div>
     </aside>
   )
 }
