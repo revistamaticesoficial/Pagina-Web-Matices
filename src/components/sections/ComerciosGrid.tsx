@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
-import { Calendar, Clock, User, ArrowRight, BookOpen } from 'lucide-react';
+import { Calendar, Clock, User, ArrowRight, BookOpen, } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Database } from '@/types/database';

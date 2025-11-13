@@ -35,6 +35,10 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
     date: new Date().toISOString().split("T")[0],
     time: "18:00", // Valor por defecto
     location: "",
+    place: "",
+    direction: "",
+    open_time: "",
+    close_time: "",
     banner_url: "",
   })
 
@@ -76,6 +80,10 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
         date: new Date().toISOString().split("T")[0],
         time: "18:00", // Valor por defecto
         location: "",
+        place: "",
+        direction: "",
+        open_time: "",
+        close_time: "",
         banner_url: "",
       })
     }
@@ -226,6 +234,80 @@ export function EventModal({ event, open, onClose, onSave }: EventModalProps) {
               </div>
             </div>
           </div>
+
+          {/* Lugar y Dirección Adicionales */}
+<div className="space-y-6">
+  <h3 className="text-lg font-medium text-slate-900 flex items-center">
+    <div className="p-2 bg-slate-100 rounded-lg mr-3">
+      <MapPin className="h-4 w-4 text-slate-600" />
+    </div>
+    Lugar y Dirección
+  </h3>
+  
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-2">
+      <Label htmlFor="place" className="text-sm font-medium text-slate-700">Lugar</Label>
+      <Input
+        id="place"
+        value={formData.place || ""}
+        onChange={(e) => setFormData({ ...formData, place: e.target.value })}
+        placeholder="Ej: Salón Principal"
+        className="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
+      />
+    </div>
+
+    <div className="space-y-2">
+      <Label htmlFor="direction" className="text-sm font-medium text-slate-700">Dirección</Label>
+      <Input
+        id="direction"
+        value={formData.direction || ""}
+        onChange={(e) => setFormData({ ...formData, direction: e.target.value })}
+        placeholder="Ej: Av. Principal 123"
+        className="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
+      />
+    </div>
+  </div>
+</div>
+
+{/* Horarios de Apertura y Cierre */}
+<div className="space-y-6">
+  <h3 className="text-lg font-medium text-slate-900 flex items-center">
+    <div className="p-2 bg-slate-100 rounded-lg mr-3">
+      <Clock className="h-4 w-4 text-slate-600" />
+    </div>
+    Horarios del Evento
+  </h3>
+  
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-2">
+      <Label htmlFor="open_time" className="text-sm font-medium text-slate-700">Hora de Apertura</Label>
+      <div className="relative">
+        <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Input
+          id="open_time"
+          type="time"
+          value={formData.open_time || ""}
+          onChange={(e) => setFormData({ ...formData, open_time: e.target.value })}
+          className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
+        />
+      </div>
+    </div>
+
+    <div className="space-y-2">
+      <Label htmlFor="close_time" className="text-sm font-medium text-slate-700">Hora de Cierre</Label>
+      <div className="relative">
+        <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Input
+          id="close_time"
+          type="time"
+          value={formData.close_time || ""}
+          onChange={(e) => setFormData({ ...formData, close_time: e.target.value })}
+          className="pl-10 rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
+        />
+      </div>
+    </div>
+  </div>
+</div>
 
           {/* Comercios */}
           <div className="space-y-6">

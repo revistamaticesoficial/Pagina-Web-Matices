@@ -124,6 +124,23 @@ export const storageService = {
   },
 
   /**
+   * Validar que un archivo es una imagen o video
+   */
+  isValidMediaFile(file: File): boolean {
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    const validVideoTypes = ['video/mp4', 'video/mpeg', 'video/quicktime']
+    return validImageTypes.includes(file.type) || validVideoTypes.includes(file.type)
+  },
+
+  /**
+   * Verificar si un archivo es un video
+   */
+  isVideoFile(file: File): boolean {
+    const validVideoTypes = ['video/mp4', 'video/mpeg', 'video/quicktime']
+    return validVideoTypes.includes(file.type) || file.name.toLowerCase().endsWith('.mp4')
+  },
+
+  /**
    * Obtener tamaño de archivo en MB
    */
   getFileSizeMB(file: File): number {

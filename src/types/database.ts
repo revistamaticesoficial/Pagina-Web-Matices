@@ -350,6 +350,10 @@ export interface Database {
           date: string;
           time: string;
           location: string | null;
+          place: string | null;
+          direction: string | null;
+          open_time: string | null;
+          close_time: string | null;
           banner_url: string | null;
           created_at: string;
         };
@@ -361,6 +365,10 @@ export interface Database {
           date: string;
           time: string;
           location?: string | null;
+          place?: string | null;
+          direction?: string | null;
+          open_time?: string | null;
+          close_time?: string | null;
           banner_url?: string | null;
           created_at?: string;
         };
@@ -372,6 +380,10 @@ export interface Database {
           date?: string;
           time?: string;
           location?: string | null;
+          place?: string | null;
+          direction?: string | null;
+          open_time?: string | null;
+          close_time?: string | null;
           banner_url?: string | null;
           created_at?: string;
         };
@@ -506,6 +518,42 @@ export interface Database {
           display_order?: number;
           start_date?: string | null;
           end_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      editions: {
+        Row: {
+          id: string;
+          title: string;
+          month: string;
+          year: number;
+          image: string | null;
+          filename: string | null;
+          pdf_url: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          month: string;
+          year: number;
+          image?: string | null;
+          filename?: string | null;
+          pdf_url?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          month?: string;
+          year?: number;
+          image?: string | null;
+          filename?: string | null;
+          pdf_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };

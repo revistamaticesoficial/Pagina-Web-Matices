@@ -10,6 +10,14 @@ import { Edit, Trash2, Search, Calendar, Ticket, BookOpen } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import Image from "next/image"
 
+// Función helper para detectar si es video o imagen basado en la extensión
+const isVideo = (url: string | null | undefined): boolean => {
+  if (!url) return false;
+  const urlLower = url.toLowerCase();
+  // Verificar si termina en .mp4 (últimos 4 caracteres)
+  return urlLower.endsWith('.mp4');
+};
+
 interface BenefitsGridProps {
   benefits: AdminBenefit[]
   onEdit: (benefit: AdminBenefit) => void
@@ -51,10 +59,42 @@ export function BenefitsGrid({ benefits, onEdit, onDelete }: BenefitsGridProps) 
           return (
             <Card key={benefit.id} className="overflow-hidden">
               <CardHeader className="p-0">
-                <div className="relative h-40 w-full">
-                  <div className="h-full w-full bg-gray-200 flex items-center justify-center">
-                    <BookOpen className="h-8 w-8 text-gray-500" />
-                  </div>
+                <div className="relative h-40 w-full bg-gray-200 overflow-hidden">
+                  {benefit.banner_url && benefit.banner_url.trim() !== '' ? (
+                    <>
+                      {isVideo(benefit.banner_url) ? (
+                        <video
+                          className="w-full h-full object-cover"
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          preload="auto"
+                          onError={(e) => {
+                            console.warn('Error loading video:', benefit.banner_url);
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        >
+                          <source src={benefit.banner_url} type="video/mp4" />
+                        </video>
+                      ) : (
+                        <Image
+                          src={benefit.banner_url}
+                          alt={benefit.title || 'Beneficio'}
+                          fill
+                          className="object-cover"
+                          onError={(e) => {
+                            console.warn('Error loading image:', benefit.banner_url);
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      )}
+                    </>
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center">
+                      <BookOpen className="h-8 w-8 text-gray-500" />
+                    </div>
+                  )}
                   <Badge variant="default" className="absolute right-2 top-2">
                     Activo
                   </Badge>

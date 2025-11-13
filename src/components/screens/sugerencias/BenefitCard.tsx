@@ -4,11 +4,20 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Benefit } from '@/types/sugerencias';
 import { formatDateLabel } from '@/lib/utils';
+import Image from 'next/image';
 
 interface BenefitCardProps {
   benefit: Benefit;
   onRedeem?: (benefit: Benefit) => void;
 }
+
+// Función helper para detectar si es video o imagen basado en la extensión
+const isVideo = (url: string | null | undefined): boolean => {
+  if (!url) return false;
+  const urlLower = url.toLowerCase();
+  // Verificar si termina en .mp4 (últimos 4 caracteres)
+  return urlLower.endsWith('.mp4');
+};
 
 export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
   const formatDate = (dateString: string) => formatDateLabel(dateString);
@@ -24,27 +33,43 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
     <Card className="group transition-all duration-300 overflow-hidden h-full flex flex-col">
       {/* Header with Business Info */}
       <div className="relative h-64 bg-gradient-to-r from-purple-500 to-pink-500 overflow-hidden flex-shrink-0">
-        {/* Video Background */}
+        {/* Video o Imagen según extensión */}
         {benefit.banner_url && (
-          <video
-            className="w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            onError={(e) => {
-              console.warn('Error loading video:', benefit.banner_url);
-              // Fallback to gradient background if video fails
-              e.currentTarget.style.display = 'none';
-            }}
-            onLoadStart={() => {
-              console.log('Loading video:', benefit.banner_url || '');
-            }}
-          >
-            <source src={benefit.banner_url} type="video/mp4" />
-            Tu navegador no soporta videos.
-          </video>
+          <>
+            {isVideo(benefit.banner_url) ? (
+              <video
+                className="w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                onError={(e) => {
+                  console.warn('Error loading video:', benefit.banner_url);
+                  // Fallback to gradient background if video fails
+                  e.currentTarget.style.display = 'none';
+                }}
+                onLoadStart={() => {
+                  console.log('Loading video:', benefit.banner_url || '');
+                }}
+              >
+                <source src={benefit.banner_url} type="video/mp4" />
+                Tu navegador no soporta videos.
+              </video>
+            ) : (
+              <Image
+                src={benefit.banner_url}
+                alt={benefit.title || 'Beneficio'}
+                fill
+                className="object-cover"
+                onError={(e) => {
+                  console.warn('Error loading image:', benefit.banner_url);
+                  // Fallback to gradient background if image fails
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            )}
+          </>
         )}
         
         {/* Overlay for better text readability */}

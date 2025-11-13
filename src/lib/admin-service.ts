@@ -92,12 +92,28 @@ export interface AdminEvent {
   date: string;
   time: string;
   location: string | null;
+  place: string | null;
+  direction: string | null;
+  open_time: string | null;
+  close_time: string | null;
   created_at: string;
   banner_url: string | null;
   comercio?: {
     name: string;
     logo_url: string | null;
   };
+}
+
+export interface AdminEdition {
+  id: string;
+  title: string;
+  month: string;
+  year: number;
+  image: string | null;
+  filename: string | null;
+  pdf_url: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AdminArticle {
@@ -612,6 +628,34 @@ export const adminService = {
       insertData.location = null;
     }
 
+    // Solo incluir place si tiene valor
+if (data.place !== undefined && data.place !== null && data.place.trim() !== '') {
+  insertData.place = data.place.trim();
+} else {
+  insertData.place = null;
+}
+
+// Solo incluir direction si tiene valor
+if (data.direction !== undefined && data.direction !== null && data.direction.trim() !== '') {
+  insertData.direction = data.direction.trim();
+} else {
+  insertData.direction = null;
+}
+
+// Solo incluir open_time si tiene valor
+if (data.open_time !== undefined && data.open_time !== null && data.open_time.trim() !== '') {
+  insertData.open_time = data.open_time.trim();
+} else {
+  insertData.open_time = null;
+}
+
+// Solo incluir close_time si tiene valor
+if (data.close_time !== undefined && data.close_time !== null && data.close_time.trim() !== '') {
+  insertData.close_time = data.close_time.trim();
+} else {
+  insertData.close_time = null;
+}
+
     const { data: result, error } = await supabase
       .from('events')
       .insert(insertData)
@@ -637,6 +681,26 @@ export const adminService = {
     if (data.time !== undefined) {
       updateData.time = data.time || "18:00";
     }
+
+    // Incluir place si se proporciona
+if (data.place !== undefined) {
+  updateData.place = data.place && data.place.trim() !== '' ? data.place.trim() : null;
+}
+
+// Incluir direction si se proporciona
+if (data.direction !== undefined) {
+  updateData.direction = data.direction && data.direction.trim() !== '' ? data.direction.trim() : null;
+}
+
+// Incluir open_time si se proporciona
+if (data.open_time !== undefined) {
+  updateData.open_time = data.open_time && data.open_time.trim() !== '' ? data.open_time.trim() : null;
+}
+
+// Incluir close_time si se proporciona
+if (data.close_time !== undefined) {
+  updateData.close_time = data.close_time && data.close_time.trim() !== '' ? data.close_time.trim() : null;
+}
 
     const { data: result, error } = await supabase
       .from('events')
@@ -928,6 +992,122 @@ export const adminService = {
     
     const { error } = await supabase
       .from('announcements')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  },
+
+  // Ediciones
+  async getEditions(filters?: {
+    search?: string;
+    month?: string;
+    year?: number;
+    limit?: number;
+    offset?: number;
+  }) {
+    const supabase = createSupabaseClient();
+    
+    let query = supabase
+      .from('editions')
+      .select('*')
+      .order('year', { ascending: false })
+      .order('month', { ascending: false });
+
+    if (filters?.search) {
+      query = query.ilike('title', `%${filters.search}%`);
+    }
+
+    if (filters?.month) {
+      query = query.eq('month', filters.month);
+    }
+
+    if (filters?.year) {
+      query = query.eq('year', filters.year);
+    }
+
+    if (filters?.limit) {
+      query = query.limit(filters.limit);
+    }
+
+    if (filters?.offset) {
+      query = query.range(filters.offset, (filters.offset + (filters.limit || 10)) - 1);
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    return (data || []) as AdminEdition[];
+  },
+
+  async getEditionById(id: string): Promise<AdminEdition | null> {
+    const supabase = createSupabaseClient();
+    
+    const { data, error } = await supabase
+      .from('editions')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    return data as AdminEdition | null;
+  },
+
+  async createEdition(data: Partial<AdminEdition>) {
+    const supabase = createSupabaseClient();
+    
+    const insertData = {
+      title: data.title!,
+      month: data.month!,
+      year: data.year!,
+      image: data.image || null,
+      filename: data.filename || null,
+      pdf_url: data.pdf_url || null,
+    };
+    
+    const { data: result, error } = await supabase
+      .from('editions')
+      .insert(insertData)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return result as AdminEdition;
+  },
+
+  async updateEdition(id: string, data: Partial<AdminEdition>) {
+    const supabase = createSupabaseClient();
+    
+    const updateData: any = {
+      title: data.title,
+      month: data.month,
+      year: data.year,
+      image: data.image !== undefined ? (data.image || null) : undefined,
+      filename: data.filename !== undefined ? (data.filename || null) : undefined,
+      pdf_url: data.pdf_url !== undefined ? (data.pdf_url || null) : undefined,
+      updated_at: new Date().toISOString(),
+    };
+    
+    const { data: result, error } = await supabase
+      .from('editions')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return result as AdminEdition;
+  },
+
+  async deleteEdition(id: string) {
+    const supabase = createSupabaseClient();
+    
+    const { error } = await supabase
+      .from('editions')
       .delete()
       .eq('id', id);
 
