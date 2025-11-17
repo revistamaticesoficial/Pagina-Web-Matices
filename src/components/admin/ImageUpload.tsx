@@ -9,8 +9,15 @@ import { storageService } from '@/lib/storage-service'
 // Función helper para detectar si es video basado en la extensión
 const isVideo = (url: string | null | undefined): boolean => {
   if (!url) return false;
-  const urlLower = url.toLowerCase();
-  return urlLower.endsWith('.mp4');
+  try {
+    const pathname = new URL(url).pathname;
+    const extension = pathname.split('.').pop()?.toLowerCase();
+    return extension === 'mp4';
+  } catch {
+    const sanitized = url.split('?')[0].split('#')[0];
+    const extension = sanitized.split('.').pop()?.toLowerCase();
+    return extension === 'mp4';
+  }
 };
 
 interface ImageUploadProps {

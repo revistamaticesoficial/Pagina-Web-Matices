@@ -77,6 +77,7 @@ export interface AdminBenefit {
   created_at: string;
   expires_at: string | null;
   banner_url: string | null;
+  flag: string | null;
   comercio?: {
     name: string;
     logo_url: string | null;
@@ -464,6 +465,10 @@ export const adminService = {
       ? data.type
       : 'discount';
 
+    const normalizedFlag = data.flag?.trim()
+      ? data.flag.trim().toUpperCase().slice(0, 4)
+      : null;
+
     // Construir el objeto de inserción de forma condicional
     const insertData: any = {
       banner_url: data.banner_url && data.banner_url.trim() !== '' ? data.banner_url : '',
@@ -475,6 +480,8 @@ export const adminService = {
       valid_to: data.valid_to,
       expires_at: data.expires_at || data.valid_to || null,
     };
+
+    insertData.flag = normalizedFlag;
 
     // Solo incluir business_id si existe la columna (se intentará insertar, si falla será por RLS u otro motivo)
     if (businessId) {
@@ -499,6 +506,10 @@ export const adminService = {
       ? data.type
       : undefined;
     
+    const normalizedFlag = data.flag === undefined
+      ? undefined
+      : (data.flag?.trim() ? data.flag.trim().toUpperCase().slice(0, 4) : null);
+
     const updateData: any = {
       title: data.title,
       description: data.description,
@@ -515,6 +526,10 @@ export const adminService = {
     
     if (normalizedType !== undefined) {
       updateData.type = normalizedType;
+    }
+
+    if (normalizedFlag !== undefined) {
+      updateData.flag = normalizedFlag;
     }
 
     const { data: result, error } = await supabase
@@ -797,6 +812,7 @@ if (data.close_time !== undefined) {
       content: data.content!,
       excerpt: data.excerpt || null,
       author_name: data.author_name || null,
+      author: (data as any).author || null,
       category: data.category!,
       tags: data.tags || null,
       featured_image_url: data.featured_image_url || null,
@@ -845,6 +861,7 @@ if (data.close_time !== undefined) {
         content: data.content,
         excerpt: data.excerpt,
         author_name: data.author_name,
+        author: (data as any).author,
         category: data.category,
         tags: data.tags,
         featured_image_url: data.featured_image_url,

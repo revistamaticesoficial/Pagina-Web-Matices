@@ -242,7 +242,7 @@ export default function ContactoPage() {
                         href="mailto:info@revistamatices.com"
                         className="text-sm text-[#005B82] underline underline-offset-4"
                       >
-                        info@revistamatices.com
+                        publicidadnuevosmatices@gmail.com
                       </a>
                     </div>
                   </li>

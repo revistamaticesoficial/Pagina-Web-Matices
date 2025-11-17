@@ -14,9 +14,15 @@ interface BenefitCardProps {
 // Función helper para detectar si es video o imagen basado en la extensión
 const isVideo = (url: string | null | undefined): boolean => {
   if (!url) return false;
-  const urlLower = url.toLowerCase();
-  // Verificar si termina en .mp4 (últimos 4 caracteres)
-  return urlLower.endsWith('.mp4');
+  try {
+    const pathname = new URL(url).pathname;
+    const extension = pathname.split('.').pop()?.toLowerCase();
+    return extension === 'mp4';
+  } catch {
+    const sanitized = url.split('?')[0].split('#')[0];
+    const extension = sanitized.split('.').pop()?.toLowerCase();
+    return extension === 'mp4';
+  }
 };
 
 export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
@@ -75,6 +81,14 @@ export default function BenefitCard({ benefit, onRedeem }: BenefitCardProps) {
         {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-black/30" />
         
+        {benefit.flag && (
+          <div className="absolute top-4 left-4 z-10">
+            <div className="bg-white/90 text-gray-900 px-3 py-1 rounded-full text-xs font-bold tracking-widest shadow-lg">
+              {benefit.flag.toUpperCase().slice(0, 4)}
+            </div>
+          </div>
+        )}
+
         {/* Discount Badge */}
         <div className="absolute top-4 right-4 z-10">
           <div className={`${getDiscountColor()} text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg`}>

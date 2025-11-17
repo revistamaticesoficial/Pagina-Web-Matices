@@ -67,8 +67,8 @@ async function loadData() {
       title: e.title,
       description: e.description || '',
       date: e.date,
-      time: '18:00', // Valor por defecto, ajustar según necesidad
-      direction: e.location || 'Ubicación no disponible',
+      time: e.time || '18:00', // Usar time de la base de datos
+      direction: e.direction || e.location || 'Ubicación no disponible',
       neighborhood: 'Zona Norte', // Valor por defecto
       category: 'EVENTOS', // Valor por defecto
       banner_url: eventData.banner_url || '',
@@ -92,6 +92,7 @@ async function loadData() {
       business: 'Comercio',
       businessLogo: row.banner_url  || '',
       banner_url: row.banner_url,
+      flag: row.flag || null,
       code: row.id,
       validUntil: row.valid_to,
       image: '/images/logo.jpg',

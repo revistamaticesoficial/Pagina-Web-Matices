@@ -50,6 +50,7 @@ export default function CrearArticuloPage() {
         featured_image_url: data.featured_image_url || null,
         read_time: Math.ceil(data.content.trim().split(' ').length / 200),
         author_name: 'Redacción Matices', // Por ahora fijo
+        author: data.author?.trim() || null,
         is_premium: false,
         is_featured: false,
       }

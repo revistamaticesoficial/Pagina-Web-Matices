@@ -1,190 +1,192 @@
-import { Metadata } from 'next';
+import Link from "next/link"
+import { Metadata } from "next"
+import LandingLayout from "@/components/layout/LandingLayout"
+import { APP_CONFIG } from "@/data/constants"
+import { LegalSection } from "@/components/content/LegalSection"
 
 export const metadata: Metadata = {
-  title: 'Política de Privacidad - Revista Matices',
-  description: 'Política de privacidad y protección de datos de Revista Matices',
-};
+  title: "Política de Privacidad - Revista Matices",
+  description:
+    "Conoce cómo Revista Matices recopila, usa y protege tus datos al navegar, enviar formularios, canjear beneficios o utilizar el panel de anunciantes.",
+}
+
+const LAST_UPDATE = "17 de noviembre de 2025"
+
+const quickLinks = [
+  { id: "resumen", label: "Resumen" },
+  { id: "responsable", label: "Responsable" },
+  { id: "datos", label: "Datos que recopilamos" },
+  { id: "bases-legales", label: "Bases legales" },
+  { id: "seguridad", label: "Seguridad y almacenamiento" },
+  { id: "contacto", label: "Cambios y contacto" },
+]
 
 export default function PrivacidadPage() {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-12 max-w-4xl">
-        <h1 className="text-4xl font-bold text-foreground mb-8">
-          Política de Privacidad
-        </h1>
-        
-        <div className="prose prose-lg max-w-none">
-          <p className="text-muted-foreground mb-6">
-            Última actualización: {new Date().toLocaleDateString('es-AR')}
-          </p>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              1. Información General
-            </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Revista Matices se compromete a proteger su privacidad y datos personales. Esta política 
-              describe cómo recopilamos, utilizamos, almacenamos y protegemos su información personal 
-              cuando utiliza nuestro sitio web y servicios.
+    <LandingLayout>
+      <div className="bg-white">
+        <section className="bg-gradient-to-r from-[#003C56] via-[#005B82] to-[#0075A3] text-white py-16">
+          <div className="container mx-auto px-4 text-center">
+            <p className="text-sm uppercase tracking-[0.35em] text-white/75 mb-4">
+              Protección de Datos
             </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              2. Información que Recopilamos
-            </h2>
-            <div className="text-muted-foreground leading-relaxed">
-              <h3 className="text-xl font-medium text-foreground mb-3">2.1 Información Personal</h3>
-              <p className="mb-4">
-                Recopilamos información que usted nos proporciona voluntariamente, incluyendo:
-              </p>
-              <ul className="list-disc list-inside space-y-2 ml-4 mb-6">
-                <li>Nombre completo</li>
-                <li>Dirección de correo electrónico</li>
-                <li>Número de teléfono</li>
-                <li>Dirección postal</li>
-                <li>Información de contacto para comercios</li>
-              </ul>
-
-              <h3 className="text-xl font-medium text-foreground mb-3">2.2 Información Técnica</h3>
-              <p className="mb-4">
-                Automáticamente recopilamos cierta información técnica, incluyendo:
-              </p>
-              <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>Dirección IP</li>
-                <li>Tipo de navegador y versión</li>
-                <li>Sistema operativo</li>
-                <li>Páginas visitadas y tiempo de permanencia</li>
-                <li>Fecha y hora de acceso</li>
-              </ul>
+            <h1 className="text-4xl lg:text-5xl font-bold mb-4">Política de Privacidad</h1>
+            <p className="text-lg lg:text-xl text-white/90 max-w-3xl mx-auto">
+              Explicamos qué información se recopila cuando leés artículos, descargás ediciones, completás formularios
+              de contacto o canjeás beneficios en Revista Matices, cómo la protegemos y qué derechos podés ejercer.
+            </p>
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-2 text-sm text-white/80">
+              Última actualización: {LAST_UPDATE}
+            </div>
             </div>
           </section>
 
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              3. Uso de la Información
-            </h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">
-              Utilizamos su información personal para:
-            </p>
-            <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
-              <li>Proporcionar y mejorar nuestros servicios</li>
-              <li>Enviar newsletters y comunicaciones relevantes</li>
-              <li>Procesar suscripciones y pagos</li>
-              <li>Responder a sus consultas y solicitudes</li>
-              <li>Personalizar su experiencia en el sitio web</li>
-              <li>Cumplir con obligaciones legales</li>
+        <section className="bg-slate-50 px-4 py-16 lg:py-24">
+          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[280px_1fr]">
+            <aside className="rounded-2xl bg-white shadow-sm border border-slate-100 p-6 h-fit">
+              <p className="text-sm font-semibold text-slate-500 mb-4 tracking-wide uppercase">Índice rápido</p>
+              <nav className="space-y-2">
+                {quickLinks.map((item) => (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    className="block rounded-lg px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-[#005B82] transition-colors"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </nav>
+              <div className="mt-6 rounded-xl bg-slate-50 p-4 text-xs text-slate-500">
+                Complementa esta lectura con nuestra{" "}
+                <Link href="/terminos" className="text-[#005B82] font-semibold hover:underline">
+                  página de Términos
+                </Link>{" "}
+                donde detallamos las reglas de uso del sitio.
+              </div>
+            </aside>
+
+            <div className="space-y-10">
+              <LegalSection
+                id="resumen"
+                title="1. Resumen general"
+                description="Revista Matices, medio digital del Cerro de las Rosas, trata datos personales únicamente para operar su portal de noticias, el directorio de comercios, los formularios de contacto y los módulos exclusivos para anunciantes. Nada de lo que recopilamos se vende a terceros."
+              />
+
+              <LegalSection
+                id="responsable"
+                title="2. Responsable del tratamiento"
+                description={
+                  <>
+                    El responsable es <strong>{APP_CONFIG.name}</strong>, con domicilio en {APP_CONFIG.address}. Para
+                    cualquier gestión vinculada a tus datos podés escribir a{" "}
+                    <a href={`mailto:${APP_CONFIG.email}`} className="text-[#005B82] font-semibold hover:underline">
+                      {APP_CONFIG.email}
+                    </a>{" "}
+                    o llamar al{" "}
+                    <a href="tel:+543511234567" className="text-[#005B82] font-semibold hover:underline">
+                      {APP_CONFIG.phone}
+                    </a>
+                    .
+                  </>
+                }
+              />
+
+              <LegalSection
+                id="datos"
+                title="3. Datos que recopilamos"
+                description="Solo pedimos la información imprescindible para cada servicio. Los principales grupos de datos son:"
+                bullets={[
+                  {
+                    title: "Datos de identificación y contacto",
+                    description:
+                      "Nombre, apellido, dirección de correo, teléfono y, en el caso de comerciantes, datos del negocio (social media, dirección, categoría). Se aportan a través de formularios administrados.",
+                  },
+                  {
+                    title: "Datos de autenticación",
+                    description:
+                      "Correo electrónico y contraseña cifrada gestionados por nosotros para acceder a /gestion. El perfil asociado incluye rol y fecha de alta.",
+                  },
+                  {
+                    title: "Datos operativos de campañas",
+                    description:
+                      "Para el canje de beneficios solicitamos nombre completo, DNI, teléfono y email opcional.",
+                  },
+                  {
+                    title: "Datos editoriales cargados por negocios",
+                    description:
+                      "Las fichas de comercios, eventos, anuncios y ediciones contienen imágenes, logotipos, PDFs o textos que nos facilitan los titulares mediante el panel administrativo.",
+                  },
+                ]}
+              />
+
+              <LegalSection
+                id="bases-legales"
+                title="4. Bases legales aplicables"
+                description="Tratamos tus datos conforme a la Ley 25.326 y normativa complementaria, fundamentándonos en:"
+                bullets={[
+                  {
+                    title: "Consentimiento",
+                    description:
+                      "Cuando completás formularios voluntarios (contacto, canje de beneficios) aceptás expresamente esta política.",
+                  },
+                  {
+                    title: "Relación contractual",
+                    description:
+                      "Cuando creamos cuentas de anunciantes o ejecutamos campañas publicitarias debemos manejar los datos necesarios para cumplir el servicio.",
+                  },
+                  {
+                    title: "Interés legítimo",
+                    description:
+                      "Para monitorear la seguridad del sitio, prevenir abusos y mantener estadísticas agregadas de lectura.",
+                  },
+                ]}
+              />
+
+              <LegalSection
+                id="seguridad"
+                title="5. Almacenamiento y medidas de seguridad"
+                description="Utilizamos Supabase como backend gestionado, con base de datos Postgres y buckets de almacenamiento cifrados en reposo. Las comunicaciones entre tu navegador y nuestros servicios se realizan mediante HTTPS."
+              >
+                <ul className="space-y-2 text-slate-600 text-base leading-relaxed">
+                  <li>Acceso restringido a paneles administrativos.</li>
+                  <li>Backups periódicos de tablas críticas.</li>
+                  <li>
+                    Gestión segura de archivos con URLs con firma y controles de lectura.
+                  </li>
             </ul>
-          </section>
+              </LegalSection>
 
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              4. Compartir Información
-            </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              No vendemos, alquilamos ni compartimos su información personal con terceros, excepto en 
-              las siguientes circunstancias:
-            </p>
-            <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4 mt-4">
-              <li>Con su consentimiento explícito</li>
-              <li>Para cumplir con obligaciones legales</li>
-              <li>Con proveedores de servicios que nos ayudan a operar el sitio web</li>
-              <li>En caso de fusión, adquisición o venta de activos</li>
-            </ul>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              5. Cookies y Tecnologías Similares
-            </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Utilizamos cookies y tecnologías similares para mejorar su experiencia en nuestro sitio web. 
-              Las cookies son pequeños archivos de texto que se almacenan en su dispositivo. Puede 
-              controlar el uso de cookies a través de la configuración de su navegador.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              6. Seguridad de los Datos
-            </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Implementamos medidas de seguridad técnicas y organizativas apropiadas para proteger su 
-              información personal contra acceso no autorizado, alteración, divulgación o destrucción. 
-              Sin embargo, ningún método de transmisión por internet es 100% seguro.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              7. Sus Derechos
-            </h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">
-              De acuerdo con la Ley de Protección de Datos Personales de Argentina, usted tiene derecho a:
-            </p>
-            <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4">
-              <li>Acceder a sus datos personales</li>
-              <li>Rectificar datos inexactos o incompletos</li>
-              <li>Solicitar la eliminación de sus datos</li>
-              <li>Oponerse al tratamiento de sus datos</li>
-              <li>Retirar su consentimiento en cualquier momento</li>
-            </ul>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              8. Retención de Datos
-            </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Conservamos su información personal solo durante el tiempo necesario para cumplir con los 
-              propósitos descritos en esta política, a menos que la ley requiera un período de retención más largo.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              9. Menores de Edad
-            </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Nuestros servicios no están dirigidos a menores de 18 años. No recopilamos conscientemente 
-              información personal de menores de edad sin el consentimiento de sus padres o tutores.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              10. Cambios a esta Política
-            </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Podemos actualizar esta política de privacidad ocasionalmente. Le notificaremos sobre 
-              cambios significativos publicando la nueva política en nuestro sitio web con una fecha 
-              de actualización revisada.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              11. Contacto
-            </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Si tiene preguntas sobre esta política de privacidad o desea ejercer sus derechos, 
-              puede contactarnos:
-            </p>
-            <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-4 mt-4">
-              <li>Email: info@revistamatices.com</li>
-              <li>Teléfono: +54 351 123-4567</li>
-              <li>Dirección: Av. Rafael Núñez 3000, Cerro de las Rosas, Córdoba, Argentina</li>
-            </ul>
-          </section>
-
-          <div className="border-t pt-8 mt-12">
-            <p className="text-sm text-muted-foreground">
-              Esta política de privacidad se rige por las leyes de la República Argentina y cumple 
-              con la Ley de Protección de Datos Personales N° 25.326.
-            </p>
+              <LegalSection
+                id="contacto"
+                title="6. Cambios y vías de contacto"
+                description="Publicaremos cualquier modificación relevante de esta política en la misma URL y actualizaremos la fecha de vigencia. Mantenerse informado te ayudará a comprender cómo protegemos tus datos."
+              >
+                <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-2 text-sm text-slate-600">
+                  <p>
+                    <span className="font-semibold text-slate-900">Correo:</span>{" "}
+                    <a href={`mailto:${APP_CONFIG.email}`} className="text-[#005B82] hover:underline">
+                      {APP_CONFIG.email}
+                    </a>
+                  </p>
+                  <p>
+                    <span className="font-semibold text-slate-900">Teléfono:</span>{" "}
+                    <a href="tel:+543511234567" className="text-[#005B82] hover:underline">
+                      {APP_CONFIG.phone}
+                    </a>
+                  </p>
+                  <p>
+                    <span className="font-semibold text-slate-900">Dirección:</span> {APP_CONFIG.address}
+                  </p>
+                  <p className="text-xs text-slate-500 pt-2">
+                    Esta política se rige por las leyes de la República Argentina y por la Autoridad de Aplicación de la
+                    Agencia de Acceso a la Información Pública.
+                  </p>
+                </div>
+              </LegalSection>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
-    </div>
-  );
+    </LandingLayout>
+  )
 }

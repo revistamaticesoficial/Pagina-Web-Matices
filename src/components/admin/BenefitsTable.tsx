@@ -24,6 +24,7 @@ export function BenefitsTable({ benefits, onEdit, onDelete }: BenefitsTableProps
       discount: "Descuento",
       promotion: "Promoción",
       gift: "Regalo",
+      multipromo: "Multipromo",
     }
     return type ? types[type] || type : "-"
   }
@@ -63,7 +64,13 @@ export function BenefitsTable({ benefits, onEdit, onDelete }: BenefitsTableProps
                   <Badge variant="outline">{getBenefitTypeLabel(benefit.type)}</Badge>
                 </TableCell>
                 <TableCell>
-                  <span className="text-muted-foreground">-</span>
+                  {benefit.flag ? (
+                    <Badge variant="secondary" className="font-mono tracking-widest">
+                      {benefit.flag}
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
                 </TableCell>
                 <TableCell>
                   {(benefit.redemptions_count || 0)} / {benefit.quantity}

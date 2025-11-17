@@ -13,9 +13,15 @@ import Image from "next/image"
 // Función helper para detectar si es video o imagen basado en la extensión
 const isVideo = (url: string | null | undefined): boolean => {
   if (!url) return false;
-  const urlLower = url.toLowerCase();
-  // Verificar si termina en .mp4 (últimos 4 caracteres)
-  return urlLower.endsWith('.mp4');
+  try {
+    const pathname = new URL(url).pathname;
+    const extension = pathname.split('.').pop()?.toLowerCase();
+    return extension === 'mp4';
+  } catch {
+    const sanitized = url.split('?')[0].split('#')[0];
+    const extension = sanitized.split('.').pop()?.toLowerCase();
+    return extension === 'mp4';
+  }
 };
 
 interface BenefitsGridProps {
@@ -34,6 +40,7 @@ export function BenefitsGrid({ benefits, onEdit, onDelete }: BenefitsGridProps) 
       discount: "Descuento",
       promotion: "Promoción",
       gift: "Regalo",
+      multipromo: "Multipromo",
     }
     return type ? types[type] || type : "-"
   }
@@ -93,6 +100,13 @@ export function BenefitsGrid({ benefits, onEdit, onDelete }: BenefitsGridProps) 
                   ) : (
                     <div className="h-full w-full flex items-center justify-center">
                       <BookOpen className="h-8 w-8 text-gray-500" />
+                    </div>
+                  )}
+                  {benefit.flag && (
+                    <div className="absolute left-2 top-2">
+                      <Badge variant="secondary" className="bg-white/90 text-gray-900 font-semibold tracking-widest">
+                        {benefit.flag}
+                      </Badge>
                     </div>
                   )}
                   <Badge variant="default" className="absolute right-2 top-2">

@@ -26,6 +26,7 @@ interface ArticleEditorProps {
     tags: string[]
     isPublished: boolean
     featuredImage?: string
+    author?: string
   }
   onSave: (data: any) => void
   onCancel: () => void
@@ -42,6 +43,7 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
     tags: initialData?.tags?.join(", ") || "",
     isPublished: initialData?.isPublished || false,
     featuredImage: initialData?.featuredImage || "",
+    author: initialData?.author || "",
   })
 
   const handleImageChange = (url: string | null) => {
@@ -65,6 +67,7 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
       tags: tagsArray,
       isPublished: formData.isPublished,
       featured_image_url: formData.featuredImage,
+      author: formData.author,
     })
   }
 
@@ -122,6 +125,16 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
           onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
           placeholder="Breve resumen del artículo..."
           rows={2}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="author">Autor</Label>
+        <Input
+          id="author"
+          value={formData.author}
+          onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+          placeholder="Nombre del autor..."
         />
       </div>
 

@@ -67,6 +67,7 @@ export default function EditarArticuloPage() {
         published_at: data.isPublished && !article?.is_published ? new Date().toISOString() : article?.published_at,
         featured_image_url: data.featured_image_url || null,
         read_time: Math.ceil(data.content.trim().split(' ').length / 200),
+        author: data.author?.trim() || null,
       }
 
       console.log('Updating article with data:', updateData)
@@ -126,6 +127,7 @@ export default function EditarArticuloPage() {
           tags: article.tags || [],
           isPublished: article.is_published,
           featuredImage: article.featured_image_url || '',
+          author: (article as any).author || '',
         }}
         onSave={handleSave}
         onCancel={handleCancel}

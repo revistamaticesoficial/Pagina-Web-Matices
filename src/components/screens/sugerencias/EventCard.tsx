@@ -1,7 +1,9 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { Calendar, Clock, MapPin, Users, Tag } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Card, CardContent, CardFooter } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
 import { Event } from '@/types/sugerencias';
 
 interface EventCardProps {
@@ -77,7 +79,7 @@ export default function EventCard({ event }: EventCardProps) {
       </div>
       
       {/* Content */}
-      <CardContent className="p-6 flex flex-col flex-grow">
+      <CardContent className="p-6 pt-6 flex flex-col flex-grow">
         <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
           {event.title}
         </h3>
@@ -121,18 +123,18 @@ export default function EventCard({ event }: EventCardProps) {
             ))}
           </div>
         )}
-
-        {/* Spacer to push button to bottom */}
-        <div className="flex-grow"></div>
-
-        {/* Action Button */}
-        {/* <Button 
-          className="w-full" 
-          variant={event.isFree ? "default" : "outline"}
-        >
-          {event.isFree ? 'Participar Gratis' : 'Ver Detalles'}
-        </Button> */}
       </CardContent>
+
+      {/* Footer with Button */}
+      <CardFooter className="pt-0 pb-6 px-6">
+        <Link href={`/eventos/${event.id}`} className="w-full">
+          <Button 
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white" 
+          >
+            Ver Detalles
+          </Button>
+        </Link>
+      </CardFooter>
     </Card>
   );
 }

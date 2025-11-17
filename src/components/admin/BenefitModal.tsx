@@ -38,6 +38,7 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
     valid_to: "",
     type: "discount",
     banner_url: "",
+    flag: "",
   })
 
   const [businesses, setBusinesses] = useState<Pick<AdminComercio, 'id' | 'name'>[]>([])
@@ -70,7 +71,10 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
 
   useEffect(() => {
     if (benefit) {
-      setFormData(benefit)
+      setFormData({
+        ...benefit,
+        flag: benefit.flag || "",
+      })
     } else {
       setFormData({
         title: "",
@@ -80,6 +84,7 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
         valid_to: "",
         type: "discount",
         banner_url: "",
+        flag: "",
       })
     }
   }, [benefit, open])
@@ -191,7 +196,23 @@ export function BenefitModal({ benefit, open, onClose, onSave }: BenefitModalPro
                   </SelectContent>
                 </Select>
               </div>
-
+              <div className="space-y-2">
+                <Label htmlFor="flag" className="text-sm font-medium text-slate-700">
+                  Flag (máx. 4 caracteres)
+                </Label>
+                <Input
+                  id="flag"
+                  value={formData.flag ?? ""}
+                  maxLength={4}
+                  onChange={(e) => {
+                    const normalized = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4)
+                    setFormData({ ...formData, flag: normalized })
+                  }}
+                  placeholder="NEW"
+                  className="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400 uppercase tracking-widest"
+                />
+                <p className="text-xs text-slate-500">Etiqueta corta que se mostrará en la tarjeta.</p>
+              </div>
             </div>
           </div>
 

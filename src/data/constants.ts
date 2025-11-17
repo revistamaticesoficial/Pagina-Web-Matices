@@ -4,10 +4,10 @@ export const APP_CONFIG = {
   name: "Revista Matices",
   description: "Revista del Cerro de las Rosas - Córdoba, Argentina",
   tagline: "34 años informando al norte de Córdoba",
-  url: "https://revistamatices.com",
-  email: "info@revistamatices.com",
-  phone: "+54 351 123-4567",
-  address: "Av. Rafael Núñez 3000, Cerro de las Rosas, Córdoba, Argentina",
+  url: "https://revistamaticescba.com",
+  email: "publicidadnuevosmatices@gmail.com",
+  phone: "+54 351 5141456",
+  address: "Cerro de las Rosas, Córdoba, Argentina",
 };
 
 export const CATEGORIES: {
@@ -105,7 +105,6 @@ export const FOOTER_LINKS = {
   legal: [
     { name: "Términos y condiciones", href: "/terminos" },
     { name: "Política de privacidad", href: "/privacidad" },
-    { name: "Política de cookies", href: "/cookies" },
   ],
   social: [
     { name: "Instagram", href: "https://instagram.com/revistamaticesoficial" },

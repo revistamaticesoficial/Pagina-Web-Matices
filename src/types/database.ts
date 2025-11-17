@@ -231,6 +231,7 @@ export interface Database {
           valid_to: string | null;
           created_at: string;
           expires_at: string | null;
+          flag: string | null;
         };
         Insert: {
           id?: string;
@@ -242,6 +243,7 @@ export interface Database {
           quantity?: number;
           created_at?: string;
           expires_at?: string | null;
+          flag?: string | null;
         };
         Update: {
           id?: string;
@@ -253,6 +255,7 @@ export interface Database {
           quantity?: number;
           created_at?: string;
           expires_at?: string | null;
+          flag?: string | null;
         };
         Relationships: [
           {

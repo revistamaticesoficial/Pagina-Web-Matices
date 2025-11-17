@@ -24,6 +24,7 @@ export interface Benefit {
   banner_url: string;
   discount: string;
   discountPercentage?: number;
+  flag?: string | null;
   code: string;
   validUntil: string;
   category: string;
