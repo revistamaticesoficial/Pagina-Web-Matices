@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Benefit } from '@/types/sugerencias';
 import { BenefitService } from '@/lib/benefit-service';
-import { Gift, Calendar, X, CheckCircle, Loader2, AlertTriangle, Copy, Check, Download, QrCode, Printer } from 'lucide-react';
+import { Gift, Calendar, X, CheckCircle, Loader2, AlertTriangle, Copy, Check, Download, QrCode, Printer, PhoneCall, MapPinned, MessageCircleMore } from 'lucide-react';
 import { formatDateLabel } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -32,6 +32,10 @@ interface FormErrors {
   email?: string;
   aceptaTerminos?: string;
 }
+
+const WHATSAPP_LINK = 'https://wa.me/5493515141456?text=Hola%20Matices%2C%20quisiera%20hacer%20una%20consulta'
+const PHONE_LINK = 'tel:+543515141456'
+const LOCATION_LINK = 'https://maps.app.goo.gl/xQfyBjDbLyQbQfje8'
 
 const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPromoProps) => {
   const [step, setStep] = useState<ModalStep>('form');
@@ -624,26 +628,12 @@ const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPro
       {/* Mostrar cupón visual si está activado */}
       {showCoupon && renderCouponVisual()}
 
-      
-
-      {/* Botones de acción para el cupón */}
-      <div className="flex gap-3">
-        
-        <Button
-          onClick={() => setIsRedeemOpen(false)}
-          variant="outline"
-          className="flex-1"
-        >
-          Cerrar
-        </Button>
-      </div>
-
-      <div className="bg-blue-50 p-4 rounded-lg text-left">
+      <div className="bg-orange-50 p-4 rounded-lg text-left">
         <div className="flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+          <AlertTriangle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
           <div>
-            <p className="text-sm font-medium text-blue-900 mb-1">Importante:</p>
-            <ul className="text-sm text-blue-800 space-y-1">
+            <p className="text-sm font-medium text-orange-900 mb-1">Importante:</p>
+            <ul className="text-sm text-orange-800 space-y-1">
               <li>• Beneficio: {selectedBenefit?.title}</li>
               <li>• Comercio: {selectedBenefit?.business}</li>
               <li>• Cliente: {formData.nombreCompleto} — DNI: {formData.dni}</li>
@@ -653,6 +643,70 @@ const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPro
             </ul>
           </div>
         </div>
+      </div>
+
+      <div className="rounded-2xl bg-gray-50 p-4 space-y-3 text-left">
+        <p className="text-sm font-semibold text-gray-900">¿Cómo prefieres seguir?</p>
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-gray-600 tracking-wide">
+              Contacta al comercio para canjear tu cupón
+            </p>
+            <Button
+              type="button"
+              className="w-full bg-green-500/10 text-green-900 hover:bg-green-500/20 border border-green-200 transition-colors"
+              onClick={() => window.open(WHATSAPP_LINK, '_blank')}
+            >
+             <MessageCircleMore className="w-4 h-4 mr-2" /> WhatsApp
+            </Button>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-gray-600  tracking-wide">
+              Llama al comercio para canjear tu cupón
+            </p>
+            <Button
+              type="button"
+              className="w-full bg-green-500/10 text-green-900 hover:bg-green-500/20 border border-green-200 transition-colors"
+              onClick={() => window.open(PHONE_LINK)}
+            >
+              <PhoneCall className="w-4 h-4 mr-2" /> Llamar
+            </Button>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-gray-600 tracking-wide">
+              Llega al local a canjear el cupón
+            </p>
+            <Button
+              type="button"
+              className="w-full bg-green-500/10 text-green-900 hover:bg-green-500/20 border border-green-200 transition-colors"
+              onClick={() => window.open(LOCATION_LINK, '_blank')}
+            >
+              <MapPinned className="w-4 h-4 mr-2" /> Ubicación
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* <div className="flex gap-3">
+        <Button
+          onClick={() => setIsRedeemOpen(false)}
+          variant="outline"
+          className="flex-1"
+        >
+          Cerrar
+        </Button>
+      </div> */}
+
+      <div className="text-sm text-slate-600">
+        Por cualquier consulta contáctanos a:{' '}
+        <a
+          href={WHATSAPP_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-slate-900 underline underline-offset-4"
+        >
+          nuestro WhatsApp
+        </a>
       </div>
     </div>
   );
