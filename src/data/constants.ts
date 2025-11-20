@@ -80,11 +80,11 @@ export const REDES_SOCIALES = {
 };
 
 export const NAVIGATION = [
-  { name: "Inicio", href: "/", current: true },
   { name: "Sugerencias", href: "/sugerencias", current: false },
   { name: "Articulos", href: "/articulos", current: false },
   { name: 'Comercios', href: '/comercios', current: false },
   { name: "Ediciones", href: "/ediciones", current: false },
+  {name: "servicios", href: "/servicios", current: false },
   { name: "¿Quienes somos?", href: "/nosotros", current: false },
   { name: 'Contacto', href: '/contacto', current: false },
   // { name: 'Todos los números', href: '/todoslosnumeros', current: false }
