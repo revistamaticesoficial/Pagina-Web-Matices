@@ -49,8 +49,7 @@ export default function CrearArticuloPage() {
         published_at: data.isPublished ? new Date().toISOString() : null,
         featured_image_url: data.featured_image_url || null,
         read_time: Math.ceil(data.content.trim().split(' ').length / 200),
-        author_name: 'Redacción Matices', // Por ahora fijo
-        author: data.author?.trim() || null,
+        author_name: data.author?.trim() || 'Redacción Matices',
         is_premium: false,
         is_featured: false,
       }

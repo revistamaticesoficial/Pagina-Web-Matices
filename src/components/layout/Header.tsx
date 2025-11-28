@@ -15,11 +15,17 @@ export function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { authState, logout } = useAuth();
 
+  const profileName =
+    authState.user?.profile?.full_name?.trim() ||
+    [authState.user?.firstName, authState.user?.lastName].filter(Boolean).join(' ').trim() ||
+    authState.user?.email ||
+    'Mi cuenta';
+
   const handleAccess = () => {
     authState.isAuthenticated 
-    ? router.push("/validation")
-    : router.push("/auth/login")
-  }
+      ? router.push("/validation")
+      : router.push("/auth/login");
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white border-border shandow-sm">
@@ -49,7 +55,7 @@ export function Header() {
             ))}
             <button onClick={handleAccess} className="text-sm text-gray-700 py-2 border flex gap-2 rounded-md border-gray-200 hover:shadow-lg px-4">
               <UserRound className="h-4 w-4" />
-              <span>Acceder</span>
+              <span>{authState.isAuthenticated ? profileName : 'Acceder'}</span>
             </button>
           </nav>
           <div className="block md:hidden rounded-md border-gray-200">

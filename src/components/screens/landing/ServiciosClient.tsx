@@ -35,25 +35,25 @@ const SERVICES: ServiceItem[] = [
         title: 'Formato Flexible',
         description: 'Elegí entre página completa, media o cuarto según tu presupuesto.',
         details:
-          'Planificamos tu anuncio según la sección de mayor afinidad y producimos la pieza en los formatos clásicos de la revista: doble página, página completa, media página o aviso modular.'
+          'Planificamos tu anuncio según la sección de mayor afinidad y producimos la pieza en los formatos clásicos de la revista: doble página, página completa, media página y otros formatos en módulo.'
       },
       {
-        title: 'Calidad Premium',
+        title: 'Calidad papel diario',
         description: 'Impresión en papel couché de alto gramaje.',
         details:
-          'Imprimimos en couché brillante de 150 g para asegurar colores vibrantes y definición fotográfica. Cada edición pasa por control de color para mantener la fidelidad de tu marca.'
+          'trabajamos con papel diario reciclable, contribuyendo a un proceso mas sustentable. Elegimos papel de diario reciclable para ofrecer una edicion responsable y sostenible'
       },
       {
-        title: 'Distribución Estratégica',
+        title: 'Distribución a tu hogar',
         description: 'Llegada garantizada a puntos de alto tráfico.',
         details:
-          'Distribuimos en comercios del Cerro de las Rosas, consultorios, bares y eventos empresariales. También contamos con envíos personalizados a bases de datos premium.'
+          'La revista se reparte de puerta a puerta mediante un equipo contratado, asegurando la entrega en hogares y comercios.',
       },
       {
-        title: 'Diseño Incluido',
-        description: 'Asesoramiento y diseño gráfico profesional sin costo.',
+        title: 'Diseño a tu medida',
+        description: 'Asesoramiento y diseño gráfico profesional.',
         details:
-          'Nuestro equipo creativo adapta tus piezas o crea la estética desde cero para que mantengas coherencia con tu identidad visual sin invertir en estudios externos.'
+          'Nuestro equipo creativo adapta tus piezas o crea la estética desde cero para que mantengas coherencia con tu identidad visual.'
       }
     ]
   },
