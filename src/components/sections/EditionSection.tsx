@@ -70,7 +70,7 @@ export default async function EditionSection() {
               >
                 <div className="relative h-96 overflow-hidden">
                   <Image
-                    src={edition.image}
+                    src={edition.image || '/images/logo.jpg'}
                     alt={`Revista Matices - ${edition.month} ${edition.year}`}
                     width={300}
                     height={400}
