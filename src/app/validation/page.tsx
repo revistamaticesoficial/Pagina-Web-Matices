@@ -51,19 +51,23 @@ export default function ValidationPage() {
           return;
         }
 
-        // 3) Si NO está en white_list, verificar onboarding para /gestion
-        // (solo aplica para clientes, no para empleados de admin)
-        const profileResult = await softTimeout(
+        // 3) Si no está en white_list, verificar si tiene un comercio asociado
+        const businessResult = await softTimeout(
           supabase
-            .from('profiles')
-            .select('isOnboardingComplete')
-            .eq('id', userId)
+            .from('comercios')
+            .select('id')
+            .eq('owner_id', userId)
             .maybeSingle()
-        , 2500);
+        , 3000);
 
-        const isComplete = Boolean(profileResult?.data?.isOnboardingComplete);
+        if (businessResult?.data?.id) {
+          navigated = true;
+          router.push('/gestion/inicio');
+          return;
+        }
+
         navigated = true;
-        router.push(isComplete ? '/gestion/inicio' : '/gestion/cuenta');
+        router.push('/cuenta');
       } catch (e) {
         if (!navigated) {
           navigated = true;
@@ -75,7 +79,7 @@ export default function ValidationPage() {
     const globalFallback = setTimeout(() => {
       if (!navigated && !cancelled) {
         navigated = true;
-        router.push('/gestion/inicio');
+        router.push('/cuenta');
       }
     }, 6000);
 

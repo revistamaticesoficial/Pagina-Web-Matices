@@ -84,8 +84,8 @@ export function AnnouncementPopup({ announcement, onClose }: AnnouncementPopupPr
           </div>
         </div>
 
-        {/* Mobile: Grid de 3 anuncios */}
-        <div className="md:hidden relative w-full max-w-[90vw] bg-white rounded-lg shadow-2xl overflow-hidden">
+        {/* Mobile: popup más grande y legible */}
+        <div className="md:hidden relative w-[95vw] max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b">
             <h3 className="text-lg font-semibold text-gray-900">Anuncios</h3>
@@ -99,10 +99,10 @@ export function AnnouncementPopup({ announcement, onClose }: AnnouncementPopupPr
             </Button>
           </div>
 
-          {/* Grid de imágenes */}
-          <div className="grid grid-cols-1 gap-2 p-4">
+          {/* Imagen principal */}
+          <div className="grid grid-cols-1 gap-3 p-4 pb-5">
             <div
-              className={`relative aspect-[4/3] max-h-[200px] rounded-lg overflow-hidden shadow-md ${
+              className={`relative w-full max-h-[70vh] aspect-[3/4] rounded-xl overflow-hidden shadow-md ${
                 announcement.click_url ? 'cursor-pointer' : ''
               }`}
               onClick={handleImageClick}

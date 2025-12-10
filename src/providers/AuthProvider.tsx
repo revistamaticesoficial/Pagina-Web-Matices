@@ -93,7 +93,7 @@ const supabaseAuthService = {
         .insert({
           id: data.user.id,
           full_name: `${credentials.firstName || ''} ${credentials.lastName || ''}`.trim(),
-          role: 'owner',
+          role: 'consumer',
         });
       if (createError) {
         throw new Error(createError.message || 'No se pudo crear el perfil');

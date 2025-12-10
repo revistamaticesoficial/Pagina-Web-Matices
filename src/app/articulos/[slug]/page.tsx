@@ -6,10 +6,11 @@ import { articleService } from '@/lib/article-service';
 import type { Database } from '@/types/database';
 import LandingLayout from '@/components/layout/LandingLayout';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { Calendar, Clock, User, BookOpen, ArrowLeft, Share2, Facebook, Twitter, Linkedin, Copy, Check } from 'lucide-react';
+import { Calendar, Clock, User, BookOpen, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { ShareButtons, CopyLinkButton } from '@/components/ShareButtons';
 
 type Article = Database['public']['Tables']['articles']['Row'];
 
@@ -116,7 +117,7 @@ export default async function ArticleDetailPage({
             <div className="absolute inset-0 bg-black/50"></div>
             
             {/* Contenido del hero */}
-            <div className="relative z-10 container mx-auto px-4 h-full justify-between pb-8">
+            <div className="relative z-10 container mx-auto px-4 h-full justify-between pb-8 pt-16 md:pt-20">
               <div className="max-w-4xl justify-between h-full">
                 <div className="mb-4">
                   <span className="px-3 py-1 bg-[#F58220] text-white rounded-full text-sm font-medium">
@@ -246,23 +247,13 @@ export default async function ArticleDetailPage({
                 {/* Compartir en redes sociales */}
                 <div className="mt-12 pt-8 border-t">
                   <h3 className="text-sm font-semibold text-gray-900 mb-4">Compartir:</h3>
-                  <div className="flex gap-3">
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Facebook className="w-4 h-4" />
-                      Facebook
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Twitter className="w-4 h-4" />
-                      Twitter
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Linkedin className="w-4 h-4" />
-                      LinkedIn
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Copy className="w-4 h-4" />
-                      Copiar link
-                    </Button>
+                  <div className="flex flex-col sm:flex-row gap-3 items-start">
+                    <ShareButtons
+                      title={article.title}
+                      url={`/articulos/${article.slug}`}
+                      description={article.excerpt || undefined}
+                    />
+                    <CopyLinkButton url={`/articulos/${article.slug}`} />
                   </div>
                 </div>
               </div>
