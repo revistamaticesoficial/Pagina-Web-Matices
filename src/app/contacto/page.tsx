@@ -207,10 +207,10 @@ export default function ContactoPage() {
                         Teléfono
                       </div>
                       <a
-                        href="tel:+351 5141456"
+                        href="tel:+543512034871"
                         className="text-sm text-[#005B82] underline underline-offset-4"
                       >
-                        +54 351 514-1456
+                        +54 351 203-4871
                       </a>
                     </div>
                   </li>
@@ -256,7 +256,7 @@ export default function ContactoPage() {
                     </Button>
                   </a>
                   <a
-                    href="https://wa.me/3515141456?text=Hola%20Matices%2C%20quisiera%20hacer%20una%20consulta"
+                    href="https://wa.me/3512034871?text=Hola%20Matices%2C%20quisiera%20hacer%20una%20consulta"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

@@ -23,7 +23,7 @@ export function Contact() {
   const handleCardClick = (cardType: string) => {
     if (cardType === "whatsapp") {
       window.open(
-        "https://wa.me/3515141456?text=Hola, me gustaría obtener más información sobre...",
+        "https://wa.me/3512034871?text=Hola, me gustaría obtener más información sobre...",
         "_blank"  
       );
     } else if (cardType === "form") {

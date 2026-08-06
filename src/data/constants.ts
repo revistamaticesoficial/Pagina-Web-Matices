@@ -6,7 +6,7 @@ export const APP_CONFIG = {
   tagline: "34 años informando al norte de Córdoba",
   url: "https://revistamaticescba.com",
   email: "publicidadnuevosmatices@gmail.com",
-  phone: "+54 351 5141456",
+  phone: "+54 351 2034871",
   address: "Cerro de las Rosas, Córdoba, Argentina",
 };
 
@@ -76,7 +76,7 @@ export const BUSINESS_PLANS = [
 export const REDES_SOCIALES = {
   facebook: "https://www.facebook.com/profile.php?id=61579318061468",
   instagram: "https://instagram.com/revistamaticesoficial",
-  whatsapp: "https://api.whatsapp.com/send?phone=5493515141456&text=Hola%20te%20escribo%20desde%20la%20web%20de%20Revista%20Matices",
+  whatsapp: "https://api.whatsapp.com/send?phone=5493512034871&text=Hola%20te%20escribo%20desde%20la%20web%20de%20Revista%20Matices",
 };
 
 export const NAVIGATION = [

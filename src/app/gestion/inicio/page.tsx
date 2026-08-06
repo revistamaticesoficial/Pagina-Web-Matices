@@ -337,7 +337,7 @@ export default function DashboardPage() {
                 className="w-full justify-start text-sm sm:text-base py-2 sm:py-3 bg-gradient-to-r from-[#3BA740] to-[#1D8422] hover:from-[#1D8422] hover:to-[#3BA740] duration-300  text-white hover:text-white"
               >
                 <Link
-                  href="https://wa.me/3515141456?text=Hola%20Matices%2C%20quisiera%20añadir%20una%20promo%20a%20la%20web"
+                  href="https://wa.me/3512034871?text=Hola%20Matices%2C%20quisiera%20añadir%20una%20promo%20a%20la%20web"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-start"
@@ -351,7 +351,7 @@ export default function DashboardPage() {
                 className="w-full justify-start text-sm sm:text-base py-2 sm:py-3"
               >
                 <Link
-                  href="https://wa.me/3515141456?text=Hola%20Matices%2C%20quisiera%20añadir%20un%20evento%20a%20la%20web"
+                  href="https://wa.me/3512034871?text=Hola%20Matices%2C%20quisiera%20añadir%20un%20evento%20a%20la%20web"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-start"

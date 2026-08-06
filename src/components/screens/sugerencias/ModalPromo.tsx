@@ -33,8 +33,8 @@ interface FormErrors {
   aceptaTerminos?: string;
 }
 
-const WHATSAPP_LINK = 'https://wa.me/5493515141456?text=Hola%20Matices%2C%20quisiera%20hacer%20una%20consulta'
-const PHONE_LINK = 'tel:+543515141456'
+const WHATSAPP_LINK = 'https://wa.me/5493512034871?text=Hola%20Matices%2C%20quisiera%20hacer%20una%20consulta'
+const PHONE_LINK = 'tel:+543512034871'
 const LOCATION_LINK = 'https://maps.app.goo.gl/xQfyBjDbLyQbQfje8'
 
 const ModalPromo = ({ isRedeemOpen, setIsRedeemOpen, selectedBenefit }: ModalPromoProps) => {
