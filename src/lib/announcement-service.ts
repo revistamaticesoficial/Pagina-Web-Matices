@@ -14,7 +14,7 @@ export const announcementService = {
   /**
    * Obtener todos los anuncios activos desde Supabase
    */
-  async getActiveAnnouncements(): Promise<Announcements[]> {
+  async getActiveAnnouncements(): Promise<Announcement[]> {
     const supabase = createSupabaseClient();
     
     const now = new Date().toISOString().split('T')[0]; // Solo la fecha sin hora
@@ -72,7 +72,7 @@ export const announcementService = {
 
 
     // Mapear de la estructura de Supabase al tipo Announcement
-    return filtered.map((announcements) => ({
+    return activeData.map((announcements) => ({
       id: announcements.id,
       title: announcements.title,
       image_url: announcements.image_url,

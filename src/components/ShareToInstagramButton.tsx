@@ -16,10 +16,10 @@ export function ShareToInstagramButton({ url, imageUrl, className }: ShareToInst
 
   const handleShare = async () => {
     // Usar Web Share API - es la forma estándar y funciona mejor
-    await useWebShareAPI();
+    await shareViaWebShareAPI();
   };
 
-  const useWebShareAPI = async () => {
+  const shareViaWebShareAPI = async () => {
     // Verificar si el navegador soporta Web Share API
     if (!navigator.share) {
       setIsSharing(false);
@@ -103,7 +103,7 @@ export function ShareToInstagramButton({ url, imageUrl, className }: ShareToInst
             Instagram Stories no permite compartir URLs directamente. Para compartir este artículo:
           </p>
           <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-            <li>Haz clic en "Compartir en Instagram"</li>
+            <li>Haz clic en &quot;Compartir en Instagram&quot;</li>
             <li>Selecciona Instagram desde el menú de compartir</li>
             <li>Instagram abrirá la opción de crear un Post</li>
             <li>Para crear una Story: abre Instagram manualmente, crea una nueva historia y usa el sticker de enlace</li>

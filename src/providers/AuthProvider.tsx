@@ -2,10 +2,9 @@
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { User, AuthState, LoginCredentials, RegisterCredentials, Logout } from '@/types/auth';
+import { User, AuthState, LoginCredentials, RegisterCredentials } from '@/types/auth';
 import { supabase, getUserProfile, getUserBusiness } from '@/lib/supabase';
 import { ProfileWithBusiness } from '@/types/business';
-import { Home, Users, Zap, Calendar, FileText, User, Settings, ChevronLeft, ChevronRight, BookOpen, Megaphone, LogOut } from "lucide-react"
 
 // Timeout suave: si tarda, devolvemos null en lugar de lanzar error y no bloqueamos la UI
 async function softTimeout<T>(promise: Promise<T>, ms = 3500): Promise<T | null> {
@@ -110,7 +109,7 @@ const supabaseAuthService = {
       isEmailVerified: data.user.email_confirmed_at !== null,
       createdAt: data.user.created_at,
       updatedAt: data.user.updated_at || data.user.created_at,
-      profile: profile,
+      profile: profile as any,
     };
   },
 

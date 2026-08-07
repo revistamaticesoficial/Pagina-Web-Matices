@@ -23,7 +23,7 @@ export const getCurrentUser = async () => {
 export const getUserProfile = async (userId: string) => {
   const { data, error } = await supabase
     .from('profiles')
-    .select('avatar_url, full_name')
+    .select('*')
     .eq('id', userId)
     .single()
   

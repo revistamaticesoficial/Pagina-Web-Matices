@@ -9,18 +9,22 @@ type SelectContextValue = {
 
 const SelectContext = createContext<SelectContextValue | null>(null);
 
-export function Select({ defaultValue, onValueChange, children }: PropsWithChildren<{ defaultValue?: string; onValueChange?: (value: string) => void }>) {
+export function Select({ value, defaultValue, onValueChange, children }: PropsWithChildren<{ value?: string; defaultValue?: string; onValueChange?: (value: string) => void }>) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<string | undefined>(defaultValue);
-  
+  const [internalValue, setInternalValue] = useState<string | undefined>(defaultValue);
+  const isControlled = value !== undefined;
+  const currentValue = isControlled ? value : internalValue;
+
   const handleValueChange = (newValue: string | undefined) => {
-    setValue(newValue);
+    if (!isControlled) {
+      setInternalValue(newValue);
+    }
     if (newValue !== undefined) {
       onValueChange?.(newValue);
     }
   };
-  
-  const ctx = useMemo(() => ({ open, setOpen, value, setValue: handleValueChange }), [open, value]);
+
+  const ctx = useMemo(() => ({ open, setOpen, value: currentValue, setValue: handleValueChange }), [open, currentValue]);
   return <SelectContext.Provider value={ctx}>{children}</SelectContext.Provider>;
 }
 
