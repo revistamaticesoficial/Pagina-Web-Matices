@@ -61,24 +61,6 @@ export default function NosotrosPage() {
       image: "/images/team/favio.png",
       color: "text-orange-600"
     },
-    {
-      name: "Dylan Peralta",
-      role: "Programador",
-      image: "/images/team/dylan1.png",
-      color: "text-red-600"
-    },
-    {
-      name: "Juan Ignacio",
-      role: "Programador",
-      image: "/images/team/juani2.png",
-      color: "text-indigo-600"
-    },
-    {
-      name: "Jetzabel",
-      role: "Programadora",
-      image: "/images/team/jet.png",
-      color: "text-teal-600"
-    }
   ];
 
   const nextSlide = () => {
