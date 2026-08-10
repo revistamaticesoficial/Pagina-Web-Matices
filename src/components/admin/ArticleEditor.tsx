@@ -341,9 +341,9 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
                     blockquote: ({ node, ...props }) => (
                       <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 whitespace-pre-wrap" {...props} />
                     ),
-                    img: ({ node, ...props }) => (
+                    img: ({ node, alt, ...props }) => (
                       <div className="my-6">
-                        <img {...props} className="rounded-lg w-full h-auto shadow-lg" loading="lazy" />
+                        <img {...props} alt={alt || ''} className="rounded-lg w-full h-auto shadow-lg" loading="lazy" />
                       </div>
                     ),
                   }}

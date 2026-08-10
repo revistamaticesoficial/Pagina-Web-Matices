@@ -22,9 +22,11 @@ export function Header() {
     'Mi cuenta';
 
   const handleAccess = () => {
-    authState.isAuthenticated 
-      ? router.push("/validation")
-      : router.push("/auth/login");
+    if (authState.isAuthenticated) {
+      router.push("/validation");
+    } else {
+      router.push("/auth/login");
+    }
   };
 
   return (

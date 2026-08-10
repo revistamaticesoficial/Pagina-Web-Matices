@@ -153,7 +153,6 @@ export default function CuentaPage() {
       }
     }
     load()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId])
 
   const getEffectiveUserId = async (): Promise<string | null> => {
