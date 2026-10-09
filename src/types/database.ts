@@ -535,6 +535,7 @@ export interface Database {
           image: string | null;
           filename: string | null;
           pdf_url: string | null;
+          flipbook_url: string | null;
           position: number;
           created_at: string;
           updated_at: string;
@@ -547,6 +548,7 @@ export interface Database {
           image?: string | null;
           filename?: string | null;
           pdf_url?: string | null;
+          flipbook_url?: string | null;
           position?: number;
           created_at?: string;
           updated_at?: string;
@@ -559,6 +561,7 @@ export interface Database {
           image?: string | null;
           filename?: string | null;
           pdf_url?: string | null;
+          flipbook_url?: string | null;
           position?: number;
           created_at?: string;
           updated_at?: string;

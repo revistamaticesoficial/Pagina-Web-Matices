@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   keywords: 'revista matices, ediciones, números, descarga, digital, córdoba',
 };
 
+// Las ediciones se editan desde el admin: no cachear la página en el build
+export const dynamic = 'force-dynamic';
+
 export default function EdicionesPage() {
   return (
     <LandingLayout>

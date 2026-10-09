@@ -113,6 +113,7 @@ export interface AdminEdition {
   image: string | null;
   filename: string | null;
   pdf_url: string | null;
+  flipbook_url: string | null;
   position: number;
   created_at: string;
   updated_at: string;
@@ -1094,6 +1095,7 @@ if (data.close_time !== undefined) {
       image: data.image || null,
       filename: data.filename || null,
       pdf_url: data.pdf_url || null,
+      flipbook_url: data.flipbook_url?.trim() || null,
       position,
     };
     
@@ -1118,6 +1120,7 @@ if (data.close_time !== undefined) {
       image: data.image !== undefined ? (data.image || null) : undefined,
       filename: data.filename !== undefined ? (data.filename || null) : undefined,
       pdf_url: data.pdf_url !== undefined ? (data.pdf_url || null) : undefined,
+      flipbook_url: data.flipbook_url !== undefined ? (data.flipbook_url?.trim() || null) : undefined,
       position: data.position || undefined,
       updated_at: new Date().toISOString(),
     };

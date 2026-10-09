@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Label } from "@/components/ui/Label"
-import { Calendar, ImageIcon, FileText } from "lucide-react"
+import { Calendar, ImageIcon, FileText, BookOpen } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select"
 import { ImageUpload } from "@/components/admin/ImageUpload"
 import { PDFUpload } from "@/components/admin/PDFUpload"
@@ -40,6 +40,7 @@ export function EditionModal({ edition, open, onClose, onSave }: EditionModalPro
     image: "",
     filename: "",
     pdf_url: "",
+    flipbook_url: "",
   })
 
   useEffect(() => {
@@ -53,6 +54,7 @@ export function EditionModal({ edition, open, onClose, onSave }: EditionModalPro
         image: "",
         filename: "",
         pdf_url: "",
+        flipbook_url: "",
       })
     }
   }, [edition, open])
@@ -203,6 +205,29 @@ export function EditionModal({ edition, open, onClose, onSave }: EditionModalPro
                 }}
                 bucket="editions"
               />
+            </div>
+          </div>
+
+          {/* Flipbook */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium text-slate-900 flex items-center">
+              <div className="p-2 bg-slate-100 rounded-lg mr-3">
+                <BookOpen className="h-4 w-4 text-slate-600" />
+              </div>
+              Flipbook (Heyzine)
+            </h3>
+
+            <div className="space-y-2">
+              <Label htmlFor="flipbook_url" className="text-sm font-medium text-slate-700">Link del flipbook</Label>
+              <Input
+                id="flipbook_url"
+                type="url"
+                value={formData.flipbook_url ?? ""}
+                onChange={(e) => setFormData({ ...formData, flipbook_url: e.target.value })}
+                placeholder="https://heyzine.com/flip-book/..."
+                className="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
+              />
+              <p className="text-xs text-slate-500">Al hacer click en la edición se abre la revista en un modal.</p>
             </div>
           </div>
 
