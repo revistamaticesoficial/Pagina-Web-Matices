@@ -22,8 +22,8 @@ async function loadEditions(): Promise<Edition[]> {
   const { data, error } = await supabase
     .from('editions')
     .select('*')
-    .order('year', { ascending: false })
-    .order('month', { ascending: false });
+    .order('position', { ascending: true })
+    .order('year', { ascending: false });
 
   if (error) {
     console.error('Error loading editions:', error);

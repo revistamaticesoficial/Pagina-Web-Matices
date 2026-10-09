@@ -68,6 +68,27 @@ export default function EdicionesPage() {
     }
   }
 
+  const handleMove = async (id: string, direction: "up" | "down") => {
+    const index = editions.findIndex((e) => e.id === id)
+    const target = direction === "up" ? index - 1 : index + 1
+    if (index < 0 || target < 0 || target >= editions.length) return
+
+    const reordered = [...editions]
+    ;[reordered[index], reordered[target]] = [reordered[target], reordered[index]]
+    // Renumera 1..n para que no queden posiciones repetidas
+    const renumbered = reordered.map((e, i) => ({ ...e, position: i + 1 }))
+
+    const previous = editions
+    setEditions(renumbered)
+    try {
+      await adminService.reorderEditions(renumbered.map((e) => e.id))
+    } catch (error) {
+      console.error('Error reordering editions:', error)
+      setEditions(previous)
+      alert('Error al cambiar el orden de la edición')
+    }
+  }
+
   const handleAddNew = () => {
     setSelectedEdition(null)
     setIsModalOpen(true)
@@ -115,12 +136,14 @@ export default function EdicionesPage() {
                 editions={editions}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onMove={handleMove}
               />
             ) : (
               <EditionsGrid
                 editions={editions}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onMove={handleMove}
               />
             )}
           </>

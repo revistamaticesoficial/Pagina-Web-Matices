@@ -6,15 +6,16 @@ import type { AdminEdition } from "@/lib/admin-service"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Card, CardContent, CardFooter } from "@/components/ui/Card"
-import { Edit, Trash2, Search, ImageIcon, FileText, Download } from "lucide-react"
+import { Edit, Trash2, Search, ImageIcon, FileText, Download, ArrowLeft, ArrowRight } from "lucide-react"
 
 interface EditionsGridProps {
   editions: AdminEdition[]
   onEdit: (edition: AdminEdition) => void
   onDelete: (id: string) => void
+  onMove: (id: string, direction: "up" | "down") => void
 }
 
-export function EditionsGrid({ editions, onEdit, onDelete }: EditionsGridProps) {
+export function EditionsGrid({ editions, onEdit, onDelete, onMove }: EditionsGridProps) {
   const [searchTerm, setSearchTerm] = useState("")
 
   const filteredEditions = editions.filter((edition) =>
@@ -62,6 +63,9 @@ export function EditionsGrid({ editions, onEdit, onDelete }: EditionsGridProps) 
                     <ImageIcon className="h-12 w-12" />
                   </div>
                 )}
+                <span className="absolute left-2 top-2 z-10 rounded-full bg-slate-900 px-3 py-1 text-sm font-semibold text-white">
+                  #{edition.position}
+                </span>
               </div>
             </CardContent>
             <CardContent className="p-4">
@@ -78,25 +82,47 @@ export function EditionsGrid({ editions, onEdit, onDelete }: EditionsGridProps) 
                 <p className="text-sm text-gray-400 mb-4">Sin PDF</p>
               )}
             </CardContent>
-            <CardFooter className="flex gap-2 border-t p-4">
-              {edition.pdf_url && (
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="flex-1 bg-transparent" 
-                  onClick={() => handleDownload(edition)}
+            <CardFooter className="flex flex-col gap-2 border-t p-4">
+              <div className="grid w-full grid-cols-2 gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={editions[0]?.id === edition.id}
+                  onClick={() => onMove(edition.id, "up")}
+                  title="Mover antes"
                 >
-                  <Download className="mr-2 h-4 w-4" />
-                  PDF
+                  <ArrowLeft className="h-4 w-4" />
                 </Button>
-              )}
-              <Button variant="outline" size="sm" className="flex-1 bg-transparent" onClick={() => onEdit(edition)}>
-                <Edit className="mr-2 h-4 w-4" />
-                Editar
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => onDelete(edition.id)}>
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={editions[editions.length - 1]?.id === edition.id}
+                  onClick={() => onMove(edition.id, "down")}
+                  title="Mover después"
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex w-full gap-2">
+                {edition.pdf_url && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-0 flex-1 bg-transparent"
+                    onClick={() => handleDownload(edition)}
+                  >
+                    <Download className="mr-1 h-4 w-4 shrink-0" />
+                    PDF
+                  </Button>
+                )}
+                <Button variant="outline" size="sm" className="min-w-0 flex-1 bg-transparent" onClick={() => onEdit(edition)}>
+                  <Edit className="mr-1 h-4 w-4 shrink-0" />
+                  Editar
+                </Button>
+                <Button variant="outline" size="sm" className="shrink-0" onClick={() => onDelete(edition.id)} title="Eliminar">
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
             </CardFooter>
           </Card>
         ))}

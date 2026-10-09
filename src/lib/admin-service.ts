@@ -113,6 +113,7 @@ export interface AdminEdition {
   image: string | null;
   filename: string | null;
   pdf_url: string | null;
+  position: number;
   created_at: string;
   updated_at: string;
 }
@@ -1027,8 +1028,8 @@ if (data.close_time !== undefined) {
     let query = supabase
       .from('editions')
       .select('*')
-      .order('year', { ascending: false })
-      .order('month', { ascending: false });
+      .order('position', { ascending: true })
+      .order('year', { ascending: false });
 
     if (filters?.search) {
       query = query.ilike('title', `%${filters.search}%`);
@@ -1074,6 +1075,18 @@ if (data.close_time !== undefined) {
   async createEdition(data: Partial<AdminEdition>) {
     const supabase = createSupabaseClient();
     
+    // Si no se indica orden, la nueva edición va al final (posición siguiente)
+    let position = data.position;
+    if (!position) {
+      const { data: last } = await supabase
+        .from('editions')
+        .select('position')
+        .order('position', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      position = (last?.position ?? 0) + 1;
+    }
+
     const insertData = {
       title: data.title!,
       month: data.month!,
@@ -1081,6 +1094,7 @@ if (data.close_time !== undefined) {
       image: data.image || null,
       filename: data.filename || null,
       pdf_url: data.pdf_url || null,
+      position,
     };
     
     const { data: result, error } = await supabase
@@ -1104,9 +1118,10 @@ if (data.close_time !== undefined) {
       image: data.image !== undefined ? (data.image || null) : undefined,
       filename: data.filename !== undefined ? (data.filename || null) : undefined,
       pdf_url: data.pdf_url !== undefined ? (data.pdf_url || null) : undefined,
+      position: data.position || undefined,
       updated_at: new Date().toISOString(),
     };
-    
+
     const { data: result, error } = await supabase
       .from('editions')
       .update(updateData)
@@ -1117,6 +1132,20 @@ if (data.close_time !== undefined) {
     if (error) throw error;
 
     return result as AdminEdition;
+  },
+
+  // Guarda el orden: la edición en el índice i queda con position i + 1
+  async reorderEditions(orderedIds: string[]) {
+    const supabase = createSupabaseClient();
+
+    const results = await Promise.all(
+      orderedIds.map((id, index) =>
+        supabase.from('editions').update({ position: index + 1 }).eq('id', id)
+      )
+    );
+
+    const failed = results.find((r) => r.error);
+    if (failed?.error) throw failed.error;
   },
 
   async deleteEdition(id: string) {

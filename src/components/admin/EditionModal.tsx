@@ -145,6 +145,20 @@ export function EditionModal({ edition, open, onClose, onSave }: EditionModalPro
                   />
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="position" className="text-sm font-medium text-slate-700">Orden</Label>
+                <Input
+                  id="position"
+                  type="number"
+                  min="1"
+                  value={formData.position ?? ""}
+                  onChange={(e) => setFormData({ ...formData, position: parseInt(e.target.value) || undefined })}
+                  placeholder="Vacío = al final de la lista"
+                  className="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-slate-400"
+                />
+                <p className="text-xs text-slate-500">1 aparece primero en la página de Ediciones.</p>
+              </div>
             </div>
           </div>
 
